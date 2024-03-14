@@ -8,6 +8,9 @@ ENV LANG pl_PL.utf8
 ENV TZ="Europe/Warsow"
 RUN date
 
+RUN apt-get update
+RUN apt-get install -y postgresql-plpython3-16
+
 # Copy scripts to run on startup
 COPY ./SQL/* /docker-entrypoint-initdb.d/
 
