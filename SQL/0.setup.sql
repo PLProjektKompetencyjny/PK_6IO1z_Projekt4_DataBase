@@ -1,1 +1,1 @@
-create extension plpython3u;
+CREATE EXTENSION plpython3u;
