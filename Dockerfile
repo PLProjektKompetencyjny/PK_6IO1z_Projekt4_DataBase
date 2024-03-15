@@ -8,6 +8,12 @@ ENV LANG pl_PL.utf8
 ENV TZ="Europe/Warsow"
 RUN date
 
+# Set DB name and default user
+ENV POSTGRES_DB="TravelNest"
+ENV POSTGRES_PASSWORD="abc"
+ENV POSTGRES_USER="TN_admin"
+
+# Install plpython extension for code written in Python support
 RUN apt-get update
 RUN apt-get install -y postgresql-plpython3-16
 
