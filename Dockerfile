@@ -1,9 +1,5 @@
 FROM postgres:16.2
 
-# Set polish language
-RUN localedef -i pl_PL -c -f UTF-8 -A /usr/share/locale/locale.alias pl_PL.UTF-8
-ENV LANG pl_PL.utf8
-
 # Set timezone
 ENV TZ="Europe/Warsaw"
 RUN date
