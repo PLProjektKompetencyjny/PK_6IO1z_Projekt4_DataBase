@@ -5,7 +5,7 @@
 
     .NOTES
 
-        Version:            1.0
+        Version:            1.1
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -13,6 +13,7 @@
         ChangeLog:
 
         Date            Who                     What
+		2024-03-17		Stanisław Horna			Removed Description column from "dict_" tables.
 
 */
 
@@ -42,8 +43,8 @@ CREATE TABLE Admins (
 
 	CONSTRAINT chk_UserName CHECK (user_name ~ '^[a-zA-Z]+$'),
 	CONSTRAINT chk_Email CHECK (E_mail ~ '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'),
-	CONSTRAINT chk_Phone CHECK (Phone_num ~ '^\+\d{11}$'),
-)
+	CONSTRAINT chk_Phone CHECK (Phone_num ~ '^\+\d{11}$')
+);
 
 CREATE TABLE Customers (
 	ID serial PRIMARY KEY NOT NULL,
@@ -60,7 +61,7 @@ CREATE TABLE Customers (
 	CONSTRAINT chk_Name CHECK (Name ~ '^[a-zA-Z]+$'),
 	CONSTRAINT chk_Surname CHECK (Surname ~ '^[a-zA-Z]+$'),
 	CONSTRAINT chk_Email CHECK (E_mail ~ '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'),
-	CONSTRAINT chk_Phone CHECK (Phone_num ~ '^\+\d{11}$'),
+	CONSTRAINT chk_Phone CHECK (Phone_num ~ '^\+\d{11}$')
 );
 
 CREATE TABLE Addresses (
@@ -106,8 +107,7 @@ CREATE TABLE ReservationRooms (
 
 CREATE TABLE dict_reservation_status (
 	ID int PRIMARY KEY NOT NULL,
-	Name varchar NOT NULL,
-	Description varchar NULL
+	Name varchar NOT NULL
 );
 
 CREATE TABLE Invoice (
@@ -119,8 +119,7 @@ CREATE TABLE Invoice (
 
 CREATE TABLE dict_invoice_status (
 	ID int PRIMARY KEY NOT NULL,
-	Name varchar NOT NULL,
-	Description varchar NULL
+	Name varchar NOT NULL
 );
 
 CREATE TABLE Room (
@@ -140,17 +139,16 @@ CREATE TABLE RoomType (
 	Phots_dir varchar NOT NULL
 
 
-	CONSTRAINT chk_NumOfSingleBeds CHECK (Num_of_adults >= 1),
-	CONSTRAINT chk_NumOfDoubleBeds CHECK (Num_of_children >= 0),
-	CONSTRAINT chk_NumOfChildBeds CHECK (Start_date > NOW()),
-	CONSTRAINT chk_EndDate CHECK (End_date > NOW()),
-	CONSTRAINT chk_ReservationDates CHECK (End_date > Start_date),
-	CONSTRAINT chk_PriceGross CHECK (Price_gross >= 0)
+	CONSTRAINT chk_NumOfSingleBeds CHECK (Num_of_single_beds >= 0),
+	CONSTRAINT chk_NumOfDoubleBeds CHECK (Num_of_double_beds >= 0),
+	CONSTRAINT chk_NumOfChildBeds CHECK (Num_of_child_beds >= 0),
+	CONSTRAINT chk_RoomPriceGross CHECK (Room_price_gross >= 0),
+	CONSTRAINT chk_AdultPriceGross CHECK (Adult_price_gross >= 0),
+	CONSTRAINT chk_ChildPriceGross CHECK (Child_price_gross >= 0)
 );
 
 CREATE TABLE dict_room_status (
 	ID int PRIMARY KEY NOT NULL,
-	Name varchar NOT NULL,
-	Description varchar NULL
+	Name varchar NOT NULL
 );
 
