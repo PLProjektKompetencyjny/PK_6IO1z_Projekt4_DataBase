@@ -8,6 +8,9 @@
 			2. CREATE all Tables from scratch,
 				create CHECK CONSTRAINT
 			3. ADD FOREIGN KEY for each table
+			4. INSERT static data:
+				- dictionary entries (tables with prefix 'dict_' in the name)
+				- Default user in user accont called 'SYSTEM'
 
 
 	.RULES
@@ -43,7 +46,7 @@
 
     .NOTES
 
-        Version:            1.1
+        Version:            1.2
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -59,13 +62,18 @@
 												Basic check constraints and Foreign keys added.
 												CASCADE added to each DROP instruction, to remove all related objects
 
+		2024-03-18		Stanisław Horna			Re-desing of address, customer, admin tables.
+						Grzegorz Kubicki		Switched to approach where login credentials,
+												for both customers and admins are stored in user_account table.
+												User_details store customer related information, 
+												which are not required for admin account
+
 
 */
 
 -- Drop existing tables
-DROP TABLE IF EXISTS Admin CASCADE;
-DROP TABLE IF EXISTS Customer CASCADE;
-DROP TABLE IF EXISTS Address CASCADE;
+DROP TABLE IF EXISTS User_account CASCADE;
+DROP TABLE IF EXISTS User_details CASCADE;
 DROP TABLE IF EXISTS Reservation CASCADE;
 DROP TABLE IF EXISTS Reservation_Room CASCADE;
 DROP TABLE IF EXISTS dict_reservation_status CASCADE;
@@ -77,50 +85,45 @@ DROP TABLE IF EXISTS dict_room_status CASCADE;
 
 
 -- Create tables
-CREATE TABLE Admin (
+CREATE TABLE User_account (
 	ID serial primary key NOT NULL,
 	user_name varchar NOT NULL,
 	password varchar NOT NULL,
-	is_Active bool DEFAULT true,
-	E_mail varchar NOT NULL,
-	Phone_num varchar NOT NULL,
-	Creation_date timestamp DEFAULT now()
+	is_Active bool DEFAULT TRUE,
+	is_Admin bool DEFAULT FALSE,
+	Creation_date timestamp DEFAULT now(),
+	Last_modified_at timestamp DEFAULT now(),
+	Last_modified_by int NULL,
 
-	CONSTRAINT UserName_chk CHECK (user_name ~ '^[a-zA-Z]+$'),
-	CONSTRAINT E_mail_chk CHECK (E_mail ~ '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'),
-	CONSTRAINT Phone_num_chk CHECK (Phone_num ~ '^\+\d{11}$')
+	CONSTRAINT User_name_chk CHECK (user_name ~ '^[a-zA-Z]+$')
 );
 
-CREATE TABLE Customer (
-	ID serial PRIMARY KEY NOT NULL,
+CREATE TABLE User_details (
+	User_ID int UNIQUE NOT NULL,
 	NIP_num varchar NULL,
 	Name varchar NOT NULL,
 	Surname varchar NULL,
-	Address_ID int NOT NULL,
 	E_mail varchar NOT NULL,
-	Password varchar NOT NULL,
 	Phone_num varchar NOT NULL,
-	Creation_date timestamp DEFAULT now()
+	City varchar NOT NULL,
+	Postal_code varchar NOT NULL,
+	Street varchar NOT NULL,
+	Building_num varchar NOT NULL,
+	Creation_date timestamp DEFAULT now(),
+	Last_modified_at timestamp DEFAULT now(),
+	Last_modified_by int NULL,
 
 	CONSTRAINT Nip_Num_chk CHECK (NIP_num ~ '^\d{10}$'),
 	CONSTRAINT Name_chk CHECK (Name ~ '^[a-zA-Z]+$'),
 	CONSTRAINT Surname_chk CHECK (Surname ~ '^[a-zA-Z]+$'),
 	CONSTRAINT E_mail_chk CHECK (E_mail ~ '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'),
-	CONSTRAINT Phone_num_chk CHECK (Phone_num ~ '^\+\d{11}$')
-);
-
-CREATE TABLE Address (
-	ID serial PRIMARY KEY NOT NULL,
-	City varchar NOT NULL,
-	Postal_code varchar NOT NULL,
-	Street varchar NOT NULL,
-	Building_num varchar NOT NULL,
-
+	CONSTRAINT Phone_num_chk CHECK (Phone_num ~ '^\+\d{11}$'),
 	CONSTRAINT City_chk CHECK (City ~ '^[a-zA-Z]+$'),
 	CONSTRAINT Postal_code_chk CHECK (Postal_Code ~ '^\d{2}-\d{3}$'),
-	CONSTRAINT Stree_chkt CHECK (Street ~ '^[a-zA-Z]+$'),
+	CONSTRAINT Stree_chk CHECK (Street ~ '^[a-zA-Z]+$'),
 	CONSTRAINT Building_num_chk CHECK (Building_num ~ '^\d+(\s[A-Za-z])?$')
 );
+
 
 CREATE TABLE Reservation (
 	ID serial PRIMARY KEY NOT NULL,
@@ -133,6 +136,8 @@ CREATE TABLE Reservation (
 	Price_gross float NOT NULL,
 	is_Paid bool DEFAULT false,
 	Creation_date timestamp DEFAULT now(),
+	Last_modified_at timestamp DEFAULT now(),
+	Last_modified_by int NULL,
 
 	CONSTRAINT Num_of_adults_chk CHECK (Num_of_adults >= 1),
 	CONSTRAINT Num_of_children_chk CHECK (Num_of_children >= 0),
@@ -158,7 +163,9 @@ CREATE TABLE Invoice (
 	ID serial PRIMARY KEY NOT NULL,
 	Reservation_ID int NOT NULL,
 	Invoice_date timestamp DEFAULT now(),
-	Status_ID int DEFAULT 0
+	Status_ID int DEFAULT 0,
+	Last_modified_at timestamp DEFAULT now(),
+	Last_modified_by int NULL
 );
 
 CREATE TABLE dict_invoice_status (
@@ -169,7 +176,9 @@ CREATE TABLE dict_invoice_status (
 CREATE TABLE Room (
 	ID serial PRIMARY KEY NOT NULL,
 	Room_Type_ID int NOT NULL,
-	Status_ID int DEFAULT 0
+	Status_ID int DEFAULT 0,
+	Last_modified_at timestamp DEFAULT now(),
+	Last_modified_by int NULL
 );
 
 CREATE TABLE Room_Type (
@@ -180,7 +189,9 @@ CREATE TABLE Room_Type (
 	Room_price_gross float NOT NULL,
 	Adult_price_gross float NOT NULL,
 	Child_price_gross float NOT NULL,
-	Phots_dir varchar NOT NULL
+	Phots_dir varchar NOT NULL,
+	Last_modified_at timestamp DEFAULT now(),
+	Last_modified_by int NULL,
 
 
 	CONSTRAINT Num_of_single_beds_chk CHECK (Num_of_single_beds >= 0),
@@ -198,14 +209,14 @@ CREATE TABLE dict_room_status (
 
 
 -- Create foreign keys
-ALTER TABLE Customer
-ADD CONSTRAINT Address_fkey FOREIGN KEY (Address_ID) 
-REFERENCES Address (ID) MATCH SIMPLE;
+ALTER TABLE User_Details
+ADD CONSTRAINT User_fkey FOREIGN KEY (User_ID) 
+REFERENCES User_account (ID) MATCH SIMPLE;
 
 
 ALTER TABLE Reservation
-ADD CONSTRAINT Customer_fkey FOREIGN KEY (Customer_ID) 
-REFERENCES Customer (ID) MATCH SIMPLE;
+ADD CONSTRAINT User_fkey FOREIGN KEY (Customer_ID) 
+REFERENCES User_Details (user_ID) MATCH SIMPLE;
 
 ALTER TABLE Reservation
 ADD CONSTRAINT Status_fkey FOREIGN KEY (Status_ID) 
