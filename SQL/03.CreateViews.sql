@@ -11,9 +11,9 @@
 			2. CREATE all Views from scratch.
 
 	.RULES
-		- DROP VIEW should include IF EXISTS.
+		- DROP VIEW must include IF EXISTS.
 
-		- Required columns should be defined with table alias for better visibility.
+		- Required columns must be defined with table alias for better visibility.
 
 		- No WHERE clauses, should be included on Backend side
 
@@ -36,6 +36,7 @@ DROP VIEW IF EXISTS reservation_view;
 DROP VIEW IF EXISTS room_view;
 DROP VIEW IF EXISTS invoice_view;
 DROP VIEW IF EXISTS admin_view;
+
 
 -- Create Views
 CREATE VIEW customer_view AS

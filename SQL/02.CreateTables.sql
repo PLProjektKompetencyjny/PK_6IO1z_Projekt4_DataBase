@@ -9,15 +9,16 @@
 				create CHECK CONSTRAINT
 			3. ADD FOREIGN KEY for each table
 
+
 	.RULES
-		- DROP TABLE should include IF EXISTS, as well as CASCADE.
+		- DROP TABLE must include IF EXISTS, as well as CASCADE.
 
-		- DEFAULT should be included in CREATE TABLE in the same line as column definition, which it is related to.
+		- DEFAULT must be included in CREATE TABLE in the same line as column definition, which it is related to.
 
-		- CHECK constraint should be included in CREATE TABLE instruction after columns definition in format:
+		- CHECK constraint must be included in CREATE TABLE instruction after columns definition in format:
 			CONSTRAINT <check_name>_chk CHECK (<Expresion_to_check>).
 
-		- FOREIGN KEY should be added at the last section of the file in format: 
+		- FOREIGN KEY must be added at the last section of the file in format: 
 			ALTER TABLE <table_name>
 			ADD CONSTRAINT <foreign_key_name>_fkey FOREIGN KEY (<column_name>)
 			REFERENCES <foreign_table_name> (<foreign_column_name>) MATCH SIMPLE;
@@ -32,10 +33,10 @@
 			- CHECK 		<- suffix '_chk'
 
 		- Constraints' names:
-			- PRIMARY KEY 	<- should have same name as table name + appropriate suffix.
-			- FOREIGN KEY 	<- should have same name as column, which it is related to, 
-								skipping column name suffix which for fkeys should be '_ID' + appropriate suffix.
-			- CHECK 		<- should have same name as column, which it is related to + appropriate suffix.
+			- PRIMARY KEY 	<- must have same name as table name + appropriate suffix.
+			- FOREIGN KEY 	<- must have same name as column, which it is related to, 
+								skipping column name suffix which for fkeys must be '_ID' + appropriate suffix.
+			- CHECK 		<- must have same name as column, which it is related to + appropriate suffix.
 								If CHECK is related to more then 1 column, name can be custom to describe,
 								what does it check + appropriate suffix.
 
