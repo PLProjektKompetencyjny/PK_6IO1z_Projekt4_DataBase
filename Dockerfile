@@ -11,7 +11,7 @@ RUN date
 
 # Set DB name and default user
 ENV POSTGRES_DB="TravelNest"
-ENV POSTGRES_PASSWORD="abc"
+ENV POSTGRES_PASSWORD="NestTravel"
 ENV POSTGRES_USER="TN_admin"
 
 # Set DB collate
