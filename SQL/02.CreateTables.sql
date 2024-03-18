@@ -101,7 +101,7 @@ CREATE TABLE Customer (
 	Phone_num varchar NOT NULL,
 	Creation_date timestamp DEFAULT now()
 
-	CONSTRAINT Nip_Num_chk CHECK (check_nip_number(NIP_num)),
+	CONSTRAINT Nip_Num_chk CHECK (NIP_num ~ '^\d{10}$'),
 	CONSTRAINT Name_chk CHECK (Name ~ '^[a-zA-Z]+$'),
 	CONSTRAINT Surname_chk CHECK (Surname ~ '^[a-zA-Z]+$'),
 	CONSTRAINT E_mail_chk CHECK (E_mail ~ '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'),
