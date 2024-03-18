@@ -1,4 +1,7 @@
 # PK_6IO1z_Projekt4_DataBase
+
+### [Starting DB container](/DB_startup.md)
+
 Ograniczenia rezerwacji
  1) Gdy jest dziecko, to musi być minimum 1 osoba dorosła
  2) In reservations Price_gross = Room_price + (Num_of_adults * Adult_price) + (Num_of_childs * Child_price)
