@@ -72,8 +72,8 @@
 */
 
 -- Drop existing tables
-DROP TABLE IF EXISTS User_account CASCADE;
-DROP TABLE IF EXISTS User_details CASCADE;
+DROP TABLE IF EXISTS User_Account CASCADE;
+DROP TABLE IF EXISTS User_Details CASCADE;
 DROP TABLE IF EXISTS Reservation CASCADE;
 DROP TABLE IF EXISTS Reservation_Room CASCADE;
 DROP TABLE IF EXISTS dict_reservation_status CASCADE;
@@ -85,12 +85,12 @@ DROP TABLE IF EXISTS dict_room_status CASCADE;
 
 
 -- Create tables
-CREATE TABLE User_account (
+CREATE TABLE User_Account (
 	ID serial primary key NOT NULL,
-	user_name varchar NOT NULL,
-	password varchar NOT NULL,
-	is_Active bool DEFAULT TRUE,
-	is_Admin bool DEFAULT FALSE,
+	User_name varchar NOT NULL,
+	Password varchar NOT NULL,
+	Is_active bool DEFAULT TRUE,
+	Is_admin bool DEFAULT FALSE,
 	Creation_date timestamp DEFAULT now(),
 	Last_modified_at timestamp DEFAULT now(),
 	Last_modified_by int NULL,
@@ -98,7 +98,7 @@ CREATE TABLE User_account (
 	CONSTRAINT User_name_chk CHECK (user_name ~ '^[a-zA-Z]+$')
 );
 
-CREATE TABLE User_details (
+CREATE TABLE User_Details (
 	User_ID int UNIQUE NOT NULL,
 	NIP_num varchar NULL,
 	Name varchar NOT NULL,
@@ -120,7 +120,7 @@ CREATE TABLE User_details (
 	CONSTRAINT Phone_num_chk CHECK (Phone_num ~ '^\+\d{11}$'),
 	CONSTRAINT City_chk CHECK (City ~ '^[a-zA-Z]+$'),
 	CONSTRAINT Postal_code_chk CHECK (Postal_Code ~ '^\d{2}-\d{3}$'),
-	CONSTRAINT Stree_chk CHECK (Street ~ '^[a-zA-Z]+$'),
+	CONSTRAINT Street_chk CHECK (Street ~ '^[a-zA-Z]+$'),
 	CONSTRAINT Building_num_chk CHECK (Building_num ~ '^\d+(\s[A-Za-z])?$')
 );
 
@@ -134,7 +134,7 @@ CREATE TABLE Reservation (
 	Start_date timestamp NOT NULL,
 	End_date timestamp NOT NULL,
 	Price_gross float NOT NULL,
-	is_Paid bool DEFAULT false,
+	Is_paid bool DEFAULT false,
 	Creation_date timestamp DEFAULT now(),
 	Last_modified_at timestamp DEFAULT now(),
 	Last_modified_by int NULL,
@@ -175,7 +175,7 @@ CREATE TABLE dict_invoice_status (
 
 CREATE TABLE Room (
 	ID serial PRIMARY KEY NOT NULL,
-	Room_Type_ID int NOT NULL,
+	Room_type_ID int NOT NULL,
 	Status_ID int DEFAULT 0,
 	Last_modified_at timestamp DEFAULT now(),
 	Last_modified_by int NULL
@@ -196,7 +196,7 @@ CREATE TABLE Room_Type (
 
 	CONSTRAINT Num_of_single_beds_chk CHECK (Num_of_single_beds >= 0),
 	CONSTRAINT Num_of_double_beds_chk CHECK (Num_of_double_beds >= 0),
-	CONSTRAINT Num_of_childBeds_chk CHECK (Num_of_child_beds >= 0),
+	CONSTRAINT Num_of_child_beds_chk CHECK (Num_of_child_beds >= 0),
 	CONSTRAINT Room_price_gross_chk CHECK (Room_price_gross >= 0),
 	CONSTRAINT Adult_price_gross_chk CHECK (Adult_price_gross >= 0),
 	CONSTRAINT Child_price_gross_chk CHECK (Child_price_gross >= 0)
