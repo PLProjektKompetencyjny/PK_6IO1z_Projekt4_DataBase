@@ -38,6 +38,10 @@
         ChangeLog:
 
         Date            Who                     What
+        2024-03-20      Stanisław Horna         added functions:
+                                                    - update_reservation_view
+                                                    - update_invoice_view
+                                                    - update_room_view
 
 */
 
@@ -265,7 +269,7 @@ BEGIN
 		RAISE NOTICE 'Seems like there is nothing to update';
 	END IF;
 
-    Inv_ID := NEW.invoice_id
+    Inv_ID := NEW.invoice_id;
 
 	IF (NEW.invoice_status_id IS DISTINCT FROM OLD.invoice_status_id) THEN
 
@@ -331,7 +335,7 @@ BEGIN
 		RAISE NOTICE 'Seems like there is nothing to update';
 	END IF;
 
-    Roo_ID := NEW.invoice_id
+    Roo_ID := NEW.invoice_id;
 
 	IF (NEW.room_status_id IS DISTINCT FROM OLD.room_status_id) THEN
 

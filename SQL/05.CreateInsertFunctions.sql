@@ -38,7 +38,10 @@
         ChangeLog:
 
         Date            Who                     What
-
+        2024-03-20      Stanisław Horna         added functions:
+                                                    - insert_reservation_view
+                                                    - insert_invoice_view
+                                                    - insert_room_view
 */
 
 CREATE OR REPLACE FUNCTION insert_reservation_view()
@@ -106,7 +109,7 @@ RETURNS TRIGGER AS $$
 BEGIN
 
     INSERT INTO invoice (reservation_id, last_modified_by)
-    VALUES (NEW.invoice_reservation_id, NEW.invoice_last_modified_by) 
+    VALUES (NEW.invoice_reservation_id, NEW.invoice_last_modified_by);
 
 	RETURN NEW;
 
@@ -120,7 +123,7 @@ RETURNS TRIGGER AS $$
 BEGIN
 
     INSERT INTO room (id, room_type_id, last_modified_by)
-    VALUES (NEW.room_id, NEW.r) 
+    VALUES (NEW.room_id, NEW.room_last_modified_by);
 
 	RETURN NEW;
 

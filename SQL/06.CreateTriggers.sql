@@ -35,6 +35,15 @@
         ChangeLog:
 
         Date            Who                     What
+        2024-03-20      Stanisław Horna         added triggers:
+                                                    - INSTEAD OF INSERT
+                                                        - reservation_view
+                                                        - invoice_view
+                                                        - room_view
+                                                    - INSTEAD OF UPDATE
+                                                        - reservation_view
+                                                        - invoice_view
+                                                        - room_view
 
 */
 
