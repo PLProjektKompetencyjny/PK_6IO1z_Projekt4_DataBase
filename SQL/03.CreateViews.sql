@@ -46,70 +46,70 @@ DROP VIEW IF EXISTS user_view;
 -- Create Views
 CREATE VIEW customer_view AS
 SELECT
-	d.User_ID AS "Customer_ID",
-	d.Nip_num AS "Customer_NIP_Number",
-	d.Name AS "Customer_Name",
-	d.Surname AS "Customer_Surname",
-	d.E_mail AS "Customer_Email",
-	d.Phone_num AS "Customer_Phone",
-	d.City AS "Customer_City",
-	d.Postal_code AS "Customer_Postal_Code",
-	d.Street AS "Customer_Street",
-	d.Building_num AS "Customer_Building_Number",
-	d.Last_modified_by AS "Customer_Last_Modified_by",
-	d.Last_modified_at AS "Customer_Last_Modified_at"
+	d.User_id AS "customer_id",
+	d.Nip_Num AS "customer_nip_number",
+	d.Name AS "customer_name",
+	d.Surname AS "customer_surname",
+	d.E_Mail AS "customer_email",
+	d.Phone_Num AS "customer_phone",
+	d.City AS "customer_city",
+	d.Postal_code AS "customer_postal_code",
+	d.Street AS "customer_street",
+	d.Building_Num AS "customer_building_number",
+	d.Last_Modified_by AS "customer_last_modified_by",
+	d.Last_Modified_at AS "customer_last_modified_at"
 FROM User_Details d;
 
 CREATE VIEW reservation_view AS
 SELECT
-	r.ID AS "Reservation_ID",
-	r.Customer_ID AS "Reservation_Customer_ID",
-	s.Status_value AS "Reservation_Status",
-	s.ID AS "Reservation_Status_ID",
-	r.Num_of_adults AS "Reservation_Number_of_Adults",
-	r.Num_of_children AS "Reservation_Number_of_Children",
-	r.Start_date AS "Reservation_Start_Date",
-	r.End_date AS "Reservation_End_Date",
-	r.Price_gross AS "Reservation_Price_Gross",
-	r.Is_paid AS "Reservation_Is_Paid",
-	rr.Room_ID AS "Reservation_Room_ID"
+	r.ID AS "reservation_id",
+	r.Customer_ID AS "reservation_customer_id",
+	s.Status_value AS "reservation_status",
+	s.ID AS "reservation_status_id",
+	r.Num_of_Adults AS "reservation_number_of_adults",
+	r.Num_of_Children AS "reservation_number_of_children",
+	r.Start_Date AS "reservation_start_date",
+	r.End_Date AS "reservation_end_date",
+	r.Price_Gross AS "reservation_price_gross",
+	r.Is_Paid AS "reservation_is_paid",
+	rr.Room_ID AS "reservation_room_id"
 FROM Reservation r
-LEFT JOIN Reservation_room rr ON rr.Reservation_ID = r.ID
-LEFT JOIN dict_reservation_status s ON s.ID = r.Status_ID;
+LEFT JOIN reservation_room rr ON rr.reservation_id = r.ID
+LEFT JOIN dict_reservation_status s ON s.ID = r.Status_id;
 
 CREATE VIEW room_view AS
 SELECT
-	r.ID AS "Room_ID",
-	s.ID AS "Room_Status_ID",
-	s.Status_value AS "Room_Status",
-	t.Num_of_single_beds AS "Room_Number_of_Single_Beds", 
-	t.Num_of_double_beds AS "Room_Number_of_Double_Beds",
-	t.Num_of_child_beds AS "Room_Number_of_Child_Beds", 
-	t.Room_price_gross AS "Room_Gross_Price", 
-	t.Adult_price_gross AS "Room_Gross_Price_Adult", 
-	t.Child_price_gross AS "Room_Gross_Price_Child", 
-	t.Phots_dir AS "Room_Photos_Dir"
+	r.ID AS "room_id",
+	s.ID AS "room_status_id",
+	s.Status_Value AS "room_status",
+	t.Num_of_Single_Beds AS "room_number_of_single_beds", 
+	t.Num_of_Double_Beds AS "room_number_of_double_beds",
+	t.Num_of_Child_Beds AS "room_number_of_child_beds", 
+	t.Room_Price_Gross AS "room_gross_price", 
+	t.Adult_Price_Gross AS "room_Gross_price_adult", 
+	t.Child_Price_Gross AS "room_Gross_price_child", 
+	t.Phots_Dir AS "room_photos_dir"
 FROM Room r
-LEFT JOIN dict_room_status s ON s.ID = r.status_ID
-LEFT JOIN Room_Type t ON t.ID = r.Room_type_ID;
+LEFT JOIN dict_room_status s ON s.ID = r.status_id
+LEFT JOIN Room_Type t ON t.ID = r.Room_type_id;
 
 CREATE VIEW invoice_view AS
 SELECT
-    i.ID AS "Invoice_ID",
-    i.Reservation_ID AS "Invoice_Reservation_ID",
-    i.Invoice_date AS "Invoice_Date",
-	s.ID AS "Invoice_Status_ID",
-    s.Status_value AS "Invoice_Status"
+    i.ID AS "invoice_id",
+    i.Reservation_ID AS "invoice_reservation_id",
+    i.Invoice_Date AS "invoice_date",
+	s.ID AS "invoice_status_id",
+    s.Status_Value AS "invoice_status"
 FROM Invoice i
-LEFT JOIN dict_invoice_status s ON s.ID = i.status_ID;
+LEFT JOIN dict_invoice_status s ON s.ID = i.status_id;
 
 CREATE VIEW user_view AS
 SELECT
-    u.ID AS "User_ID",
-    u.User_name AS "User_Name",
-    u.Is_Active AS "User_Is_Active",
-    u.Is_Admin AS "User_Is_Admin",
-	u.Last_modified_by AS "User_Last_Modified_by",
-	u.Last_modified_at AS "User_Last_Modified_at"
+    u.ID AS "user_id",
+    u.User_Name AS "user_Name",
+    u.Is_Active AS "user_is_active",
+    u.Is_Admin AS "user_is_admin",
+	u.Last_Modified_by AS "user_last_modified_by",
+	u.Last_Modified_at AS "user_last_modified_at"
 FROM user_account u;
 
