@@ -67,6 +67,8 @@
 												for both customers and admins are stored in user_account table.
 												User_details store customer related information, 
 												which are not required for admin account
+		
+		2024-03-20		Stanisław Horna			Removed auto-gen id in Room table
 
 
 */
@@ -174,7 +176,7 @@ CREATE TABLE dict_invoice_status (
 );
 
 CREATE TABLE Room (
-	ID PRIMARY KEY NOT NULL,
+	ID int PRIMARY KEY NOT NULL,
 	Room_type_ID int NOT NULL,
 	Status_ID int DEFAULT 0,
 	Last_modified_at timestamp DEFAULT now(),
