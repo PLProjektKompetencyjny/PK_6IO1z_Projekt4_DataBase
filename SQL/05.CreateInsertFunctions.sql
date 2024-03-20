@@ -59,7 +59,7 @@ BEGIN
         RAISE NOTICE 'Reservation not found';
         
         INSERT INTO Reservation (
-            customer_id, 
+            user_account_id, 
             num_of_adults, 
             num_of_children, 
             start_date, 

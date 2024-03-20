@@ -42,7 +42,7 @@ BEGIN
         SELECT
             ID
         FROM Reservation
-        WHERE customer_id = new_entry.reservation_customer_id AND
+        WHERE user_account_id = new_entry.reservation_customer_id AND
                 num_of_adults = new_entry.reservation_number_of_adults AND
                 num_of_children = new_entry.reservation_number_of_children AND
                 start_date = new_entry.reservation_start_date AND
