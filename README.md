@@ -10,14 +10,14 @@ View types:
 2. Reservations
 3. Rooms
 4. Invoices
-5. Admins
+5. Users
 
-Kazdy widok ma posiada przypiete 3 trigery:
+Kazdy widok ma posiada przypiete 3 triggery:
 - INSTEAD OF INSERT
 - INSTEAD OF UPDATE
 - INSTEAD OF DELETE
 
-Kazdy triger wyzwala odpowiednią funckje:
+Kazdy trigger wyzwala odpowiednią funckje:
 - INSERT function
 - UPDATE function
 - DELETE function
@@ -29,7 +29,7 @@ Kazdy triger wyzwala odpowiednią funckje:
     - iod <- for trigger INSTEAD OF DELETE
 
 ## Functions
-    - <view_name>_<operation>
+    - <operation>_<view_name>
 
 ## Views:
     - <view_type>_view
