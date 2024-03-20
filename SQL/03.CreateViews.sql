@@ -72,7 +72,9 @@ SELECT
 	r.End_Date AS "reservation_end_date",
 	r.Price_Gross AS "reservation_price_gross",
 	r.Is_Paid AS "reservation_is_paid",
-	rr.Room_ID AS "reservation_room_id"
+	rr.Room_ID AS "reservation_room_id",
+	r.Last_Modified_by AS "reservation_last_modified_by",
+	r.Last_Modified_at AS "reservation_last_modified_at"
 FROM Reservation r
 LEFT JOIN reservation_room rr ON rr.reservation_id = r.ID
 LEFT JOIN dict_reservation_status s ON s.ID = r.Status_id;
@@ -88,7 +90,9 @@ SELECT
 	t.Room_Price_Gross AS "room_gross_price", 
 	t.Adult_Price_Gross AS "room_Gross_price_adult", 
 	t.Child_Price_Gross AS "room_Gross_price_child", 
-	t.Phots_Dir AS "room_photos_dir"
+	t.Phots_Dir AS "room_photos_dir",
+	r.Last_Modified_by AS "room_last_modified_by",
+	r.Last_Modified_at AS "room_last_modified_at"
 FROM Room r
 LEFT JOIN dict_room_status s ON s.ID = r.status_id
 LEFT JOIN Room_Type t ON t.ID = r.Room_type_id;
@@ -99,7 +103,9 @@ SELECT
     i.Reservation_ID AS "invoice_reservation_id",
     i.Invoice_Date AS "invoice_date",
 	s.ID AS "invoice_status_id",
-    s.Status_Value AS "invoice_status"
+    s.Status_Value AS "invoice_status",
+	i.Last_Modified_by AS "invoice_last_modified_by",
+	i.Last_Modified_at AS "invoice_last_modified_at"
 FROM Invoice i
 LEFT JOIN dict_invoice_status s ON s.ID = i.status_id;
 
