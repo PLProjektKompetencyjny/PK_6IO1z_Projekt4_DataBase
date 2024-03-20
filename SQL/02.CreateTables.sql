@@ -130,7 +130,7 @@ CREATE TABLE User_Details (
 CREATE TABLE Reservation (
 	ID serial PRIMARY KEY NOT NULL,
 	Customer_ID int NOT NULL,
-	Status_ID int DEFAULT 0,
+	Status_ID int DEFAULT 1,
 	Num_of_adults int NOT NULL,
 	Num_of_children int NOT NULL,
 	Start_date timestamp NOT NULL,
@@ -165,7 +165,7 @@ CREATE TABLE Invoice (
 	ID serial PRIMARY KEY NOT NULL,
 	Reservation_ID int NOT NULL,
 	Invoice_date timestamp DEFAULT now(),
-	Status_ID int DEFAULT 0,
+	Status_ID int DEFAULT 1,
 	Last_modified_at timestamp DEFAULT now(),
 	Last_modified_by int NULL
 );
@@ -178,7 +178,7 @@ CREATE TABLE dict_invoice_status (
 CREATE TABLE Room (
 	ID int PRIMARY KEY NOT NULL,
 	Room_type_ID int NOT NULL,
-	Status_ID int DEFAULT 0,
+	Status_ID int DEFAULT 1,
 	Last_modified_at timestamp DEFAULT now(),
 	Last_modified_by int NULL
 );
