@@ -314,3 +314,69 @@ BEGIN
 	RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
+
+
+
+CREATE OR REPLACE FUNCTION update_room_view()
+RETURNS TRIGGER AS $$
+DECLARE
+    Roo_ID int;
+	Any_ops_performed bool;
+BEGIN
+
+    Any_ops_performed := FALSE;
+
+    -- Check if there is anything to update
+	IF (NEW IS NOT DISTINCT FROM OLD) THEN
+		RAISE NOTICE 'Seems like there is nothing to update';
+	END IF;
+
+    Roo_ID := NEW.invoice_id
+
+	IF (NEW.room_status_id IS DISTINCT FROM OLD.room_status_id) THEN
+
+		UPDATE room
+		SET status_id = NEW.room_status_id
+		WHERE id = Roo_ID;
+
+		RAISE NOTICE 
+            'status_id updated for room ID: %. OLD: % NEW: %', 
+                Roo_ID, 
+                OLD.room_status_id, 
+                NEW.room_status_id;
+
+		Any_ops_performed = TRUE;
+	END IF;
+
+	IF Any_ops_performed = FALSE THEN
+
+		RAISE EXCEPTION 
+			'No update was performed';
+
+		RETURN NULL;
+	END IF;
+
+	IF (NEW.room_last_modified_by IS DISTINCT FROM OLD.room_last_modified_by) AND 
+		NEW.room_last_modified_by IS NOT NULL THEN
+		
+		UPDATE room
+		SET last_modified_by = NEW.room_last_modified_by
+		WHERE id = Roo_ID;
+
+		RAISE NOTICE 
+			'last_modified_by updated for room ID: %.', 
+			Roo_ID;
+
+	END IF;
+
+	UPDATE room
+	SET last_modified_at = DEFAULT
+	WHERE id = Roo_ID;
+
+	RAISE NOTICE 
+		'last_modified_at updated for room ID: %.', 
+			Roo_ID;
+
+	RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;

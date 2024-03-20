@@ -73,4 +73,11 @@ INSTEAD OF UPDATE ON invoice_view
 FOR EACH ROW
 EXECUTE FUNCTION update_invoice_view();
 
+------ room_view
+CREATE TRIGGER iou
+INSTEAD OF UPDATE ON room_view
+FOR EACH ROW
+EXECUTE FUNCTION update_room_view();
+
+
 -- INSTEAD OF DELETE triggers
