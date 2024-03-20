@@ -88,8 +88,8 @@ SELECT
 	t.Num_of_Double_Beds AS "room_number_of_double_beds",
 	t.Num_of_Child_Beds AS "room_number_of_child_beds", 
 	t.Room_Price_Gross AS "room_gross_price", 
-	t.Adult_Price_Gross AS "room_Gross_price_adult", 
-	t.Child_Price_Gross AS "room_Gross_price_child", 
+	t.Adult_Price_Gross AS "room_gross_price_adult", 
+	t.Child_Price_Gross AS "room_gross_price_child", 
 	t.Phots_Dir AS "room_photos_dir",
 	r.Last_Modified_by AS "room_last_modified_by",
 	r.Last_Modified_at AS "room_last_modified_at"
