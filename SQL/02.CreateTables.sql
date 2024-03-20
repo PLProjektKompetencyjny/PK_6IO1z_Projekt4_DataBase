@@ -89,7 +89,8 @@ DROP TABLE IF EXISTS dict_room_status CASCADE;
 -- Create tables
 CREATE TABLE User_Account (
 	ID serial primary key NOT NULL,
-	User_name varchar NOT NULL,
+	E_mail varchar NOT NULL,
+	User_name varchar NULL,
 	Password varchar NOT NULL,
 	Is_active bool DEFAULT TRUE,
 	Is_admin bool DEFAULT FALSE,
@@ -97,6 +98,7 @@ CREATE TABLE User_Account (
 	Last_modified_at timestamp DEFAULT now(),
 	Last_modified_by int NULL,
 
+	CONSTRAINT E_mail_chk CHECK (E_mail ~ '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'),
 	CONSTRAINT User_name_chk CHECK (user_name ~ '^[a-zA-Z]+$')
 );
 
@@ -105,7 +107,6 @@ CREATE TABLE User_Details (
 	NIP_num varchar NULL,
 	Name varchar NOT NULL,
 	Surname varchar NULL,
-	E_mail varchar NOT NULL,
 	Phone_num varchar NOT NULL,
 	City varchar NOT NULL,
 	Postal_code varchar NOT NULL,
@@ -118,7 +119,6 @@ CREATE TABLE User_Details (
 	CONSTRAINT Nip_Num_chk CHECK (NIP_num ~ '^\d{10}$'),
 	CONSTRAINT Name_chk CHECK (Name ~ '^[a-zA-Z]+$'),
 	CONSTRAINT Surname_chk CHECK (Surname ~ '^[a-zA-Z]+$'),
-	CONSTRAINT E_mail_chk CHECK (E_mail ~ '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'),
 	CONSTRAINT Phone_num_chk CHECK (Phone_num ~ '^\+\d{11}$'),
 	CONSTRAINT City_chk CHECK (City ~ '^[a-zA-Z]+$'),
 	CONSTRAINT Postal_code_chk CHECK (Postal_Code ~ '^\d{2}-\d{3}$'),
@@ -129,7 +129,7 @@ CREATE TABLE User_Details (
 
 CREATE TABLE Reservation (
 	ID serial PRIMARY KEY NOT NULL,
-	Customer_ID int NOT NULL,
+	User_account_ID int NOT NULL,
 	Status_ID int DEFAULT 1,
 	Num_of_adults int NOT NULL,
 	Num_of_children int NOT NULL,
@@ -152,8 +152,14 @@ CREATE TABLE Reservation (
 CREATE TABLE Reservation_Room (
 	Reservation_ID int NOT NULL,
 	Room_ID int NOT NULL,
+	Room_status_ID int DEFAULT 1,
 
 	CONSTRAINT Reservation_room_pkey PRIMARY KEY (Reservation_ID,Room_ID)
+);
+
+CREATE TABLE dict_reservation_room_status (
+	ID int PRIMARY KEY NOT NULL,
+	Status_value varchar NOT NULL
 );
 
 CREATE TABLE dict_reservation_status (
@@ -179,8 +185,11 @@ CREATE TABLE Room (
 	ID int PRIMARY KEY NOT NULL,
 	Room_type_ID int NOT NULL,
 	Status_ID int DEFAULT 1,
+	Room_price_gross float NOT NULL,
 	Last_modified_at timestamp DEFAULT now(),
 	Last_modified_by int NULL
+
+	CONSTRAINT Room_price_gross_chk CHECK (Room_price_gross > 0)
 );
 
 CREATE TABLE Room_Type (
@@ -188,7 +197,6 @@ CREATE TABLE Room_Type (
 	Num_of_single_beds int NOT NULL,
 	Num_of_double_beds int NOT NULL,
 	Num_of_child_beds int NOT NULL,
-	Room_price_gross float NOT NULL,
 	Adult_price_gross float NOT NULL,
 	Child_price_gross float NOT NULL,
 	Photos_dir varchar NOT NULL,
@@ -199,8 +207,7 @@ CREATE TABLE Room_Type (
 	CONSTRAINT Num_of_single_beds_chk CHECK (Num_of_single_beds >= 0),
 	CONSTRAINT Num_of_double_beds_chk CHECK (Num_of_double_beds >= 0),
 	CONSTRAINT Num_of_child_beds_chk CHECK (Num_of_child_beds >= 0),
-	CONSTRAINT Room_price_gross_chk CHECK (Room_price_gross >= 0),
-	CONSTRAINT Adult_price_gross_chk CHECK (Adult_price_gross >= 0),
+	CONSTRAINT Adult_price_gross_chk CHECK (Adult_price_gross > 0),
 	CONSTRAINT Child_price_gross_chk CHECK (Child_price_gross >= 0)
 );
 
@@ -217,8 +224,8 @@ REFERENCES User_account (ID) MATCH SIMPLE;
 
 
 ALTER TABLE Reservation
-ADD CONSTRAINT User_fkey FOREIGN KEY (Customer_ID) 
-REFERENCES User_Details (user_ID) MATCH SIMPLE;
+ADD CONSTRAINT User_fkey FOREIGN KEY (User_account_ID) 
+REFERENCES User_account (ID) MATCH SIMPLE;
 
 ALTER TABLE Reservation
 ADD CONSTRAINT Status_fkey FOREIGN KEY (Status_ID) 
@@ -233,6 +240,9 @@ ALTER TABLE Reservation_Room
 ADD CONSTRAINT Room_fkey FOREIGN KEY (Room_ID) 
 REFERENCES Room (ID) MATCH SIMPLE;
 
+ALTER TABLE Reservation_Room
+ADD CONSTRAINT Room_status_fkey FOREIGN KEY (Room_status_ID) 
+REFERENCES dict_reservation_room_status (ID) MATCH SIMPLE;
 
 ALTER TABLE Room 
 ADD CONSTRAINT Status_fkey FOREIGN KEY (Status_ID) 

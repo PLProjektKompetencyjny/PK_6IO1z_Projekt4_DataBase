@@ -50,7 +50,7 @@ SELECT
 	d.Nip_Num AS "customer_nip_number",
 	d.Name AS "customer_name",
 	d.Surname AS "customer_surname",
-	d.E_Mail AS "customer_email",
+	a.E_Mail AS "customer_email",
 	d.Phone_Num AS "customer_phone",
 	d.City AS "customer_city",
 	d.Postal_code AS "customer_postal_code",
@@ -58,14 +58,14 @@ SELECT
 	d.Building_Num AS "customer_building_number",
 	d.Last_Modified_by AS "customer_last_modified_by",
 	d.Last_Modified_at AS "customer_last_modified_at"
-FROM User_Details d;
+FROM User_Details d
+LEFT JOIN User_Account a ON a.ID = d.User_id;
 
 CREATE VIEW reservation_view AS
 SELECT
 	r.ID AS "reservation_id",
-	r.Customer_ID AS "reservation_customer_id",
-	s.Status_value AS "reservation_status",
-	s.ID AS "reservation_status_id",
+	r.User_account_ID AS "reservation_customer_id",
+	r.status_ID AS "reservation_status_id",
 	r.Num_of_Adults AS "reservation_number_of_adults",
 	r.Num_of_Children AS "reservation_number_of_children",
 	r.Start_Date AS "reservation_start_date",
@@ -73,28 +73,28 @@ SELECT
 	r.Price_Gross AS "reservation_price_gross",
 	r.Is_Paid AS "reservation_is_paid",
 	rr.Room_ID AS "reservation_room_id",
+	rr.Room_status_ID AS "reservation_room_status_id",
 	r.Last_Modified_by AS "reservation_last_modified_by",
 	r.Last_Modified_at AS "reservation_last_modified_at"
 FROM Reservation r
 LEFT JOIN reservation_room rr ON rr.reservation_id = r.ID
-LEFT JOIN dict_reservation_status s ON s.ID = r.Status_id;
+LEFT JOIN dict_reservation_status s ON s.ID = r.Status_id
+LEFT JOIN dict_reservation_room_status rrs ON rrs.ID = rr.Room_status_ID;
 
 CREATE VIEW room_view AS
 SELECT
 	r.ID AS "room_id",
-	s.ID AS "room_status_id",
-	s.Status_Value AS "room_status",
+	r.status_ID AS "room_status_id",
 	t.Num_of_Single_Beds AS "room_number_of_single_beds", 
 	t.Num_of_Double_Beds AS "room_number_of_double_beds",
 	t.Num_of_Child_Beds AS "room_number_of_child_beds", 
-	t.Room_Price_Gross AS "room_gross_price", 
+	r.Room_Price_Gross AS "room_gross_price", 
 	t.Adult_Price_Gross AS "room_gross_price_adult", 
 	t.Child_Price_Gross AS "room_gross_price_child", 
 	t.Photos_Dir AS "room_photos_dir",
 	r.Last_Modified_by AS "room_last_modified_by",
 	r.Last_Modified_at AS "room_last_modified_at"
 FROM Room r
-LEFT JOIN dict_room_status s ON s.ID = r.status_id
 LEFT JOIN Room_Type t ON t.ID = r.Room_type_id;
 
 CREATE VIEW invoice_view AS
@@ -103,7 +103,6 @@ SELECT
     i.Reservation_ID AS "invoice_reservation_id",
     i.Invoice_Date AS "invoice_date",
 	s.ID AS "invoice_status_id",
-    s.Status_Value AS "invoice_status",
 	i.Last_Modified_by AS "invoice_last_modified_by",
 	i.Last_Modified_at AS "invoice_last_modified_at"
 FROM Invoice i
@@ -112,7 +111,9 @@ LEFT JOIN dict_invoice_status s ON s.ID = i.status_id;
 CREATE VIEW user_view AS
 SELECT
     u.ID AS "user_id",
-    u.User_Name AS "user_Name",
+	u.E_Mail AS "user_e_mail",
+    u.User_Name AS "user_name",
+	u.password AS "user_password",
     u.Is_Active AS "user_is_active",
     u.Is_Admin AS "user_is_admin",
 	u.Last_Modified_by AS "user_last_modified_by",

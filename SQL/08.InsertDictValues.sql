@@ -29,10 +29,11 @@ VALUES
     (1,'WAITING_CONFIRMATION'),
     (2,'WAITING_PAYMENT'),
     (3,'CONFIRMED'),
-    (4,'CANCELLED'),
-    (5, 'CHECKED_IN'),
-    (6,'CHECKED_OUT'),
-    (7,'NO_SHOW');
+    (4,'UPDATED_AND_COMFIRMED'),
+    (5,'CANCELLED'),
+    (6,'CHECKED_IN'),
+    (7,'CHECKED_OUT'),
+    (8,'NO_SHOW');
 
 
 INSERT INTO dict_invoice_status (id, Status_value)
@@ -52,3 +53,9 @@ VALUES
     (3,'RESERVED'),
     (4,'OUT_OF_ORDER'),
     (5,'MAINTENANCE');
+
+INSERT INTO dict_reservation_room_status (id, Status_value)
+VALUES
+    (1,'RESERVED'),
+    (2,'CONFIRMED'),
+    (3,'CANCELLED');
