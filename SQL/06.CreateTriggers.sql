@@ -47,8 +47,13 @@ FOR EACH ROW
 EXECUTE FUNCTION insert_reservation_view();
 
 
--- INSTEAD OF UPDATE triggers
+---- INSTEAD OF UPDATE triggers
+------ reservetion_view
 
+CREATE TRIGGER iou
+INSTEAD OF UPDATE ON reservation_view
+FOR EACH ROW
+EXECUTE FUNCTION update_reservation_view();
 
 
 -- INSTEAD OF DELETE triggers

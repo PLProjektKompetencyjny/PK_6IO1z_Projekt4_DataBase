@@ -40,3 +40,211 @@
         Date            Who                     What
 
 */
+
+CREATE OR REPLACE FUNCTION update_reservation_view()
+RETURNS TRIGGER AS $$
+DECLARE
+    Res_ID int;
+	Any_ops_performed bool;
+BEGIN
+
+	Any_ops_performed := FALSE;
+
+	-- Check if there is anything to update
+	IF (NEW IS NOT DISTINCT FROM OLD) THEN
+		RAISE NOTICE 'Seems like there is nothing to update';
+	END IF;
+
+	-- Assign reservation ID which will be modified to the local variable
+	Res_ID := OLD.reservation_ID;
+
+
+	-- Check if reservation_number_of_adults is changed
+	IF (NEW.reservation_number_of_adults IS DISTINCT FROM OLD.reservation_number_of_adults) THEN
+
+		UPDATE reservation
+		SET num_of_adults = NEW.reservation_number_of_adults
+		WHERE id = Res_ID;
+
+		RAISE NOTICE 
+			'num_of_adults updated for reservation ID: %. OLD: % NEW: %', 
+				Res_ID, 
+				OLD.reservation_number_of_adults, 
+				NEW.reservation_number_of_adults;
+
+		Any_ops_performed = TRUE;
+	END IF;
+
+	-- Check if reservation_number_of_children is changed
+	IF (NEW.reservation_number_of_children IS DISTINCT FROM OLD.reservation_number_of_children) THEN
+
+		UPDATE reservation
+		SET num_of_children = NEW.reservation_number_of_children
+		WHERE id = Res_ID;
+
+		RAISE NOTICE 
+			'num_of_childrem updated for reservation ID: %. OLD: % NEW: %', 
+				Res_ID, 
+				OLD.reservation_number_of_children, 
+				NEW.reservation_number_of_children;
+
+		Any_ops_performed = TRUE;
+	END IF;
+
+	-- To ommit raising an error by CONSTRAINT check, which is verifying if end_date > start_date,
+	-- in case of changing both dates at the same time we have to perform it in appropriate order,
+	-- which is handdled in sub function
+	IF (NEW.reservation_start_date IS DISTINCT FROM OLD.reservation_start_date) AND 
+		(NEW.reservation_end_date IS DISTINCT FROM OLD.reservation_end_date) THEN
+		
+		UPDATE reservation
+		SET 
+			start_date = NEW.reservation_start_date,
+			end_date = NEW.reservation_end_date
+		WHERE id = Res_ID;
+
+		RAISE NOTICE 
+			'booking period updated for reservation ID: %. OLD: % - % NEW: % - %', 
+				Res_ID, 
+				OLD.reservation_start_date, 
+				OLD.reservation_end_date, 
+				NEW.reservation_start_date,
+				NEW.reservation_end_date;
+
+		Any_ops_performed = TRUE;
+	ELSE
+		-- Check if reservation_start_date is changed
+		IF (NEW.reservation_start_date IS DISTINCT FROM OLD.reservation_start_date) THEN
+
+			UPDATE reservation
+			SET start_date = NEW.reservation_start_date
+			WHERE id = Res_ID;
+
+			RAISE NOTICE 
+				'start_date updated for reservation ID: %. OLD: % NEW: %', 
+					Res_ID, 
+					OLD.reservation_start_date, 
+					NEW.reservation_start_date;
+
+			Any_ops_performed = TRUE;
+		END IF;
+
+
+		-- Check if reservation_end_date is changed
+		IF (NEW.reservation_end_date IS DISTINCT FROM OLD.reservation_end_date) THEN
+
+			UPDATE reservation
+			SET end_date = NEW.reservation_end_date
+			WHERE id = Res_ID;
+
+			RAISE NOTICE 
+				'end_date updated for reservation ID: %. OLD: % NEW: %', 
+					Res_ID, 
+					OLD.reservation_end_date, 
+					NEW.reservation_end_date;
+
+		Any_ops_performed = TRUE;
+		END IF;
+	END IF;
+
+
+	-- Check if reservation_price_gross is changed
+	IF (NEW.reservation_price_gross IS DISTINCT FROM OLD.reservation_price_gross) THEN
+
+		UPDATE reservation
+		SET price_gross = NEW.reservation_price_gross
+		WHERE id = Res_ID;
+
+		RAISE NOTICE 
+			'price_gross updated for reservation ID: %. OLD: % NEW: %', 
+				Res_ID, 
+				OLD.reservation_price_gross, 
+				NEW.reservation_price_gross;
+
+		Any_ops_performed = TRUE;
+	END IF;
+
+
+	-- Check if reservation_is_paid is changed
+	IF (NEW.reservation_is_paid IS DISTINCT FROM OLD.reservation_is_paid) THEN
+
+		UPDATE reservation
+		SET is_paid = NEW.reservation_is_paid
+		WHERE id = Res_ID;
+
+		RAISE NOTICE 
+			'is_paid updated for reservation ID: %. OLD: % NEW: %', 
+				Res_ID, 
+				OLD.reservation_is_paid, 
+				NEW.reservation_is_paid;
+
+		Any_ops_performed = TRUE;
+	END IF;
+
+
+	-- Check if reservation_status_id is changed
+	IF (NEW.reservation_status_id IS DISTINCT FROM OLD.reservation_status_id) THEN
+
+		UPDATE reservation
+		SET status_id = NEW.reservation_status_id
+		WHERE id = Res_ID;
+
+		RAISE NOTICE 
+			'status_id updated for reservation ID: %. OLD: % NEW: %', 
+			Res_ID, 
+			OLD.reservation_status_id, 
+			NEW.reservation_status_id;
+
+		Any_ops_performed = TRUE;
+	END IF;
+
+
+	-- Check if reservation_room_id is changed
+	IF (NEW.reservation_room_id IS DISTINCT FROM OLD.reservation_room_id) THEN
+		
+		UPDATE reservation_room
+		SET room_id = NEW.reservation_room_id
+		WHERE reservation_id = Res_ID AND 
+			room_id = OLD.reservation_room_id;
+
+		RAISE NOTICE 
+			'room_id updated for reservation ID: %. OLD: % NEW: %', 
+				Res_ID, 
+				OLD.reservation_room_id, 
+				NEW.reservation_room_id;
+
+		Any_ops_performed = TRUE;
+	END IF;
+
+	IF Any_ops_performed = FALSE THEN
+
+		RAISE EXCEPTION 
+			'No update was performed';
+
+		RETURN NULL;
+	END IF;
+
+	IF (NEW.reservation_last_modified_by IS DISTINCT FROM OLD.reservation_last_modified_by) AND 
+		NEW.reservation_last_modified_by IS NOT NULL THEN
+		
+		UPDATE reservation
+		SET last_modified_by = NEW.reservation_last_modified_by
+		WHERE id = Res_ID;
+
+		RAISE NOTICE 
+			'last_modified_by updated for reservation ID: %.', 
+			Res_ID;
+
+	END IF;
+
+	UPDATE reservation
+	SET last_modified_at = DEFAULT
+	WHERE id = Res_ID;
+
+	RAISE NOTICE 
+		'last_modified_at updated for reservation ID: %.', 
+			Res_ID;
+
+	RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
