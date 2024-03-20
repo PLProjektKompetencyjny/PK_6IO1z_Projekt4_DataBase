@@ -163,7 +163,7 @@ CREATE TABLE dict_reservation_status (
 
 CREATE TABLE Invoice (
 	ID serial PRIMARY KEY NOT NULL,
-	Reservation_ID int NOT NULL,
+	Reservation_ID int UNIQUE NOT NULL,
 	Invoice_date timestamp DEFAULT now(),
 	Status_ID int DEFAULT 1,
 	Last_modified_at timestamp DEFAULT now(),
