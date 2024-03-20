@@ -248,3 +248,69 @@ BEGIN
 	RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
+
+
+
+CREATE OR REPLACE FUNCTION update_invoice_view()
+RETURNS TRIGGER AS $$
+DECLARE
+    Inv_ID int;
+	Any_ops_performed bool;
+BEGIN
+
+    Any_ops_performed := FALSE;
+
+    -- Check if there is anything to update
+	IF (NEW IS NOT DISTINCT FROM OLD) THEN
+		RAISE NOTICE 'Seems like there is nothing to update';
+	END IF;
+
+    Inv_ID := NEW.invoice_id
+
+	IF (NEW.invoice_status_id IS DISTINCT FROM OLD.invoice_status_id) THEN
+
+		UPDATE invoice
+		SET status_id = NEW.invoice_status_id
+		WHERE id = Inv_ID;
+
+		RAISE NOTICE 
+            'status_id updated for invoice ID: %. OLD: % NEW: %', 
+                Inv_ID, 
+                OLD.invoice_status_id, 
+                NEW.invoice_status_id;
+
+		Any_ops_performed = TRUE;
+	END IF;
+
+	IF Any_ops_performed = FALSE THEN
+
+		RAISE EXCEPTION 
+			'No update was performed';
+
+		RETURN NULL;
+	END IF;
+
+	IF (NEW.invoice_last_modified_by IS DISTINCT FROM OLD.invoice_last_modified_by) AND 
+		NEW.invoice_last_modified_by IS NOT NULL THEN
+		
+		UPDATE invoice
+		SET last_modified_by = NEW.invoice_last_modified_by
+		WHERE id = Inv_ID;
+
+		RAISE NOTICE 
+			'last_modified_by updated for invoice ID: %.', 
+			Inv_ID;
+
+	END IF;
+
+	UPDATE invoice
+	SET last_modified_at = DEFAULT
+	WHERE id = Inv_ID;
+
+	RAISE NOTICE 
+		'last_modified_at updated for invoice ID: %.', 
+			Inv_ID;
+
+	RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
