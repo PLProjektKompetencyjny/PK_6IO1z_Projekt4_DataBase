@@ -38,8 +38,13 @@
 
 */
 
--- INSTEAD OF INSERT triggers
+---- INSTEAD OF INSERT triggers
+------ reservetion_view
 
+CREATE TRIGGER ioi
+INSTEAD OF INSERT ON reservation_view
+FOR EACH ROW
+EXECUTE FUNCTION insert_reservation_view();
 
 
 -- INSTEAD OF UPDATE triggers

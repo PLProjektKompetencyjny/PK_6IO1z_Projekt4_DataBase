@@ -40,3 +40,61 @@
         Date            Who                     What
 
 */
+
+CREATE OR REPLACE FUNCTION insert_reservation_view()
+RETURNS TRIGGER AS $$
+DECLARE
+    R_ID int;
+BEGIN
+    -- Get reservation if this reservation already exists in DB,
+    -- otherwise R_ID will be NULL
+    SELECT
+        subf_get_reservation_id(NEW)
+    INTO R_ID;
+
+    IF R_ID IS NULL THEN
+        RAISE NOTICE 'Reservation not found';
+        
+        INSERT INTO Reservation (
+            customer_id, 
+            num_of_adults, 
+            num_of_children, 
+            start_date, 
+            end_date, 
+            price_gross,
+            last_modified_by
+            )
+		VALUES (
+            NEW.reservation_customer_id, 
+            NEW.reservation_number_of_adults, 
+            NEW.reservation_number_of_children, 
+            NEW.reservation_start_date, 
+            NEW.reservation_end_date, 
+            NEW.reservation_price_gross,
+            NEW.reservation_last_modified_by
+            );
+
+        -- Get reservation ID of newly inserted record
+        SELECT
+            subf_get_reservation_id(NEW)
+        INTO R_ID;
+
+        RAISE NOTICE 'New reservation inserted with ID: %', R_ID;
+        -- Insert Room for reservation
+        INSERT INTO Reservation_room (reservation_id, room_id)
+        VALUES (R_ID, NEW.reservation_room_id);
+
+		RETURN NEW;
+    ELSE
+        RAISE NOTICE 'Reservation found, ID: %', R_ID;
+        
+        -- Insert Room for reservation
+        INSERT INTO Reservation_room (reservation_id, room_id)
+        VALUES (R_ID, NEW.reservation_room_id);
+
+        RAISE NOTICE 'Room % added to reservation with ID: %',NEW.reservation_room_id, R_ID;
+
+        RETURN NEW;
+    END IF;
+END;
+$$ LANGUAGE plpgsql;
