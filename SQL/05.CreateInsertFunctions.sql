@@ -112,3 +112,17 @@ BEGIN
 
 END;
 $$ LANGUAGE plpgsql;
+
+
+
+CREATE OR REPLACE FUNCTION insert_room_view()
+RETURNS TRIGGER AS $$
+BEGIN
+
+    INSERT INTO room (id, room_type_id, last_modified_by)
+    VALUES (NEW.room_id, NEW.r) 
+
+	RETURN NEW;
+
+END;
+$$ LANGUAGE plpgsql;
