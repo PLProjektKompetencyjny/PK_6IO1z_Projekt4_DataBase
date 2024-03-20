@@ -174,7 +174,7 @@ CREATE TABLE dict_invoice_status (
 );
 
 CREATE TABLE Room (
-	ID serial PRIMARY KEY NOT NULL,
+	ID PRIMARY KEY NOT NULL,
 	Room_type_ID int NOT NULL,
 	Status_ID int DEFAULT 0,
 	Last_modified_at timestamp DEFAULT now(),
