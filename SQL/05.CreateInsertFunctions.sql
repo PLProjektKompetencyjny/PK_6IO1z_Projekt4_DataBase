@@ -98,3 +98,17 @@ BEGIN
     END IF;
 END;
 $$ LANGUAGE plpgsql;
+
+
+
+CREATE OR REPLACE FUNCTION insert_invoice_view()
+RETURNS TRIGGER AS $$
+BEGIN
+
+    INSERT INTO invoice (reservation_id, last_modified_by)
+    VALUES (NEW.invoice_reservation_id, NEW.invoice_last_modified_by) 
+
+	RETURN NEW;
+
+END;
+$$ LANGUAGE plpgsql;
