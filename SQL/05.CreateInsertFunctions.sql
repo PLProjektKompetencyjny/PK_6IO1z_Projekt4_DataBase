@@ -122,8 +122,8 @@ CREATE OR REPLACE FUNCTION insert_room_view()
 RETURNS TRIGGER AS $$
 BEGIN
 
-    INSERT INTO room (id, room_type_id, last_modified_by)
-    VALUES (NEW.room_id, NEW.room_last_modified_by);
+    INSERT INTO room (id, room_type_id, room_price_gross, last_modified_by)
+    VALUES (NEW.room_id, NEW.room_type_id, NEW.room_gross_price, NEW.room_last_modified_by);
 
 	RETURN NEW;
 

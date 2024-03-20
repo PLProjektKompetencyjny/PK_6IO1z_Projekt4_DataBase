@@ -84,6 +84,7 @@ LEFT JOIN dict_reservation_room_status rrs ON rrs.ID = rr.Room_status_ID;
 CREATE VIEW room_view AS
 SELECT
 	r.ID AS "room_id",
+	r.room_type_id AS "room_type_id",
 	r.status_ID AS "room_status_id",
 	t.Num_of_Single_Beds AS "room_number_of_single_beds", 
 	t.Num_of_Double_Beds AS "room_number_of_double_beds",

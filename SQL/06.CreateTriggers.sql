@@ -65,7 +65,7 @@ EXECUTE FUNCTION insert_invoice_view();
 CREATE TRIGGER ioi
 INSTEAD OF INSERT ON room_view
 FOR EACH ROW
-EXECUTE FUNCTION insert_invoice_view();
+EXECUTE FUNCTION insert_room_view();
 
 
 ---- INSTEAD OF UPDATE triggers

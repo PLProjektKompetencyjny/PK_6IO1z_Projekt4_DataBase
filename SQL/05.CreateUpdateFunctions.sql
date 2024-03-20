@@ -335,7 +335,7 @@ BEGIN
 		RAISE NOTICE 'Seems like there is nothing to update';
 	END IF;
 
-    Roo_ID := NEW.invoice_id;
+    Roo_ID := NEW.room_id;
 
 	IF (NEW.room_status_id IS DISTINCT FROM OLD.room_status_id) THEN
 
@@ -345,6 +345,36 @@ BEGIN
 
 		RAISE NOTICE 
             'status_id updated for room ID: %. OLD: % NEW: %', 
+                Roo_ID, 
+                OLD.room_status_id, 
+                NEW.room_status_id;
+
+		Any_ops_performed = TRUE;
+	END IF;
+
+    IF (NEW.room_type_id IS DISTINCT FROM OLD.room_type_id) THEN
+
+		UPDATE room
+		SET room_type_id = NEW.room_type_id
+		WHERE id = Roo_ID;
+
+		RAISE NOTICE 
+            'room_type_id updated for room ID: %. OLD: % NEW: %', 
+                Roo_ID, 
+                OLD.room_status_id, 
+                NEW.room_status_id;
+
+		Any_ops_performed = TRUE;
+	END IF;
+
+    IF (NEW.room_gross_price IS DISTINCT FROM OLD.room_gross_price) THEN
+
+		UPDATE room
+		SET room_price_gross = NEW.room_gross_price
+		WHERE id = Roo_ID;
+
+		RAISE NOTICE 
+            'room_type_id updated for room ID: %. OLD: % NEW: %', 
                 Roo_ID, 
                 OLD.room_status_id, 
                 NEW.room_status_id;
