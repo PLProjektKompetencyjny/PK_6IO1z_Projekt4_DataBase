@@ -191,7 +191,7 @@ CREATE TABLE Room_Type (
 	Room_price_gross float NOT NULL,
 	Adult_price_gross float NOT NULL,
 	Child_price_gross float NOT NULL,
-	Phots_dir varchar NOT NULL,
+	Photos_dir varchar NOT NULL,
 	Last_modified_at timestamp DEFAULT now(),
 	Last_modified_by int NULL,
 

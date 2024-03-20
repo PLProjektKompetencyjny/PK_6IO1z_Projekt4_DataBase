@@ -90,7 +90,7 @@ SELECT
 	t.Room_Price_Gross AS "room_gross_price", 
 	t.Adult_Price_Gross AS "room_gross_price_adult", 
 	t.Child_Price_Gross AS "room_gross_price_child", 
-	t.Phots_Dir AS "room_photos_dir",
+	t.Photos_Dir AS "room_photos_dir",
 	r.Last_Modified_by AS "room_last_modified_by",
 	r.Last_Modified_at AS "room_last_modified_at"
 FROM Room r
