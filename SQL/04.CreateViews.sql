@@ -114,7 +114,6 @@ SELECT
     u.ID AS "user_id",
 	u.E_Mail AS "user_e_mail",
     u.User_Name AS "user_name",
-	u.password AS "user_password",
     u.Is_Active AS "user_is_active",
     u.Is_Admin AS "user_is_admin",
 	u.Last_Modified_by AS "user_last_modified_by",

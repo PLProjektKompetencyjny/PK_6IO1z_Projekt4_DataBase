@@ -35,7 +35,7 @@
 */
 
 
-CREATE FUNCTION subf_get_reservation_id(new_entry RECORD) 
+CREATE OR REPLACE FUNCTION subf_get_reservation_id(new_entry RECORD) 
 RETURNS int AS $$
 BEGIN
     RETURN (
@@ -49,4 +49,13 @@ BEGIN
                 end_date = new_entry.reservation_end_date
     );
 END;
-$$ LANGUAGE plpgsql
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION validate_e_mail (e_mail varchar)
+RETURNS bool
+AS $$
+    import re
+    pattern = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
+    return bool(re.match(pattern, e_mail)) is not None
+$$ LANGUAGE plpython3u;

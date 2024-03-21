@@ -89,8 +89,8 @@ DROP TABLE IF EXISTS dict_room_status CASCADE;
 -- Create tables
 CREATE TABLE User_Account (
 	ID serial primary key NOT NULL,
-	E_mail varchar NOT NULL,
-	User_name varchar NULL,
+	E_mail varchar UNIQUE NULL,
+	User_name varchar UNIQUE NULL,
 	Password varchar NOT NULL,
 	Is_active bool DEFAULT TRUE,
 	Is_admin bool DEFAULT FALSE,
@@ -98,7 +98,7 @@ CREATE TABLE User_Account (
 	Last_modified_at timestamp DEFAULT now(),
 	Last_modified_by int NULL,
 
-	CONSTRAINT E_mail_chk CHECK (E_mail ~ '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'),
+	CONSTRAINT E_mail_chk CHECK (validate_e_mail(E_mail)),
 	CONSTRAINT User_name_chk CHECK (user_name ~ '^[a-zA-Z]+$')
 );
 

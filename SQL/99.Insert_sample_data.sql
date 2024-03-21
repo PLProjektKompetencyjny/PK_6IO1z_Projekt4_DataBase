@@ -9,6 +9,9 @@ VALUES
     ('aaaThree','bbb','THREE@wp.pl');
 
 
+INSERT INTO user_account(user_name, password,e_mail,is_admin)
+VALUES ('ADMIN','ADMIN','ADMIN@admin.pl', TRUE);
+
 INSERT INTO user_details(user_id, nip_num, name, surname, phone_num, city, postal_code, street, building_num)
 VALUES
     (1,NULL,'ONEaaa','ONEbbb','+48123456789','LDZ','12-324','ONEplpl','12'),
