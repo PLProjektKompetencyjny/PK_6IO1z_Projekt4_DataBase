@@ -1,0 +1,29 @@
+{
+    "QueriesDirectory": "TestQueries",
+    "Tests":[
+        "Success/reservation_view_INSERT_1_room.sql",
+        "Success/reservation_view_INSERT_2_room.sql",
+        "Success/reservation_view_INSERT_3_room.sql",
+        "Success/reservation_view_UPDATE_2_reservation_dates_to_future.sql",
+        "Success/reservation_view_UPDATE_2_reservation_dates_to_past.sql",
+        "Success/reservation_view_UPDATE_replace_room.sql",
+        "Success/reservation_view_UPDATE_reservation_end_date_to_future.sql",
+        "Success/reservation_view_UPDATE_reservation_end_date_to_past.sql",
+        "Success/reservation_view_UPDATE_reservation_num_of_guests.sql",
+        "Success/reservation_view_UPDATE_reservation_price_gross.sql",
+        "Success/reservation_view_UPDATE_reservation_room_status.sql",
+        "Success/reservation_view_UPDATE_reservation_start_date_to_future.sql",
+        "Success/reservation_view_UPDATE_reservation_start_date_to_past.sql",
+        "Success/room_view_INSERT_1_room.sql",
+        "Success/room_view_INSERT_2_room.sql",
+        "Success/room_view_INSERT_3_room.sql",
+        "Success/room_view_UPDATE_room_price.sql",
+        "Success/room_view_UPDATE_room_status.sql",
+        "Success/invoice_view_INSERT_for_reservation_1.sql",
+        "Success/invoice_view_INSERT_bulk_for_2_and_3.sql",
+        "Success/invoice_view_UPDATE_invoice_status_for_reservation_2.sql",
+        "Success/invoice_view_UPDATE_invoice_status_bulk_for_1_and_3.sql",
+        "Fail/reservation_view_INSERT_incorrect_dates.sql",
+        "Fail/reservation_view_INSERT_without_adults.sql"
+    ]
+}
