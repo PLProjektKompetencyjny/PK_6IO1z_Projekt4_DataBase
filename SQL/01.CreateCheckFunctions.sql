@@ -3,7 +3,7 @@
         SQL script for PostgreSQL to define CHECK functions in TravelNest DB.
         EXISTING FUNCTIONS WILL BE REMOVED AND RE-CREATED WITH THIS FILES' DEFINITION.
 
-        This file is suposed to define all check functions,
+        This file is supposed to define all check functions,
         which will be used in tables definition of CHECK CONSTRAINT.
 
 		Following actions will be performed in a given order:
@@ -16,7 +16,7 @@
 			so to make them easy easy-readable please use word separator.
 
         - Check function must have a prefix 'check_' in the name. 
-            Beacause all functions are located in the common Object explorer directory
+            Because all functions are located in the common Object explorer directory
 
         - Check function must return True or False values only. Try to avoid raising any exceptions.
             In order to prevent handling any CHECK related exceptions in INSERT / UPDATE statements

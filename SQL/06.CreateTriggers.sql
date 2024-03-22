@@ -3,7 +3,7 @@
         SQL script for PostgreSQL to define VIEW TRIGGERS in TravelNest DB.
         EXISTING TRIGGERS WILL BE REMOVED AND RE-CREATED WITH THIS FILES' DEFINITION.
 
-        This file is suposed to define all triggers to call functions:
+        This file is supposed to define all triggers to call functions:
             - INSTEAD OF INSERT
             - INSTEAD OF UPDATE
             - INSTEAD OF DELETE

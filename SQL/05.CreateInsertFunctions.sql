@@ -3,7 +3,7 @@
         SQL script for PostgreSQL to define INSERT functions in TravelNest DB.
         EXISTING FUNCTIONS WILL BE REMOVED AND RE-CREATED WITH THIS FILES' DEFINITION.
 
-        This file is suposed to define all insert functions,
+        This file is supposed to define all insert functions,
         which will be used in INSTEAD OF INSERT view triggers.
 
 		Following actions will be performed in a given order:
@@ -16,7 +16,7 @@
 			so to make them easy easy-readable please use word separator.
 
         - Insert function must have a prefix 'insert_' followed by <view_name> in the name. 
-            Beacause all functions are located in the common Object explorer directory.
+            Because all functions are located in the common Object explorer directory.
 
         - Insert function must return NULL if operation was successful, 
             otherwise raise an descriptive exception, which will be capture by backend.
@@ -24,7 +24,7 @@
         - Insert function can be written in SQL or PL/Python, both languages are supported,
             however RECOMMENDED FOR DATA MODIFICATION IS SQL.
 
-        - Inser function must handle everything related to inserting record to DB,
+        - Insert function must handle everything related to inserting record to DB,
             including all insert statements to any related table
 
 

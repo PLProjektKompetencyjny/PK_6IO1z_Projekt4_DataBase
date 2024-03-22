@@ -30,7 +30,7 @@
         ChangeLog:
 
         Date            Who                     What
-		2024-03-18		Stanisław Horna			Update views based on tables re-desing
+		2024-03-18		Stanisław Horna			Update views based on tables re-design
 						Grzegorz Kubicki		Passwords excluded from views,
 												DB will be responsible for checking if password is correct.
 

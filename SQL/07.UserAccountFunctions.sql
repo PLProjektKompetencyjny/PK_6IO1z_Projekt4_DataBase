@@ -3,7 +3,7 @@
         SQL script for PostgreSQL to define functions for user_account management in TravelNest DB.
         EXISTING FUNCTIONS WILL BE REMOVED AND RE-CREATED WITH THIS FILES' DEFINITION.
 
-        This file is suposed to define all functions, which will be used to:
+        This file is supposed to define all functions, which will be used to:
             - Add new user account
             - Update user password
 

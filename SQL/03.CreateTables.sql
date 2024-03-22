@@ -10,7 +10,7 @@
 			3. ADD FOREIGN KEY for each table
 			4. INSERT static data:
 				- dictionary entries (tables with prefix 'dict_' in the name)
-				- Default user in user accont called 'SYSTEM'
+				- Default user in user account called 'SYSTEM'
 
 
 	.RULES
@@ -19,7 +19,7 @@
 		- DEFAULT must be included in CREATE TABLE in the same line as column definition, which it is related to.
 
 		- CHECK constraint must be included in CREATE TABLE instruction after columns definition in format:
-			CONSTRAINT <check_name>_chk CHECK (<Expresion_to_check>).
+			CONSTRAINT <check_name>_chk CHECK (<Expression_to_check>).
 
 		- FOREIGN KEY must be added at the last section of the file in format: 
 			ALTER TABLE <table_name>
@@ -62,7 +62,7 @@
 												Basic check constraints and Foreign keys added.
 												CASCADE added to each DROP instruction, to remove all related objects
 
-		2024-03-18		Stanisław Horna			Re-desing of address, customer, admin tables.
+		2024-03-18		Stanisław Horna			Re-design of address, customer, admin tables.
 						Grzegorz Kubicki		Switched to approach where login credentials,
 												for both customers and admins are stored in user_account table.
 												User_details store customer related information, 

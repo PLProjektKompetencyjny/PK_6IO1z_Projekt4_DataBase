@@ -3,7 +3,7 @@
         SQL script for PostgreSQL to define UPDATE functions in TravelNest DB.
         EXISTING FUNCTIONS WILL BE REMOVED AND RE-CREATED WITH THIS FILES' DEFINITION.
 
-        This file is suposed to define all update functions,
+        This file is supposed to define all update functions,
         which will be used in INSTEAD OF UPDATE view triggers.
 
 		Following actions will be performed in a given order:
@@ -16,7 +16,7 @@
 			so to make them easy easy-readable please use word separator.
 
         - Update function must have a prefix 'update_' followed by <view_name> in the name. 
-            Beacause all functions are located in the common Object explorer directory.
+            Because all functions are located in the common Object explorer directory.
 
         - Update function must return NULL if operation was successful, 
             otherwise raise an descriptive exception, which will be capture by backend.
@@ -46,6 +46,7 @@
 		2024-03-22		Stanisław Horna			added functions:
 													- update_user_view
 													- update_customer_view
+
         2024-03-22      Stanisław Horna         add SECURITY DEFINER <- to invoke functions with owner's permissions, 
                                                     instead of caller ones.
 */
