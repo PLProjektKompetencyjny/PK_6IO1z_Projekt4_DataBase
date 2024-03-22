@@ -91,8 +91,8 @@ DROP TABLE IF EXISTS dict_room_status CASCADE;
 -- Create tables
 CREATE TABLE User_Account (
 	ID serial primary key NOT NULL,
-	E_mail varchar UNIQUE NULL,
-	User_name varchar UNIQUE NULL,
+	E_mail varchar UNIQUE NULL, -- can be null (admins do not have to have one), unique - auth method for customers
+	User_name varchar UNIQUE NULL, -- can be null (customers do not have one), unique - auth method for admins
 	Password varchar NOT NULL,
 	Is_active bool DEFAULT TRUE,
 	Is_admin bool DEFAULT FALSE,
@@ -100,15 +100,16 @@ CREATE TABLE User_Account (
 	Last_modified_at timestamp DEFAULT now(),
 	Last_modified_by int NULL,
 
-	CONSTRAINT E_mail_chk CHECK (validate_e_mail(E_mail)),
-	CONSTRAINT User_name_chk CHECK (User_name ~ '^[a-zA-Z]+$'),
-	CONSTRAINT E_mail_OR_User_name_chk CHECK (user_name IS NOT NULL OR E_mail IS NOT NULL)
+	CONSTRAINT E_mail_chk CHECK (validate_e_mail(E_mail)), -- check if email is matching regex pattern
+	CONSTRAINT User_name_chk CHECK (User_name ~ '^[a-zA-Z]+$'), -- username contains letters only
+	-- check if user or email is present
+	CONSTRAINT E_mail_OR_User_name_chk CHECK (user_name IS NOT NULL OR E_mail IS NOT NULL) 
 );
 
 CREATE TABLE User_Details (
-	User_ID int UNIQUE NOT NULL,
+	User_ID int UNIQUE NOT NULL, -- no pkey, as it matches ID from User_Account
 	NIP_num varchar NULL,
-	Name varchar NOT NULL,
+	Name varchar NOT NULL, -- can not be null as company name should be stored here if customer is company
 	Surname varchar NULL,
 	Phone_num varchar NOT NULL,
 	City varchar NOT NULL,
@@ -119,14 +120,14 @@ CREATE TABLE User_Details (
 	Last_modified_at timestamp DEFAULT now(),
 	Last_modified_by int NULL,
 
-	CONSTRAINT Nip_Num_chk CHECK (NIP_num ~ '^\d{10}$'),
-	CONSTRAINT Name_chk CHECK (Name ~ '^[a-zA-Z]+$'),
-	CONSTRAINT Surname_chk CHECK (Surname ~ '^[a-zA-Z]+$'),
-	CONSTRAINT Phone_num_chk CHECK (Phone_num ~ '^\+\d{11}$'),
-	CONSTRAINT City_chk CHECK (City ~ '^[a-zA-Z]+$'),
-	CONSTRAINT Postal_code_chk CHECK (Postal_Code ~ '^\d{2}-\d{3}$'),
-	CONSTRAINT Street_chk CHECK (Street ~ '^[a-zA-Z]+$'),
-	CONSTRAINT Building_num_chk CHECK (Building_num ~ '^\d+(\s[A-Za-z])?$')
+	CONSTRAINT Nip_Num_chk CHECK (NIP_num ~ '^\d{10}$'), -- check if contains 10 digits only
+	CONSTRAINT Name_chk CHECK (Name ~ '^[a-zA-Z]+$'), -- check if contains only letters
+	CONSTRAINT Surname_chk CHECK (Surname ~ '^[a-zA-Z]+$'), -- check if contains only letters
+	CONSTRAINT Phone_num_chk CHECK (Phone_num ~ '^\+\d{11}$'), -- check if starts with '+', has 2 code digits, 9 number 
+	CONSTRAINT City_chk CHECK (City ~ '^[a-zA-Z]+$'), -- check if contains only letters
+	CONSTRAINT Postal_code_chk CHECK (Postal_Code ~ '^\d{2}-\d{3}$'), -- check if contains 2 digits, '-' and 3 digits
+	CONSTRAINT Street_chk CHECK (Street ~ '^[a-zA-Z]+$'), -- check if contains only letters
+	CONSTRAINT Building_num_chk CHECK (Building_num ~ '^\d+(\s[A-Za-z])?$') -- check if contains digits or/and letters
 );
 
 
@@ -144,20 +145,21 @@ CREATE TABLE Reservation (
 	Last_modified_at timestamp DEFAULT now(),
 	Last_modified_by int NULL,
 
-	CONSTRAINT Num_of_adults_chk CHECK (Num_of_adults >= 1),
-	CONSTRAINT Num_of_children_chk CHECK (Num_of_children >= 0),
-	CONSTRAINT Start_date_chk CHECK (Start_date > NOW()),
-	CONSTRAINT End_date_chk CHECK (End_date > NOW()),
-	CONSTRAINT Reservation_dates_chk CHECK (End_date > Start_date),
-	CONSTRAINT Price_gross_chk CHECK (Price_gross >= 0)
+	CONSTRAINT Num_of_adults_chk CHECK (Num_of_adults >= 1), -- must be on reservation at least one
+	CONSTRAINT Num_of_children_chk CHECK (Num_of_children >= 0),  -- can be on reservation
+	CONSTRAINT Start_date_chk CHECK (Start_date > NOW()), -- can not be reserved for past
+	CONSTRAINT End_date_chk CHECK (End_date > NOW()), -- can not be reserved for past
+	CONSTRAINT Reservation_dates_chk CHECK (End_date > Start_date), -- must have duration
+	CONSTRAINT Price_gross_chk CHECK (Price_gross > 0) -- can not be negative
 );
 
-CREATE TABLE Reservation_Room (
+CREATE TABLE Reservation_Room ( -- to handle many rooms on the same reservation
 	Reservation_ID int NOT NULL,
 	Room_ID int NOT NULL,
 	Room_status_ID int DEFAULT 1,
 
-	CONSTRAINT Reservation_room_pkey PRIMARY KEY (Reservation_ID,Room_ID)
+	CONSTRAINT Reservation_room_pkey PRIMARY KEY (Reservation_ID,Room_ID) -- 1 room cannot be book twice
+																			-- on the same reservation
 );
 
 CREATE TABLE dict_reservation_room_status (
@@ -172,7 +174,7 @@ CREATE TABLE dict_reservation_status (
 
 CREATE TABLE Invoice (
 	ID serial PRIMARY KEY NOT NULL,
-	Reservation_ID int UNIQUE NOT NULL,
+	Reservation_ID int UNIQUE NOT NULL, -- can be only 1 invoice for 1 reservation
 	Invoice_date timestamp DEFAULT now(),
 	Status_ID int DEFAULT 1,
 	Last_modified_at timestamp DEFAULT now(),
@@ -192,7 +194,7 @@ CREATE TABLE Room (
 	Last_modified_at timestamp DEFAULT now(),
 	Last_modified_by int NULL
 
-	CONSTRAINT Room_price_gross_chk CHECK (Room_price_gross > 0)
+	CONSTRAINT Room_price_gross_chk CHECK (Room_price_gross > 0) -- must be positive
 );
 
 CREATE TABLE Room_Type (
@@ -207,11 +209,11 @@ CREATE TABLE Room_Type (
 	Last_modified_by int NULL,
 
 
-	CONSTRAINT Num_of_single_beds_chk CHECK (Num_of_single_beds >= 0),
-	CONSTRAINT Num_of_double_beds_chk CHECK (Num_of_double_beds >= 0),
-	CONSTRAINT Num_of_child_beds_chk CHECK (Num_of_child_beds >= 0),
-	CONSTRAINT Adult_price_gross_chk CHECK (Adult_price_gross > 0),
-	CONSTRAINT Child_price_gross_chk CHECK (Child_price_gross >= 0)
+	CONSTRAINT Num_of_single_beds_chk CHECK (Num_of_single_beds >= 0), -- can not be negative
+	CONSTRAINT Num_of_double_beds_chk CHECK (Num_of_double_beds >= 0), -- can not be negative
+	CONSTRAINT Num_of_child_beds_chk CHECK (Num_of_child_beds >= 0), -- can not be negative
+	CONSTRAINT Adult_price_gross_chk CHECK (Adult_price_gross > 0), -- must be positive, reservation must have adult
+	CONSTRAINT Child_price_gross_chk CHECK (Child_price_gross >= 0) -- can not be negative
 );
 
 CREATE TABLE dict_room_status (
@@ -221,69 +223,69 @@ CREATE TABLE dict_room_status (
 
 
 -- Create foreign keys
-ALTER TABLE User_Details
+ALTER TABLE User_Details		-- link login credentials with names, contact, addresses
 ADD CONSTRAINT User_fkey FOREIGN KEY (User_ID) 
 REFERENCES User_account (ID) MATCH SIMPLE;
 
 
-ALTER TABLE Reservation
+ALTER TABLE Reservation			-- link who made booking
 ADD CONSTRAINT User_fkey FOREIGN KEY (User_account_ID) 
 REFERENCES User_account (ID) MATCH SIMPLE;
 
-ALTER TABLE Reservation
+ALTER TABLE Reservation			-- available statuses
 ADD CONSTRAINT Status_fkey FOREIGN KEY (Status_ID) 
 REFERENCES dict_reservation_status (ID) MATCH SIMPLE;
 
 
-ALTER TABLE Reservation_Room
+ALTER TABLE Reservation_Room	-- for many rooms on same reservation
 ADD CONSTRAINT Reservation_fkey FOREIGN KEY (Reservation_ID) 
 REFERENCES Reservation (ID) MATCH SIMPLE;
 
-ALTER TABLE Reservation_Room
+ALTER TABLE Reservation_Room	-- link reservations with actual rooms
 ADD CONSTRAINT Room_fkey FOREIGN KEY (Room_ID) 
 REFERENCES Room (ID) MATCH SIMPLE;
 
-ALTER TABLE Reservation_Room
+ALTER TABLE Reservation_Room	-- available statuses
 ADD CONSTRAINT Room_status_fkey FOREIGN KEY (Room_status_ID) 
 REFERENCES dict_reservation_room_status (ID) MATCH SIMPLE;
 
-ALTER TABLE Room 
+ALTER TABLE Room 				-- available statuses
 ADD CONSTRAINT Status_fkey FOREIGN KEY (Status_ID) 
 REFERENCES dict_room_status (ID) MATCH SIMPLE;
 
-ALTER TABLE Room 
+ALTER TABLE Room 				-- link actual rooms with their types, pricing and facilities
 ADD CONSTRAINT Type_fkey FOREIGN KEY (Room_Type_ID) 
 REFERENCES Room_Type (ID) MATCH SIMPLE;
 
 
-ALTER TABLE Invoice 
+ALTER TABLE Invoice 			-- link invoice with reservation, customer etc.
 ADD CONSTRAINT Reservation_fkey FOREIGN KEY (Reservation_ID) 
 REFERENCES Reservation (ID) MATCH SIMPLE;
 
-ALTER TABLE Invoice 
+ALTER TABLE Invoice 			-- available statuses
 ADD CONSTRAINT Status_fkey FOREIGN KEY (Status_ID) 
 REFERENCES dict_invoice_status (ID) MATCH SIMPLE;
 
-ALTER TABLE User_Account 
+ALTER TABLE User_Account 		-- only known accounts can be modifiers
 ADD CONSTRAINT last_modified_by_fkey FOREIGN KEY (last_modified_by) 
 REFERENCES user_account (ID) MATCH SIMPLE;
 
-ALTER TABLE User_Details 
+ALTER TABLE User_Details 		-- only known accounts can be modifiers
 ADD CONSTRAINT last_modified_by_fkey FOREIGN KEY (last_modified_by) 
 REFERENCES user_account (ID) MATCH SIMPLE;
 
-ALTER TABLE Reservation 
+ALTER TABLE Reservation 		-- only known accounts can be modifiers
 ADD CONSTRAINT last_modified_by_fkey FOREIGN KEY (last_modified_by) 
 REFERENCES user_account (ID) MATCH SIMPLE;
 
-ALTER TABLE Invoice 
+ALTER TABLE Invoice 			-- only known accounts can be modifiers
 ADD CONSTRAINT last_modified_by_fkey FOREIGN KEY (last_modified_by) 
 REFERENCES user_account (ID) MATCH SIMPLE;
 
-ALTER TABLE Room 
+ALTER TABLE Room 				-- only known accounts can be modifiers
 ADD CONSTRAINT last_modified_by_fkey FOREIGN KEY (last_modified_by) 
 REFERENCES user_account (ID) MATCH SIMPLE;
 
-ALTER TABLE Room_Type
+ALTER TABLE Room_Type			-- only known accounts can be modifiers
 ADD CONSTRAINT last_modified_by_fkey FOREIGN KEY (last_modified_by) 
 REFERENCES user_account (ID) MATCH SIMPLE;

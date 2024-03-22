@@ -61,6 +61,7 @@ BEGIN
         subf_get_reservation_id(NEW)
     INTO R_ID;
 
+    -- if reservation with provided details does not exist insert a new one
     IF R_ID IS NULL THEN
         RAISE NOTICE 'Reservation not found';
         
@@ -89,7 +90,7 @@ BEGIN
         INTO R_ID;
 
         RAISE NOTICE 'New reservation inserted with ID: %', R_ID;
-        -- Insert Room for reservation
+        -- complete rooms for NEW reservation
         INSERT INTO Reservation_room (reservation_id, room_id)
         VALUES (R_ID, NEW.reservation_room_id);
 
@@ -97,7 +98,7 @@ BEGIN
     ELSE
         RAISE NOTICE 'Reservation found, ID: %', R_ID;
         
-        -- Insert Room for reservation
+        -- complete rooms for existing reservation
         INSERT INTO Reservation_room (reservation_id, room_id)
         VALUES (R_ID, NEW.reservation_room_id);
 
@@ -114,6 +115,8 @@ CREATE OR REPLACE FUNCTION insert_invoice_view()
 RETURNS TRIGGER AS $$
 BEGIN
 
+    -- just insert new invoice
+    -- all conditions will be check by defined CONSTRAINTS
     INSERT INTO invoice (reservation_id, last_modified_by)
     VALUES (NEW.invoice_reservation_id, NEW.invoice_last_modified_by);
 
@@ -128,6 +131,8 @@ CREATE OR REPLACE FUNCTION insert_room_view()
 RETURNS TRIGGER AS $$
 BEGIN
 
+    -- just insert new room
+    -- all conditions will be check by defined CONSTRAINTS
     INSERT INTO room (id, room_type_id, room_price_gross, last_modified_by)
     VALUES (NEW.room_id, NEW.room_type_id, NEW.room_gross_price, NEW.room_last_modified_by);
 
@@ -142,6 +147,8 @@ CREATE OR REPLACE FUNCTION insert_user_view()
 RETURNS TRIGGER AS $$
 BEGIN
 
+    -- Raise exception as it is not allowed, because view does not contain passwords due to security reasons.
+    -- the only way to create user and provide password is to use dedicated function
     RAISE EXCEPTION 'Operation not permitted, to insert user use insert_user_account() function.';
 
 	RETURN NULL;
@@ -155,6 +162,8 @@ CREATE OR REPLACE FUNCTION insert_customer_view()
 RETURNS TRIGGER AS $$
 BEGIN
 
+        -- just insert new room
+        -- all conditions will be check by defined CONSTRAINTS
         INSERT INTO User_Details (
             user_id,
             nip_num, 

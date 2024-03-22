@@ -67,12 +67,15 @@ BEGIN
 
     END IF;
 
+
+    -- if last modified by is not passed to the function assume that this registration was made by the user itself
     IF last_modified_by_id IS NULL THEN
 
         UPDATE user_account
         SET last_modified_by = New_User_ID
         WHERE id = New_User_ID;
-    ELSE
+    
+    ELSE -- if last modified by was passed set it for this new user account
 
         UPDATE user_account
         SET last_modified_by = last_modified_by_id
@@ -127,6 +130,7 @@ BEGIN
     WHERE id = last_modified_by_id;
 
 
+    -- check if user can be authenticated or if requestor is admin
     IF (authenticate_user_account(login, old_user_password) = User_ID_To_Return) OR Is_Admin = TRUE THEN
 
         -- change password
@@ -142,8 +146,7 @@ BEGIN
             SET last_modified_by = last_modified_by_id
             WHERE id = User_ID_To_Return;
 
-        -- if admin is not a requestor set user id in last_modified_by
-        ELSE
+        ELSE  -- if admin is not a requestor set user id in last_modified_by
 
             UPDATE user_account
             SET last_modified_by = User_ID_To_Return
@@ -172,6 +175,7 @@ DECLARE
     User_Is_Active boolean;
 BEGIN
     -- check if login is an e-mail address
+    -- based on it decide if authentication will be performed via e-mail or username
 	IF validate_e_mail(login) THEN
 
         -- get an ID for user with provided e-mail
@@ -181,8 +185,7 @@ BEGIN
         FROM User_account 
         WHERE e_mail = login;
 
-    -- if login is not an e-mail 
-    ELSE
+    ELSE  -- if login is not an e-mail 
 
         -- get an ID for user with provided username
         SELECT 
@@ -206,10 +209,12 @@ BEGIN
     WHERE ID = User_ID_To_Return;
 
 
+    -- if user account is not active it can not be authenticated successfully 
     IF User_Is_Active <> TRUE THEN
         RAISE NOTICE 'User with login: % is not active', login;
         RETURN NULL;
     END IF;
+
 
     -- check if provided password matches the one stored in DB
     -- if yes return authenticated user ID
@@ -223,6 +228,7 @@ BEGIN
         RETURN User_ID_To_Return;
     END IF;
 	
+    -- if password was not correct raise a notice and do not return user ID
 	RAISE NOTICE 'Password for login: % is incorrect', login;
     RETURN NULL;
 END;

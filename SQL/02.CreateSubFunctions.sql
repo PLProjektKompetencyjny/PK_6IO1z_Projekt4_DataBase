@@ -41,6 +41,7 @@ CREATE OR REPLACE FUNCTION subf_get_reservation_id(new_entry RECORD)
 RETURNS int 
 AS $$
 BEGIN
+    -- One customer can have only 1 reservation for the same time frame and guests number.
     RETURN (
         SELECT
             ID

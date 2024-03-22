@@ -226,6 +226,9 @@ BEGIN
 		Any_ops_performed = TRUE;
 	END IF;
 
+
+	-- check if any operation was performed,
+	-- if not raise an exception to notify that wanted operation was not performed
 	IF Any_ops_performed = FALSE THEN
 
 		RAISE EXCEPTION 
@@ -234,6 +237,8 @@ BEGIN
 		RETURN NULL;
 	END IF;
 
+
+	-- check if last modifier changed and is not null
 	IF (NEW.reservation_last_modified_by IS DISTINCT FROM OLD.reservation_last_modified_by) AND 
 		NEW.reservation_last_modified_by IS NOT NULL THEN
 		
@@ -247,6 +252,7 @@ BEGIN
 
 	END IF;
 
+	-- update last modify date (DEFAULT value is NOW())
 	UPDATE reservation
 	SET last_modified_at = DEFAULT
 	WHERE id = Res_ID;
@@ -275,8 +281,11 @@ BEGIN
 		RAISE NOTICE 'Seems like there is nothing to update';
 	END IF;
 
+	-- Assign invoice ID which will be modified to the local variable
     Inv_ID := NEW.invoice_id;
 
+
+	-- Check if invoice status is changed
 	IF (NEW.invoice_status_id IS DISTINCT FROM OLD.invoice_status_id) THEN
 
 		UPDATE invoice
@@ -292,6 +301,9 @@ BEGIN
 		Any_ops_performed = TRUE;
 	END IF;
 
+
+	-- check if any operation was performed,
+	-- if not raise an exception to notify that wanted operation was not performed
 	IF Any_ops_performed = FALSE THEN
 
 		RAISE EXCEPTION 
@@ -300,6 +312,8 @@ BEGIN
 		RETURN NULL;
 	END IF;
 
+
+	-- check if last modifier changed and is not null
 	IF (NEW.invoice_last_modified_by IS DISTINCT FROM OLD.invoice_last_modified_by) AND 
 		NEW.invoice_last_modified_by IS NOT NULL THEN
 		
@@ -313,6 +327,7 @@ BEGIN
 
 	END IF;
 
+	-- update last modify date (DEFAULT value is NOW())
 	UPDATE invoice
 	SET last_modified_at = DEFAULT
 	WHERE id = Inv_ID;
@@ -341,8 +356,11 @@ BEGIN
 		RAISE NOTICE 'Seems like there is nothing to update';
 	END IF;
 
+	-- Assign room ID which will be modified to the local variable
     Roo_ID := NEW.room_id;
 
+
+	-- Check if room status is changed
 	IF (NEW.room_status_id IS DISTINCT FROM OLD.room_status_id) THEN
 
 		UPDATE room
@@ -358,6 +376,8 @@ BEGIN
 		Any_ops_performed = TRUE;
 	END IF;
 
+
+	-- Check if room type is changed
     IF (NEW.room_type_id IS DISTINCT FROM OLD.room_type_id) THEN
 
 		UPDATE room
@@ -373,6 +393,8 @@ BEGIN
 		Any_ops_performed = TRUE;
 	END IF;
 
+
+	-- Check if room price is changed
     IF (NEW.room_gross_price IS DISTINCT FROM OLD.room_gross_price) THEN
 
 		UPDATE room
@@ -388,6 +410,9 @@ BEGIN
 		Any_ops_performed = TRUE;
 	END IF;
 
+
+	-- check if any operation was performed,
+	-- if not raise an exception to notify that wanted operation was not performed
 	IF Any_ops_performed = FALSE THEN
 
 		RAISE EXCEPTION 
@@ -396,6 +421,8 @@ BEGIN
 		RETURN NULL;
 	END IF;
 
+
+	-- check if last modifier changed and is not null
 	IF (NEW.room_last_modified_by IS DISTINCT FROM OLD.room_last_modified_by) AND 
 		NEW.room_last_modified_by IS NOT NULL THEN
 		
@@ -409,6 +436,7 @@ BEGIN
 
 	END IF;
 
+	-- update last modify date (DEFAULT value is NOW())
 	UPDATE room
 	SET last_modified_at = DEFAULT
 	WHERE id = Roo_ID;
@@ -437,9 +465,11 @@ BEGIN
 		RAISE NOTICE 'Seems like there is nothing to update';
 	END IF;
 
+	-- Assign user ID which will be modified to the local variable
     Usr_ID := NEW.user_id;
 
 
+	-- check if user e-mail is changed 
 	IF (NEW.user_e_mail IS DISTINCT FROM OLD.user_e_mail) THEN
 
 		UPDATE user_account
@@ -456,6 +486,7 @@ BEGIN
 	END IF;
 
 
+		-- check if username is changed 
 	IF (NEW.user_name IS DISTINCT FROM OLD.user_name) THEN
 
 		UPDATE user_account
@@ -472,6 +503,7 @@ BEGIN
 	END IF;
 
 
+	-- check if user active flag is changed 
 	IF (NEW.user_is_active IS DISTINCT FROM OLD.user_is_active) THEN
 
 		UPDATE user_account
@@ -488,6 +520,7 @@ BEGIN
 	END IF;
 
 
+	-- check if user admin flag is changed 
 	IF (NEW.user_is_admin IS DISTINCT FROM OLD.user_is_admin) THEN
 
 		IF NEW.user_is_admin = TRUE AND (OLD.user_name IS NOT NULL) THEN
@@ -513,6 +546,8 @@ BEGIN
 	END IF;
 
 
+	-- check if any operation was performed,
+	-- if not raise an exception to notify that wanted operation was not performed
 	IF Any_ops_performed = FALSE THEN
 
 		RAISE EXCEPTION 
@@ -521,6 +556,8 @@ BEGIN
 		RETURN NULL;
 	END IF;
 
+
+	-- check if last modifier changed and is not null
 	IF (NEW.user_last_modified_by IS DISTINCT FROM OLD.user_last_modified_by) AND 
 		NEW.user_last_modified_by IS NOT NULL THEN
 		
@@ -534,6 +571,7 @@ BEGIN
 
 	END IF;
 
+	-- update last modify date (DEFAULT value is NOW())
 	UPDATE user_account
 	SET last_modified_at = DEFAULT
 	WHERE id = Usr_ID;
@@ -562,9 +600,11 @@ BEGIN
 		RAISE NOTICE 'Seems like there is nothing to update';
 	END IF;
 
+	-- Assign user ID which will be modified to the local variable
     Usr_ID := NEW.Customer_id;
 
 
+	-- check if customer nip number is changed
 	IF (NEW.customer_nip_number IS DISTINCT FROM OLD.customer_nip_number) THEN
 
 		UPDATE user_details
@@ -581,6 +621,7 @@ BEGIN
 	END IF;
 
 
+	-- check if customer name is changed
 	IF (NEW.customer_name IS DISTINCT FROM OLD.customer_name) THEN
 
 		UPDATE user_details
@@ -597,6 +638,7 @@ BEGIN
 	END IF;
 
 
+	-- check if customer surname is changed
 	IF (NEW.customer_surname IS DISTINCT FROM OLD.customer_surname) THEN
 
 		UPDATE user_details
@@ -613,6 +655,7 @@ BEGIN
 	END IF;
 
 
+	-- check if customer phone number is changed
 	IF (NEW.customer_phone IS DISTINCT FROM OLD.customer_phone) THEN
 
 		UPDATE user_details
@@ -629,6 +672,7 @@ BEGIN
 	END IF;
 
 
+	-- check if city in customer address is changed
 	IF (NEW.customer_city IS DISTINCT FROM OLD.customer_city) THEN
 
 		UPDATE user_details
@@ -645,6 +689,7 @@ BEGIN
 	END IF;
 
 
+	-- check if postal code in customer address is changed
 	IF (NEW.customer_postal_code IS DISTINCT FROM OLD.customer_postal_code) THEN
 
 		UPDATE user_details
@@ -661,22 +706,7 @@ BEGIN
 	END IF;
 
 
-	IF (NEW.customer_postal_code IS DISTINCT FROM OLD.customer_postal_code) THEN
-
-		UPDATE user_details
-		SET Postal_code = NEW.customer_postal_code
-		WHERE user_id = Usr_ID;
-
-		RAISE NOTICE 
-            'city updated for account ID: %. OLD: % NEW: %', 
-                Usr_ID, 
-                OLD.customer_postal_code, 
-                NEW.customer_postal_code;
-
-		Any_ops_performed = TRUE;
-	END IF;
-
-
+	-- check if street name in customer address is changed
 	IF (NEW.customer_street IS DISTINCT FROM OLD.customer_street) THEN
 
 		UPDATE user_details
@@ -693,6 +723,7 @@ BEGIN
 	END IF;
 
 
+	-- check if building number in customer address is changed
 	IF (NEW.customer_building_number IS DISTINCT FROM OLD.customer_building_number) THEN
 
 		UPDATE user_details
@@ -709,6 +740,8 @@ BEGIN
 	END IF;
 
 
+	-- check if any operation was performed,
+	-- if not raise an exception to notify that wanted operation was not performed
 	IF Any_ops_performed = FALSE THEN
 
 		RAISE EXCEPTION 
@@ -717,6 +750,8 @@ BEGIN
 		RETURN NULL;
 	END IF;
 
+
+	-- check if last modifier changed and is not null
 	IF (NEW.customer_last_modified_by IS DISTINCT FROM OLD.customer_last_modified_by) AND 
 		NEW.customer_last_modified_by IS NOT NULL THEN
 		
@@ -730,6 +765,7 @@ BEGIN
 
 	END IF;
 
+	-- update last modify date (DEFAULT value is NOW())
 	UPDATE user_details
 	SET last_modified_at = DEFAULT
 	WHERE user_id = Usr_ID;
