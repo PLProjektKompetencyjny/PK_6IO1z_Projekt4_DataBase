@@ -129,3 +129,16 @@ BEGIN
 
 END;
 $$ LANGUAGE plpgsql;
+
+
+
+CREATE OR REPLACE FUNCTION insert_user_view()
+RETURNS TRIGGER AS $$
+BEGIN
+
+    RAISE EXCEPTION 'Operation not permitted, to insert user use insert_user_account() function.';
+
+	RETURN NULL;
+
+END;
+$$ LANGUAGE plpgsql;

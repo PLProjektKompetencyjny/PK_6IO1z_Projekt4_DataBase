@@ -68,7 +68,8 @@
 												User_details store customer related information, 
 												which are not required for admin account
 		
-		2024-03-20		Stanisław Horna			Removed auto-gen id in Room table
+		2024-03-20		Stanisław Horna			Removed auto-gen id in Room table.
+		2024-03-22		Stanisław Horna			Additional constraint to check if user_name or e_mail is provided
 
 
 */
@@ -99,7 +100,8 @@ CREATE TABLE User_Account (
 	Last_modified_by int NULL,
 
 	CONSTRAINT E_mail_chk CHECK (validate_e_mail(E_mail)),
-	CONSTRAINT User_name_chk CHECK (user_name ~ '^[a-zA-Z]+$')
+	CONSTRAINT User_name_chk CHECK (User_name ~ '^[a-zA-Z]+$'),
+	CONSTRAINT E_mail_OR_User_name_chk CHECK (user_name IS NOT NULL OR E_mail IS NOT NULL)
 );
 
 CREATE TABLE User_Details (

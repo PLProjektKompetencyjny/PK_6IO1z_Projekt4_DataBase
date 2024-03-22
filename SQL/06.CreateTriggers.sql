@@ -67,6 +67,12 @@ INSTEAD OF INSERT ON room_view
 FOR EACH ROW
 EXECUTE FUNCTION insert_room_view();
 
+------ user_view
+CREATE TRIGGER ioi
+INSTEAD OF INSERT ON user_view
+FOR EACH ROW
+EXECUTE FUNCTION insert_user_view();
+
 
 ---- INSTEAD OF UPDATE triggers
 
@@ -88,5 +94,34 @@ INSTEAD OF UPDATE ON room_view
 FOR EACH ROW
 EXECUTE FUNCTION update_room_view();
 
+------ user_view
+CREATE TRIGGER iou
+INSTEAD OF UPDATE ON user_view
+FOR EACH ROW
+EXECUTE FUNCTION update_user_view();
 
 -- INSTEAD OF DELETE triggers
+
+------ reservetion_view
+CREATE TRIGGER iod
+INSTEAD OF UPDATE ON reservation_view
+FOR EACH ROW
+EXECUTE FUNCTION delete_operation_not_permitted();
+
+------ invoice_view
+CREATE TRIGGER iod
+INSTEAD OF UPDATE ON invoice_view
+FOR EACH ROW
+EXECUTE FUNCTION delete_operation_not_permitted();
+
+------ room_view
+CREATE TRIGGER iod
+INSTEAD OF UPDATE ON room_view
+FOR EACH ROW
+EXECUTE FUNCTION delete_operation_not_permitted();
+
+------ user_view
+CREATE TRIGGER iod
+INSTEAD OF UPDATE ON user_view
+FOR EACH ROW
+EXECUTE FUNCTION delete_operation_not_permitted();

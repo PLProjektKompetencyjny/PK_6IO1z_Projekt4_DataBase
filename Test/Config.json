@@ -35,6 +35,10 @@
         "Success/user_view_AUTH_active_user.sql",
         "Success/user_view_UPDATE_user_set_inactive.sql",
         "Fail/user_view_AUTH_user_with_incorrect_password.sql",
-        "Fail/user_view_AUTH_user_inactive.sql"
+        "Fail/user_view_AUTH_user_inactive.sql",
+        "Success/user_view_UPDATE_user_name.sql",
+        "Fail/user_view_UPDATE_user_name_and_e_mail_to_NULL.sql",
+        "Fail/user_view_UPDATE_promote_user_without_user_name_to_admin.sql",
+        "Fail/user_view_INSERT.sql"
     ]
 }

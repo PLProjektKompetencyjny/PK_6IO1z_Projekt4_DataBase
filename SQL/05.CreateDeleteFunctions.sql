@@ -40,3 +40,14 @@
         Date            Who                     What
 
 */
+
+CREATE OR REPLACE FUNCTION delete_operation_not_permitted()
+RETURNS TRIGGER AS $$
+BEGIN
+
+    RAISE EXCEPTION 'Operation not permitted.';
+
+	RETURN NULL;
+
+END;
+$$ LANGUAGE plpgsql;

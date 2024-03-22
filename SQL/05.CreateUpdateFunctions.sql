@@ -414,3 +414,128 @@ BEGIN
 	RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
+
+
+
+CREATE OR REPLACE FUNCTION update_user_view()
+RETURNS TRIGGER AS $$
+DECLARE
+    Usr_ID int;
+	Any_ops_performed bool;
+BEGIN
+
+    Any_ops_performed := FALSE;
+
+    -- Check if there is anything to update
+	IF (NEW IS NOT DISTINCT FROM OLD) THEN
+		RAISE NOTICE 'Seems like there is nothing to update';
+	END IF;
+
+    Usr_ID := NEW.user_id;
+
+
+	IF (NEW.user_e_mail IS DISTINCT FROM OLD.user_e_mail) THEN
+
+		UPDATE user_account
+		SET e_mail = NEW.user_e_mail
+		WHERE id = Usr_ID;
+
+		RAISE NOTICE 
+            'e_mail updated for account ID: %. OLD: % NEW: %', 
+                Usr_ID, 
+                OLD.user_e_mail, 
+                NEW.user_e_mail;
+
+		Any_ops_performed = TRUE;
+	END IF;
+
+
+	IF (NEW.user_name IS DISTINCT FROM OLD.user_name) THEN
+
+		UPDATE user_account
+		SET user_name = NEW.user_name
+		WHERE id = Usr_ID;
+
+		RAISE NOTICE 
+            'user_name updated for account ID: %. OLD: % NEW: %', 
+                Usr_ID, 
+                OLD.user_name, 
+                NEW.user_name;
+
+		Any_ops_performed = TRUE;
+	END IF;
+
+
+	IF (NEW.user_is_active IS DISTINCT FROM OLD.user_is_active) THEN
+
+		UPDATE user_account
+		SET is_active = NEW.user_is_active
+		WHERE id = Usr_ID;
+
+		RAISE NOTICE 
+            'is_active updated for account ID: %. OLD: % NEW: %', 
+                Usr_ID, 
+                OLD.user_is_active, 
+                NEW.user_is_active;
+
+		Any_ops_performed = TRUE;
+	END IF;
+
+
+	IF (NEW.user_is_admin IS DISTINCT FROM OLD.user_is_admin) THEN
+
+		IF NEW.user_is_admin = TRUE AND (OLD.user_name IS NOT NULL) THEN
+
+			UPDATE user_account
+			SET is_active = NEW.user_is_admin
+			WHERE id = Usr_ID;
+
+			RAISE NOTICE 
+				'is_admin updated for account ID: %. OLD: % NEW: %', 
+					Usr_ID, 
+					OLD.user_is_admin, 
+					NEW.user_is_admin;
+
+		ELSE
+
+			RAISE EXCEPTION 
+				'account without user_name can not be promoted to admin';
+			RETURN NULL;
+		END IF;
+
+		Any_ops_performed = TRUE;
+	END IF;
+
+
+	IF Any_ops_performed = FALSE THEN
+
+		RAISE EXCEPTION 
+			'No update was performed';
+
+		RETURN NULL;
+	END IF;
+
+	IF (NEW.user_last_modified_by IS DISTINCT FROM OLD.user_last_modified_by) AND 
+		NEW.user_last_modified_by IS NOT NULL THEN
+		
+		UPDATE user_account
+		SET last_modified_by = NEW.user_last_modified_by
+		WHERE id = Usr_ID;
+
+		RAISE NOTICE 
+			'last_modified_by updated for account ID: %.', 
+			Usr_ID;
+
+	END IF;
+
+	UPDATE user_account
+	SET last_modified_at = DEFAULT
+	WHERE id = Usr_ID;
+
+	RAISE NOTICE 
+		'last_modified_at updated for account ID: %.', 
+			Usr_ID;
+
+	RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
