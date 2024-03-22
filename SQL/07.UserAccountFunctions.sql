@@ -6,7 +6,6 @@
         This file is suposed to define all functions, which will be used to:
             - Add new user account
             - Update user password
-            - Delete user account
 
 		Following actions will be performed in a given order:
 			1. CREATE OR REPLACE all functions from scratch
