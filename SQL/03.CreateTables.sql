@@ -69,7 +69,8 @@
 												which are not required for admin account
 		
 		2024-03-20		Stanisław Horna			Removed auto-gen id in Room table.
-		2024-03-22		Stanisław Horna			Additional constraint to check if user_name or e_mail is provided
+		2024-03-22		Stanisław Horna			Additional constraint to check if user_name or e_mail is provided.
+												fkeys for last_modified_by added.
 
 
 */

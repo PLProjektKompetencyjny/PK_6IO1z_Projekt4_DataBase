@@ -38,7 +38,7 @@
         ChangeLog:
 
         Date            Who                     What
-
+        2024-03-22      Stanisław Horna         delete_operation_not_permitted generic func for all not permited ops.
 */
 
 CREATE OR REPLACE FUNCTION delete_operation_not_permitted()

@@ -43,6 +43,10 @@
                                                     - update_invoice_view
                                                     - update_room_view
 
+		2024-03-22		Stanisław Horna			added functions:
+													- update_user_view
+													- update_customer_view
+
 */
 
 CREATE OR REPLACE FUNCTION update_reservation_view()

@@ -44,6 +44,20 @@
                                                         - reservation_view
                                                         - invoice_view
                                                         - room_view
+        
+        2024-03-22      Stanisław Horna         added triggers:
+                                                    - INSTEAD OF INSERT
+                                                        - user_view
+                                                        - customer_view
+                                                    - INSTEAD OF UPDATE
+                                                        - user_view
+                                                        - customer_view
+                                                    - INSTEAD OF DELETE
+                                                        - reservation_view
+                                                        - invoice_view
+                                                        - room_view
+                                                        - user_view
+                                                        - customer_view
 
 */
 

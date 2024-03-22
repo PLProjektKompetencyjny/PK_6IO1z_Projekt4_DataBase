@@ -33,6 +33,8 @@
 		2024-03-18		Stanisław Horna			Update views based on tables re-desing
 						Grzegorz Kubicki		Passwords excluded from views,
 												DB will be responsible for checking if password is correct.
+
+		2024-03-22		Stanisław Horna			Password column removed from user_view
 */
 
 -- Drop existing Views

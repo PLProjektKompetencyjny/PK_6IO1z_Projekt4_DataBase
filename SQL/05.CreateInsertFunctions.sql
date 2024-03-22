@@ -42,6 +42,10 @@
                                                     - insert_reservation_view
                                                     - insert_invoice_view
                                                     - insert_room_view
+        
+        2024-03-22      Stanisław Horna         added functions:
+                                                    - insert_user_view
+                                                    - insert_customer_view
 */
 
 CREATE OR REPLACE FUNCTION insert_reservation_view()
