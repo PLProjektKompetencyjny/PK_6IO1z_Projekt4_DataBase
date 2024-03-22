@@ -104,24 +104,24 @@ EXECUTE FUNCTION update_user_view();
 
 ------ reservetion_view
 CREATE TRIGGER iod
-INSTEAD OF UPDATE ON reservation_view
+INSTEAD OF DELETE ON reservation_view
 FOR EACH ROW
 EXECUTE FUNCTION delete_operation_not_permitted();
 
 ------ invoice_view
 CREATE TRIGGER iod
-INSTEAD OF UPDATE ON invoice_view
+INSTEAD OF DELETE ON invoice_view
 FOR EACH ROW
 EXECUTE FUNCTION delete_operation_not_permitted();
 
 ------ room_view
 CREATE TRIGGER iod
-INSTEAD OF UPDATE ON room_view
+INSTEAD OF DELETE ON room_view
 FOR EACH ROW
 EXECUTE FUNCTION delete_operation_not_permitted();
 
 ------ user_view
 CREATE TRIGGER iod
-INSTEAD OF UPDATE ON user_view
+INSTEAD OF DELETE ON user_view
 FOR EACH ROW
 EXECUTE FUNCTION delete_operation_not_permitted();
