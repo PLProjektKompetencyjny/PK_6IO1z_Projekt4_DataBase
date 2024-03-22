@@ -20,7 +20,8 @@
     ChangeLog:
 
     Date            Who                     What
-    2024-03-22      Stanisław Horna         Test type column added to the output table
+    2024-03-22      Stanisław Horna         Test type column added to the output table.
+                                            Verification if all test files are configured in Config.json
 
 """
 
