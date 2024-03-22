@@ -39,12 +39,22 @@
         "Success/user_view_UPDATE_user_name.sql",
         "Fail/user_view_UPDATE_user_name_and_e_mail_to_NULL.sql",
         "Fail/user_view_UPDATE_promote_user_without_user_name_to_admin.sql",
+        "Success/user_view_UPDATE_promote_user_with_user_name_to_admin.sql",
         "Fail/user_view_INSERT.sql",
         "Fail/invoice_view_DELETE.sql",
         "Fail/reservation_view_DELETE.sql",
         "Fail/room_view_DELETE.sql",
         "Fail/user_view_DELETE.sql",
+        "Fail/customer_view_DELETE.sql",
         "Fail/invoice_view_UPDATE_invoice_date.sql",
-        "Fail/room_view_UPDATE_num_of_beds.sql"
+        "Fail/room_view_UPDATE_num_of_beds.sql",
+        "Success/customer_view_INSERT_1_customer.sql",
+        "Success/customer_view_UPDATE_customer_address.sql",
+        "Fail/customer_view_INSERT_empty_name.sql",
+        "Fail/customer_view_INSERT_wrong_id.sql",
+        "Fail/customer_view_UPDATE_e_mail.sql",
+        "Fail/customer_view_UPDATE_invalid_phone.sql",
+        "Fail/customer_view_UPDATE_invalid_postal_code.sql"
+        
     ]
 }
