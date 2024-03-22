@@ -39,6 +39,12 @@
         "Success/user_view_UPDATE_user_name.sql",
         "Fail/user_view_UPDATE_user_name_and_e_mail_to_NULL.sql",
         "Fail/user_view_UPDATE_promote_user_without_user_name_to_admin.sql",
-        "Fail/user_view_INSERT.sql"
+        "Fail/user_view_INSERT.sql",
+        "Fail/invoice_view_DELETE.sql",
+        "Fail/reservation_view_DELETE.sql",
+        "Fail/room_view_DELETE.sql",
+        "Fail/user_view_DELETE.sql",
+        "Fail/invoice_view_UPDATE_invoice_date.sql",
+        "Fail/room_view_UPDATE_num_of_beds.sql"
     ]
 }
