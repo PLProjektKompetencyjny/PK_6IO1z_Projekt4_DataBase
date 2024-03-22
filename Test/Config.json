@@ -31,6 +31,10 @@
         "Fail/user_view_CREATE_new_user_with_user_name_already_exist.sql",
         "Fail/user_view_CHANGE_user_password_as_user_wrong_old_pass.sql",
         "Success/user_view_CHANGE_user_password_as_user.sql",
-        "Success/user_view_CHANGE_user_password_as_admin.sql"
+        "Success/user_view_CHANGE_user_password_as_admin.sql",
+        "Success/user_view_AUTH_active_user.sql",
+        "Success/user_view_UPDATE_user_set_inactive.sql",
+        "Fail/user_view_AUTH_user_with_incorrect_password.sql",
+        "Fail/user_view_AUTH_user_inactive.sql"
     ]
 }
