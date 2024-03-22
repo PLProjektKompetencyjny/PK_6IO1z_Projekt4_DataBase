@@ -142,3 +142,39 @@ BEGIN
 
 END;
 $$ LANGUAGE plpgsql;
+
+
+
+CREATE OR REPLACE FUNCTION insert_customer_view()
+RETURNS TRIGGER AS $$
+BEGIN
+
+        INSERT INTO User_Details (
+            user_id,
+            nip_num, 
+            name, 
+            surname, 
+            phone_num, 
+            city, 
+            postal_code,
+            street,
+            building_num,
+            last_modified_by
+            )
+		VALUES (
+            NEW.customer_id, 
+            NEW.customer_nip_number, 
+            NEW.customer_name, 
+            NEW.customer_surname, 
+            NEW.customer_phone, 
+            NEW.customer_city,
+            NEW.customer_postal_code,
+            NEW.customer_street,
+            NEW.customer_building_number,
+            NEW.customer_last_modified_by
+            );
+
+	RETURN NEW;
+
+END;
+$$ LANGUAGE plpgsql;

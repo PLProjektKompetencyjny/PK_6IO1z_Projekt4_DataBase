@@ -73,6 +73,12 @@ INSTEAD OF INSERT ON user_view
 FOR EACH ROW
 EXECUTE FUNCTION insert_user_view();
 
+------ customer_view
+CREATE TRIGGER ioi
+INSTEAD OF INSERT ON customer_view
+FOR EACH ROW
+EXECUTE FUNCTION insert_customer_view();
+
 
 ---- INSTEAD OF UPDATE triggers
 
@@ -100,6 +106,13 @@ INSTEAD OF UPDATE ON user_view
 FOR EACH ROW
 EXECUTE FUNCTION update_user_view();
 
+------ customer_view
+CREATE TRIGGER iou
+INSTEAD OF UPDATE ON customer_view
+FOR EACH ROW
+EXECUTE FUNCTION update_customer_view();
+
+
 -- INSTEAD OF DELETE triggers
 
 ------ reservetion_view
@@ -123,5 +136,11 @@ EXECUTE FUNCTION delete_operation_not_permitted();
 ------ user_view
 CREATE TRIGGER iod
 INSTEAD OF DELETE ON user_view
+FOR EACH ROW
+EXECUTE FUNCTION delete_operation_not_permitted();
+
+------ customer_view
+CREATE TRIGGER iod
+INSTEAD OF DELETE ON customer_view
 FOR EACH ROW
 EXECUTE FUNCTION delete_operation_not_permitted();

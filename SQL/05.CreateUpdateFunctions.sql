@@ -49,7 +49,7 @@ CREATE OR REPLACE FUNCTION update_reservation_view()
 RETURNS TRIGGER AS $$
 DECLARE
     Res_ID int;
-	Any_ops_performed bool;
+	Any_ops_performed boolean;
 BEGIN
 
 	Any_ops_performed := FALSE;
@@ -259,7 +259,7 @@ CREATE OR REPLACE FUNCTION update_invoice_view()
 RETURNS TRIGGER AS $$
 DECLARE
     Inv_ID int;
-	Any_ops_performed bool;
+	Any_ops_performed boolean;
 BEGIN
 
     Any_ops_performed := FALSE;
@@ -325,7 +325,7 @@ CREATE OR REPLACE FUNCTION update_room_view()
 RETURNS TRIGGER AS $$
 DECLARE
     Roo_ID int;
-	Any_ops_performed bool;
+	Any_ops_performed boolean;
 BEGIN
 
     Any_ops_performed := FALSE;
@@ -421,7 +421,7 @@ CREATE OR REPLACE FUNCTION update_user_view()
 RETURNS TRIGGER AS $$
 DECLARE
     Usr_ID int;
-	Any_ops_performed bool;
+	Any_ops_performed boolean;
 BEGIN
 
     Any_ops_performed := FALSE;
@@ -531,6 +531,202 @@ BEGIN
 	UPDATE user_account
 	SET last_modified_at = DEFAULT
 	WHERE id = Usr_ID;
+
+	RAISE NOTICE 
+		'last_modified_at updated for account ID: %.', 
+			Usr_ID;
+
+	RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+CREATE OR REPLACE FUNCTION update_customer_view()
+RETURNS TRIGGER AS $$
+DECLARE
+    Usr_ID int;
+	Any_ops_performed boolean;
+BEGIN
+
+    Any_ops_performed := FALSE;
+
+    -- Check if there is anything to update
+	IF (NEW IS NOT DISTINCT FROM OLD) THEN
+		RAISE NOTICE 'Seems like there is nothing to update';
+	END IF;
+
+    Usr_ID := NEW.Customer_id;
+
+
+	IF (NEW.customer_nip_number IS DISTINCT FROM OLD.customer_nip_number) THEN
+
+		UPDATE user_details
+		SET nip_num = NEW.customer_nip_number
+		WHERE user_id = Usr_ID;
+
+		RAISE NOTICE 
+            'nip_num updated for account ID: %. OLD: % NEW: %', 
+                Usr_ID, 
+                OLD.customer_nip_number, 
+                NEW.customer_nip_number;
+
+		Any_ops_performed = TRUE;
+	END IF;
+
+
+	IF (NEW.customer_name IS DISTINCT FROM OLD.customer_name) THEN
+
+		UPDATE user_details
+		SET name = NEW.customer_name
+		WHERE user_id = Usr_ID;
+
+		RAISE NOTICE 
+            'name updated for account ID: %. OLD: % NEW: %', 
+                Usr_ID, 
+                OLD.customer_name, 
+                NEW.customer_name;
+
+		Any_ops_performed = TRUE;
+	END IF;
+
+
+	IF (NEW.customer_surname IS DISTINCT FROM OLD.customer_surname) THEN
+
+		UPDATE user_details
+		SET surname = NEW.customer_surname
+		WHERE user_id = Usr_ID;
+
+		RAISE NOTICE 
+            'surname updated for account ID: %. OLD: % NEW: %', 
+                Usr_ID, 
+                OLD.customer_surname, 
+                NEW.customer_surname;
+
+		Any_ops_performed = TRUE;
+	END IF;
+
+
+	IF (NEW.customer_phone IS DISTINCT FROM OLD.customer_phone) THEN
+
+		UPDATE user_details
+		SET phone_num = NEW.customer_phone
+		WHERE user_id = Usr_ID;
+
+		RAISE NOTICE 
+            'phone_num updated for account ID: %. OLD: % NEW: %', 
+                Usr_ID, 
+                OLD.customer_phone, 
+                NEW.customer_phone;
+
+		Any_ops_performed = TRUE;
+	END IF;
+
+
+	IF (NEW.customer_city IS DISTINCT FROM OLD.customer_city) THEN
+
+		UPDATE user_details
+		SET city = NEW.customer_city
+		WHERE user_id = Usr_ID;
+
+		RAISE NOTICE 
+            'city updated for account ID: %. OLD: % NEW: %', 
+                Usr_ID, 
+                OLD.customer_city, 
+                NEW.customer_city;
+
+		Any_ops_performed = TRUE;
+	END IF;
+
+
+	IF (NEW.customer_postal_code IS DISTINCT FROM OLD.customer_postal_code) THEN
+
+		UPDATE user_details
+		SET Postal_code = NEW.customer_postal_code
+		WHERE user_id = Usr_ID;
+
+		RAISE NOTICE 
+            'city updated for account ID: %. OLD: % NEW: %', 
+                Usr_ID, 
+                OLD.customer_postal_code, 
+                NEW.customer_postal_code;
+
+		Any_ops_performed = TRUE;
+	END IF;
+
+
+	IF (NEW.customer_postal_code IS DISTINCT FROM OLD.customer_postal_code) THEN
+
+		UPDATE user_details
+		SET Postal_code = NEW.customer_postal_code
+		WHERE user_id = Usr_ID;
+
+		RAISE NOTICE 
+            'city updated for account ID: %. OLD: % NEW: %', 
+                Usr_ID, 
+                OLD.customer_postal_code, 
+                NEW.customer_postal_code;
+
+		Any_ops_performed = TRUE;
+	END IF;
+
+
+	IF (NEW.customer_street IS DISTINCT FROM OLD.customer_street) THEN
+
+		UPDATE user_details
+		SET Street = NEW.customer_street
+		WHERE user_id = Usr_ID;
+
+		RAISE NOTICE 
+            'city updated for account ID: %. OLD: % NEW: %', 
+                Usr_ID, 
+                OLD.customer_street, 
+                NEW.customer_street;
+
+		Any_ops_performed = TRUE;
+	END IF;
+
+
+	IF (NEW.customer_building_number IS DISTINCT FROM OLD.customer_building_number) THEN
+
+		UPDATE user_details
+		SET Building_Num = NEW.customer_building_number
+		WHERE user_id = Usr_ID;
+
+		RAISE NOTICE 
+            'city updated for account ID: %. OLD: % NEW: %', 
+                Usr_ID, 
+                OLD.customer_building_number, 
+                NEW.customer_building_number;
+
+		Any_ops_performed = TRUE;
+	END IF;
+
+
+	IF Any_ops_performed = FALSE THEN
+
+		RAISE EXCEPTION 
+			'No update was performed';
+
+		RETURN NULL;
+	END IF;
+
+	IF (NEW.customer_last_modified_by IS DISTINCT FROM OLD.customer_last_modified_by) AND 
+		NEW.customer_last_modified_by IS NOT NULL THEN
+		
+		UPDATE user_details
+		SET last_modified_by = NEW.customer_last_modified_by
+		WHERE user_id = Usr_ID;
+
+		RAISE NOTICE 
+			'last_modified_by updated for account ID: %.', 
+			Usr_ID;
+
+	END IF;
+
+	UPDATE user_details
+	SET last_modified_at = DEFAULT
+	WHERE user_id = Usr_ID;
 
 	RAISE NOTICE 
 		'last_modified_at updated for account ID: %.', 
