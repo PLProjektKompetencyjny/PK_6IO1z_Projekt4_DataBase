@@ -30,7 +30,7 @@
 
     .NOTES
 
-        Version:            1.0
+        Version:            1.3
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -46,7 +46,8 @@
 		2024-03-22		Stanisław Horna			added functions:
 													- update_user_view
 													- update_customer_view
-
+        2024-03-22      Stanisław Horna         add SECURITY DEFINER <- to invoke functions with owner's permissions, 
+                                                    instead of caller ones.
 */
 
 CREATE OR REPLACE FUNCTION update_reservation_view()
@@ -255,7 +256,7 @@ BEGIN
 
 	RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
 
 
@@ -321,7 +322,7 @@ BEGIN
 
 	RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
 
 
@@ -417,7 +418,7 @@ BEGIN
 
 	RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
 
 
@@ -542,7 +543,7 @@ BEGIN
 
 	RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
 
 
@@ -738,4 +739,4 @@ BEGIN
 
 	RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SECURITY DEFINER;

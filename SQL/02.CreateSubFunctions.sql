@@ -31,6 +31,8 @@
         ChangeLog:
 
         Date            Who                     What
+        2024-03-22      Stanisław Horna         add SECURITY DEFINER <- to invoke functions with owner's permissions, 
+                                                    instead of caller ones.
 
 */
 
@@ -50,7 +52,7 @@ BEGIN
                 end_date = new_entry.reservation_end_date
     );
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
 
 
