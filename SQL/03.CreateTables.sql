@@ -262,3 +262,27 @@ REFERENCES Reservation (ID) MATCH SIMPLE;
 ALTER TABLE Invoice 
 ADD CONSTRAINT Status_fkey FOREIGN KEY (Status_ID) 
 REFERENCES dict_invoice_status (ID) MATCH SIMPLE;
+
+ALTER TABLE User_Account 
+ADD CONSTRAINT last_modified_by_fkey FOREIGN KEY (last_modified_by) 
+REFERENCES user_account (ID) MATCH SIMPLE;
+
+ALTER TABLE User_Details 
+ADD CONSTRAINT last_modified_by_fkey FOREIGN KEY (last_modified_by) 
+REFERENCES user_account (ID) MATCH SIMPLE;
+
+ALTER TABLE Reservation 
+ADD CONSTRAINT last_modified_by_fkey FOREIGN KEY (last_modified_by) 
+REFERENCES user_account (ID) MATCH SIMPLE;
+
+ALTER TABLE Invoice 
+ADD CONSTRAINT last_modified_by_fkey FOREIGN KEY (last_modified_by) 
+REFERENCES user_account (ID) MATCH SIMPLE;
+
+ALTER TABLE Room 
+ADD CONSTRAINT last_modified_by_fkey FOREIGN KEY (last_modified_by) 
+REFERENCES user_account (ID) MATCH SIMPLE;
+
+ALTER TABLE Room_Type
+ADD CONSTRAINT last_modified_by_fkey FOREIGN KEY (last_modified_by) 
+REFERENCES user_account (ID) MATCH SIMPLE;
