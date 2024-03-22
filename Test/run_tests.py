@@ -12,7 +12,7 @@
 
 .NOTES
 
-    Version:            1.0
+    Version:            1.1
     Author:             Stanisław Horna
     Mail:               stanislawhorna@outlook.com
     GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -20,6 +20,7 @@
     ChangeLog:
 
     Date            Who                     What
+    2024-03-22      Stanisław Horna         Test type column added to the output table
 
 """
 
@@ -56,7 +57,7 @@ def main() -> None:
     
     queries = get_queries_from_file()
     testResults = query_postgres(queries)
-    display_results(testResults)
+    display_results(testResults, queries)
     
     return None
 
@@ -176,14 +177,23 @@ def query_postgres(queries) -> list[dict[str, str | bool]]:
     return testResults
 
 
-def display_results(testResults):
+def display_results(testResults, queries):
     
     # set table headers
-    dataHeaders = ["Test name", "Successful"]
+    dataHeaders = ["Test name", "Test type","Successful"]
     
     # set table data
     data = []
-    [ data.append([test["Name"], test["Result"]]) for test in testResults]
+    
+    for i in range(len(testResults)):
+        if queries[i]["expectedResult"] == True:
+            testType = "Success"
+        else:
+            testType = "Fail"
+        data.append(
+            [testResults[i]["Name"],testType, testResults[i]["Result"]]
+        )
+        
     
     # print result table
     print()
