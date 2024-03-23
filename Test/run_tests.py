@@ -22,6 +22,8 @@
     Date            Who                     What
     2024-03-22      Stanisław Horna         Test type column added to the output table.
                                             Verification if all test files are configured in Config.json
+    
+    2024-03-23      Stanisław Horna         Support for using different accounts.
 
 """
 
@@ -37,15 +39,15 @@ SUCCESS_DIR = "Success"
 FAIL_DIR = "Fail"
 
 # define DB credentials
-DB_USER = "TN_admin"
-DB_PASSWORD = "NestTravel"
 DB_HOST = "127.0.0.1"
 DB_PORT = "5432"
 DB_DATABASE = "TravelNest"
+DB_PASSWORD = {
+    "tn_api_read" : "abc",
+    "tn_api_write" : "cba"
+}
 
 # define console text colors
-
-
 class bcolors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -62,7 +64,7 @@ def main() -> None:
 
     queries = get_queries_from_file()
     testResults = query_postgres(queries)
-    display_results(testResults, queries)
+    display_results(testResults)
 
     return None
 
@@ -75,8 +77,6 @@ def get_queries_from_file() -> list[dict[str, str | bool]]:
         TESTS_DIR,
         CONFIG_FILE_NAME
     )
-
-    result = []
 
     # read config
     with open(ConfigFilePath, 'r') as cfg:
@@ -94,24 +94,22 @@ def get_queries_from_file() -> list[dict[str, str | bool]]:
     checkIfAllExistingFilesAreConfigured(configuration)
 
     # loop through all configured tests
-    for file_name in configuration["Tests"]:
+    for test in configuration["Tests"]:
 
         # build path to test file which will be read
         pathToRead = os.path.join(
             os.path.abspath(os.getcwd()),
             TESTS_DIR,
             configuration["QueriesDirectory"],
-            file_name
+            test["ExpectedResult"],
+            test["TestName"]
         )
 
         # check if query should end with success or fail
-        if (file_name.split("/")[0]) == "Success":
+        if (test["ExpectedResult"]) == "Success":
             expectedResult = True
         else:
             expectedResult = False
-
-        # extract test name
-        testName = file_name.split("/")[1]
 
         # read query from file and append the output
         with open(pathToRead, 'r') as file:
@@ -119,16 +117,11 @@ def get_queries_from_file() -> list[dict[str, str | bool]]:
                 queryString = ("".join(file.readlines()))
             except:
                 raise Exception(f"Cannot read query file in path {pathToRead}")
-
-            result.append(
-                {
-                    "testName": testName,
-                    "query": queryString,
-                    "expectedResult": expectedResult
-                }
-            )
-
-    return result
+            
+            test["Query"] = queryString
+            test["ExpectedResultBool"] = expectedResult
+            
+    return configuration["Tests"]
 
 
 def checkIfAllExistingFilesAreConfigured(configuration) -> None:
@@ -148,35 +141,33 @@ def checkIfAllExistingFilesAreConfigured(configuration) -> None:
         )
     }
 
-    configList = [test.split('/')[1] for test in configuration["Tests"]]
+    configuredTests = {
+        'Success': [testFile["TestName"] for testFile in configuration["Tests"] if testFile["ExpectedResult"] == "Success"],
+        'Fail': [testFile["TestName"] for testFile in configuration["Tests"] if testFile["ExpectedResult"] == "Fail"]
+        } 
+    
     for type in locationToCheck:
 
         items = os.listdir(locationToCheck[type])
         for file in items:
-            if file not in configList:
+            
+            if file not in configuredTests[type]:
                 print(bcolors.WARNING + file + " " + type + " test is not configured in config file" +bcolors.ENDC)
-        
-        
+                
+    return None
 
 
 def query_postgres(queries) -> list[dict[str, str | bool]]:
 
-    testResults = []
-
     # loop through configured queries
-    for i in range(len(queries)):
+    for test in queries:
         queryResult = None
-        currentTestResult = {
-            "Name": queries[i]["testName"],
-            "Result": False,
-            "Error": ""
-        }
 
         try:
             # Connect to PostgreSQL database
             connection = psycopg2.connect(
-                user=DB_USER,
-                password=DB_PASSWORD,
+                user=test["Username"],
+                password=DB_PASSWORD[(test["Username"])],
                 host=DB_HOST,
                 port=DB_PORT,
                 database=DB_DATABASE
@@ -184,7 +175,7 @@ def query_postgres(queries) -> list[dict[str, str | bool]]:
 
             # Execute the query
             cursor = connection.cursor()
-            cursor.execute(queries[i]["query"])
+            cursor.execute(test["Query"])
             connection.commit()
 
             queryResult = True
@@ -193,28 +184,25 @@ def query_postgres(queries) -> list[dict[str, str | bool]]:
 
             # Assign error to result field
             queryResult = False
-            currentTestResult["Error"] = error
+            test["Error"] = error
         finally:
 
             # fill in appropriate test result
-            if queryResult == queries[i]["expectedResult"]:
-                currentTestResult["Result"] = True
+            if queryResult == test["ExpectedResultBool"]:
+                test["Success"] = True
             else:
-                currentTestResult["Result"] = False
-
-            # append current test result to result list
-            testResults.append(currentTestResult)
+                test["Success"] = False
 
             # close connection
             if connection:
                 cursor.close()
                 connection.close()
 
-    return testResults
+    return queries
 
 
-def display_results(testResults, queries):
-
+def display_results(testResults):
+    
     # set table headers
     dataHeaders = ["Test name", "Test type", "Successful"]
 
@@ -222,12 +210,8 @@ def display_results(testResults, queries):
     data = []
 
     for i in range(len(testResults)):
-        if queries[i]["expectedResult"] == True:
-            testType = "Success"
-        else:
-            testType = "Fail"
         data.append(
-            [testResults[i]["Name"], testType, testResults[i]["Result"]]
+            [testResults[i]["TestName"], testResults[i]["ExpectedResult"], testResults[i]["Success"]]
         )
 
     # print result table
@@ -243,8 +227,8 @@ def display_results(testResults, queries):
 
     # print errors for tests which ended different than expected
     for test in testResults:
-        if test["Result"] != True:
-            print(bcolors.FAIL + test["Name"] + bcolors.ENDC)
+        if test["Success"] != True:
+            print(bcolors.FAIL + test["TestName"] + bcolors.ENDC)
             print(test["Error"])
 
     return None
