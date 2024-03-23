@@ -3,5 +3,5 @@
     Expected result: success
 */
 
-INSERT INTO invoice_view (invoice_reservation_id)
-VALUES(1);
+INSERT INTO invoice_view (invoice_reservation_id, invoice_price_gross)
+VALUES(1,100);

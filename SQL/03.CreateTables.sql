@@ -72,6 +72,7 @@
 		2024-03-22		Stanisław Horna			Additional constraint to check if user_name or e_mail is provided.
 												fkeys for last_modified_by added.
 
+		2024-03-23		Stanisław Horna			Is_Paid and Price_gross moved from reservation to invoice table
 
 */
 
@@ -139,8 +140,6 @@ CREATE TABLE Reservation (
 	Num_of_children int NOT NULL,
 	Start_date timestamp NOT NULL,
 	End_date timestamp NOT NULL,
-	Price_gross float NOT NULL,
-	Is_paid bool DEFAULT false,
 	Creation_date timestamp DEFAULT now(),
 	Last_modified_at timestamp DEFAULT now(),
 	Last_modified_by int NULL,
@@ -149,8 +148,7 @@ CREATE TABLE Reservation (
 	CONSTRAINT Num_of_children_chk CHECK (Num_of_children >= 0),  -- can be on reservation
 	CONSTRAINT Start_date_chk CHECK (Start_date > NOW()), -- can not be reserved for past
 	CONSTRAINT End_date_chk CHECK (End_date > NOW()), -- can not be reserved for past
-	CONSTRAINT Reservation_dates_chk CHECK (End_date > Start_date), -- must have duration
-	CONSTRAINT Price_gross_chk CHECK (Price_gross > 0) -- can not be negative
+	CONSTRAINT Reservation_dates_chk CHECK (End_date > Start_date) -- must have duration
 );
 
 CREATE TABLE Reservation_Room ( -- to handle many rooms on the same reservation
@@ -176,9 +174,13 @@ CREATE TABLE Invoice (
 	ID serial PRIMARY KEY NOT NULL,
 	Reservation_ID int UNIQUE NOT NULL, -- can be only 1 invoice for 1 reservation
 	Invoice_date timestamp DEFAULT now(),
+	Price_gross float NOT NULL,
+	Is_paid bool DEFAULT FALSE,
 	Status_ID int DEFAULT 1,
 	Last_modified_at timestamp DEFAULT now(),
-	Last_modified_by int NULL
+	Last_modified_by int NULL,
+	
+	CONSTRAINT Price_gross_chk CHECK (Price_gross > 0) -- can not be negative
 );
 
 CREATE TABLE dict_invoice_status (

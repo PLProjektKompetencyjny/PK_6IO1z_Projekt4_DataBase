@@ -49,7 +49,7 @@
         {
             "ExpectedResult": "Success",
             "Username": "tn_api_write",
-            "TestName": "reservation_view_UPDATE_reservation_price_gross.sql"
+            "TestName": "invoice_view_UPDATE_price_gross.sql"
         },
         {
             "ExpectedResult": "Success",

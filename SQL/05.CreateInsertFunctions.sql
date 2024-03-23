@@ -48,6 +48,9 @@
                                                     - insert_customer_view
                                                 add SECURITY DEFINER <- to invoke functions with owner's permissions, 
                                                     instead of caller ones.
+
+        2024-03-23		Stanisław Horna			Is_Paid and Price_gross moved from reservation to invoice table.
+            
 */
 
 CREATE OR REPLACE FUNCTION insert_reservation_view()
@@ -71,7 +74,6 @@ BEGIN
             num_of_children, 
             start_date, 
             end_date, 
-            price_gross,
             last_modified_by
             )
 		VALUES (
@@ -80,7 +82,6 @@ BEGIN
             NEW.reservation_number_of_children, 
             NEW.reservation_start_date, 
             NEW.reservation_end_date, 
-            NEW.reservation_price_gross,
             NEW.reservation_last_modified_by
             );
 
@@ -117,8 +118,16 @@ BEGIN
 
     -- just insert new invoice
     -- all conditions will be check by defined CONSTRAINTS
-    INSERT INTO invoice (reservation_id, last_modified_by)
-    VALUES (NEW.invoice_reservation_id, NEW.invoice_last_modified_by);
+    INSERT INTO invoice (
+        reservation_id, 
+        last_modified_by,
+        Price_gross
+        )
+    VALUES (
+        NEW.invoice_reservation_id, 
+        NEW.invoice_last_modified_by,
+        NEW.invoice_price_gross
+        );
 
 	RETURN NEW;
 

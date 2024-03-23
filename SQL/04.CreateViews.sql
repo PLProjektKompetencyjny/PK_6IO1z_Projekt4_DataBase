@@ -34,7 +34,10 @@
 						Grzegorz Kubicki		Passwords excluded from views,
 												DB will be responsible for checking if password is correct.
 
-		2024-03-22		Stanisław Horna			Password column removed from user_view
+		2024-03-22		Stanisław Horna			Password column removed from user_view.
+
+		2024-03-23		Stanisław Horna			Is_Paid and Price_gross moved from reservation to invoice table.
+
 */
 
 -- Drop existing Views
@@ -72,16 +75,12 @@ SELECT
 	r.Num_of_Children AS "reservation_number_of_children",
 	r.Start_Date AS "reservation_start_date",
 	r.End_Date AS "reservation_end_date",
-	r.Price_Gross AS "reservation_price_gross",
-	r.Is_Paid AS "reservation_is_paid",
 	rr.Room_ID AS "reservation_room_id",
 	rr.Room_status_ID AS "reservation_room_status_id",
 	r.Last_Modified_by AS "reservation_last_modified_by",
 	r.Last_Modified_at AS "reservation_last_modified_at"
 FROM Reservation r
-LEFT JOIN reservation_room rr ON rr.reservation_id = r.ID
-LEFT JOIN dict_reservation_status s ON s.ID = r.Status_id
-LEFT JOIN dict_reservation_room_status rrs ON rrs.ID = rr.Room_status_ID;
+LEFT JOIN reservation_room rr ON rr.reservation_id = r.ID;
 
 CREATE VIEW room_view AS
 SELECT
@@ -105,11 +104,12 @@ SELECT
     i.ID AS "invoice_id",
     i.Reservation_ID AS "invoice_reservation_id",
     i.Invoice_Date AS "invoice_date",
-	s.ID AS "invoice_status_id",
+	i.Price_Gross AS "invoice_price_gross",
+	i.Is_Paid AS "invoice_is_paid",
+	i.Status_ID AS "invoice_status_id",
 	i.Last_Modified_by AS "invoice_last_modified_by",
 	i.Last_Modified_at AS "invoice_last_modified_at"
-FROM Invoice i
-LEFT JOIN dict_invoice_status s ON s.ID = i.status_id;
+FROM Invoice i;
 
 CREATE VIEW user_view AS
 SELECT

@@ -49,6 +49,8 @@
 
         2024-03-22      Stanisław Horna         add SECURITY DEFINER <- to invoke functions with owner's permissions, 
                                                     instead of caller ones.
+
+		2024-03-23		Stanisław Horna			Is_Paid and Price_gross moved from reservation to invoice table.
 */
 
 CREATE OR REPLACE FUNCTION update_reservation_view()
@@ -101,9 +103,9 @@ BEGIN
 		Any_ops_performed = TRUE;
 	END IF;
 
-	-- To ommit raising an error by CONSTRAINT check, which is verifying if end_date > start_date,
+	-- To omit raising an error by CONSTRAINT check, which is verifying if end_date > start_date,
 	-- in case of changing both dates at the same time we have to perform it in appropriate order,
-	-- which is handdled in sub function
+	-- which is handled in sub function
 	IF (NEW.reservation_start_date IS DISTINCT FROM OLD.reservation_start_date) AND 
 		(NEW.reservation_end_date IS DISTINCT FROM OLD.reservation_end_date) THEN
 		
@@ -155,40 +157,6 @@ BEGIN
 
 		Any_ops_performed = TRUE;
 		END IF;
-	END IF;
-
-
-	-- Check if reservation_price_gross is changed
-	IF (NEW.reservation_price_gross IS DISTINCT FROM OLD.reservation_price_gross) THEN
-
-		UPDATE reservation
-		SET price_gross = NEW.reservation_price_gross
-		WHERE id = Res_ID;
-
-		RAISE NOTICE 
-			'price_gross updated for reservation ID: %. OLD: % NEW: %', 
-				Res_ID, 
-				OLD.reservation_price_gross, 
-				NEW.reservation_price_gross;
-
-		Any_ops_performed = TRUE;
-	END IF;
-
-
-	-- Check if reservation_is_paid is changed
-	IF (NEW.reservation_is_paid IS DISTINCT FROM OLD.reservation_is_paid) THEN
-
-		UPDATE reservation
-		SET is_paid = NEW.reservation_is_paid
-		WHERE id = Res_ID;
-
-		RAISE NOTICE 
-			'is_paid updated for reservation ID: %. OLD: % NEW: %', 
-				Res_ID, 
-				OLD.reservation_is_paid, 
-				NEW.reservation_is_paid;
-
-		Any_ops_performed = TRUE;
 	END IF;
 
 
@@ -297,6 +265,40 @@ BEGIN
                 Inv_ID, 
                 OLD.invoice_status_id, 
                 NEW.invoice_status_id;
+
+		Any_ops_performed = TRUE;
+	END IF;
+
+
+	-- Check if invoice_price_gross is changed
+	IF (NEW.invoice_price_gross IS DISTINCT FROM OLD.invoice_price_gross) THEN
+
+		UPDATE invoice
+		SET price_gross = NEW.invoice_price_gross
+		WHERE id = Inv_ID;
+
+		RAISE NOTICE 
+			'price_gross updated for invoice ID: %. OLD: % NEW: %', 
+				Res_ID, 
+				OLD.invoice_price_gross, 
+				NEW.invoice_price_gross;
+
+		Any_ops_performed = TRUE;
+	END IF;
+
+
+	-- Check if invoice_is_paid is changed
+	IF (NEW.invoice_is_paid IS DISTINCT FROM OLD.invoice_is_paid) THEN
+
+		UPDATE reservation
+		SET is_paid = NEW.invoice_is_paid
+		WHERE id = Inv_ID;
+
+		RAISE NOTICE 
+			'is_paid updated for invoice ID: %. OLD: % NEW: %', 
+				Res_ID, 
+				OLD.invoice_is_paid, 
+				NEW.invoice_is_paid;
 
 		Any_ops_performed = TRUE;
 	END IF;
