@@ -135,14 +135,14 @@ Poniższe operacje nie są możliwe do wykonania przy użyciu instrukcji `UPDATE
         - last_modified_by_id <- id użytkownika, który tworzy wpis. Jeśli podany będzie `NULL` zostanie to zinterpretowane, jakby użytkownik sam założył konto.
         
 - zmiana hasła
-  - funkcja `update_user_account_password(login, new_user_password, old_user_password, last_modified_by_id)` - 
-        **Funkcja zwraca** ID użytkownika, jeśli operacja przebiegła pomyślnie, w przeciwnym wypadku zwraca null oraz błąd.
-        - login <- dowolnie username lub e-mail, funkcja sama rozpoznaje i sprawdza wartość z odpowiedniej kolumny.
-        - new_user_passoword <- nowe hasło które chcemy ustawić 
-        - old_user_passoword <- stare hasło do autentykacji użytkownika
-        - last_modified_by_id <- id użytkownika, który dokonuje zmiany, 
-            użytkownik, który nie jest adminem nie może zmienić hasła innemu użytkownikowi,
-            jeżeli podany id odpowiada adminowi poprawność starego hasła nie jest sprawdzana.
+  - funkcja `update_user_account_password(login, new_user_password, old_user_password, last_modified_by_id)
+    **Funkcja zwraca** ID użytkownika, jeśli operacja przebiegła pomyślnie, w przeciwnym wypadku zwraca null oraz błąd.
+    - login <- dowolnie username lub e-mail, funkcja sama rozpoznaje i sprawdza wartość z odpowiedniej kolumny.
+    - new_user_passoword <- nowe hasło które chcemy ustawić 
+    - old_user_passoword <- stare hasło do autentykacji użytkownika
+    - last_modified_by_id <- id użytkownika, który dokonuje zmiany, 
+        użytkownik, który nie jest adminem nie może zmienić hasła innemu użytkownikowi,
+        jeżeli podany id odpowiada adminowi poprawność starego hasła nie jest sprawdzana.
 
 - autentykacja istniejącego użytkownika za pomocą loginu i hasła:
     - funkcja `authenticate_user_account(login, user_password)` - 
