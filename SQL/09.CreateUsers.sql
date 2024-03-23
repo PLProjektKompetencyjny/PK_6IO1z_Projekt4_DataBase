@@ -16,6 +16,9 @@
         ChangeLog:
 
         Date            Who                     What
+        2024-03-23      Stanisław Horna         add privileges for user management functions,
+                                                UPDATES do not work without SELECT rights,
+                                                to be investigated
 
 */
 
@@ -37,8 +40,12 @@ GRANT SELECT ON user_view to "tn_api_read";
 -- Grant privileges for WRITE user
 GRANT CONNECT ON DATABASE "TravelNest" to "tn_api_write";
 GRANT USAGE ON SCHEMA public TO "tn_api_write";
-GRANT INSERT, UPDATE ON customer_view to "tn_api_write";
-GRANT INSERT, UPDATE ON invoice_view to "tn_api_write";
-GRANT INSERT, UPDATE ON reservation_view to "tn_api_write";
-GRANT INSERT, UPDATE ON room_view to "tn_api_write";
-GRANT INSERT, UPDATE ON user_view to "tn_api_write";
+GRANT SELECT, INSERT, UPDATE ON customer_view to "tn_api_write";
+GRANT SELECT, INSERT, UPDATE ON invoice_view to "tn_api_write";
+GRANT SELECT, INSERT, UPDATE ON reservation_view to "tn_api_write";
+GRANT SELECT, INSERT, UPDATE ON room_view to "tn_api_write";
+GRANT SELECT, INSERT, UPDATE ON user_view to "tn_api_write";
+
+GRANT EXECUTE ON FUNCTION authenticate_user_account(varchar, varchar) to "tn_api_write";
+GRANT EXECUTE ON FUNCTION insert_user_account(varchar, varchar, int) to "tn_api_write";
+GRANT EXECUTE ON FUNCTION update_user_account_password(varchar, varchar, varchar, int) to "tn_api_write";
