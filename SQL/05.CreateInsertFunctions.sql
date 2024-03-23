@@ -142,8 +142,18 @@ BEGIN
 
     -- just insert new room
     -- all conditions will be check by defined CONSTRAINTS
-    INSERT INTO room (id, room_type_id, room_price_gross, last_modified_by)
-    VALUES (NEW.room_id, NEW.room_type_id, NEW.room_gross_price, NEW.room_last_modified_by);
+    INSERT INTO room (
+        id, 
+        room_type_id, 
+        room_price_gross, 
+        last_modified_by
+        )
+    VALUES (
+        NEW.room_id, 
+        NEW.room_type_id, 
+        NEW.room_gross_price, 
+        NEW.room_last_modified_by
+        );
 
 	RETURN NEW;
 

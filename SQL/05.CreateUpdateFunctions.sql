@@ -51,6 +51,7 @@
                                                     instead of caller ones.
 
 		2024-03-23		Stanisław Horna			Is_Paid and Price_gross moved from reservation to invoice table.
+												Additional validation for update_user_view() added.
 */
 
 CREATE OR REPLACE FUNCTION update_reservation_view()
@@ -190,6 +191,24 @@ BEGIN
 				Res_ID, 
 				OLD.reservation_room_id, 
 				NEW.reservation_room_id;
+
+		Any_ops_performed = TRUE;
+	END IF;
+
+
+	-- Check if reservation_room_status_id is changed
+	IF (NEW.reservation_room_status_id IS DISTINCT FROM OLD.reservation_room_status_id) THEN
+		
+		UPDATE reservation_room
+		SET room_status_id = NEW.reservation_room_status_id
+		WHERE reservation_id = Res_ID AND 
+			room_id = OLD.reservation_room_id;
+
+		RAISE NOTICE 
+			'reservation_room_status_id updated for reservation ID: %. OLD: % NEW: %', 
+				Res_ID, 
+				OLD.reservation_room_status_id, 
+				NEW.reservation_room_status_id;
 
 		Any_ops_performed = TRUE;
 	END IF;
@@ -471,6 +490,30 @@ BEGIN
     Usr_ID := NEW.user_id;
 
 
+	-- check if username is changed 
+	IF (NEW.user_name IS DISTINCT FROM OLD.user_name) THEN
+
+		IF validate_e_mail(NEW.user_name) THEN
+			RAISE EXCEPTION 
+				'Value % can not be set as user_name, because it is an e-mail',
+				NEW.user_name;
+			RETURN NULL;
+		END IF
+
+		UPDATE user_account
+		SET user_name = NEW.user_name
+		WHERE id = Usr_ID;
+
+		RAISE NOTICE 
+            'user_name updated for account ID: %. OLD: % NEW: %', 
+                Usr_ID, 
+                OLD.user_name, 
+                NEW.user_name;
+
+		Any_ops_performed = TRUE;
+	END IF;
+
+
 	-- check if user e-mail is changed 
 	IF (NEW.user_e_mail IS DISTINCT FROM OLD.user_e_mail) THEN
 
@@ -483,23 +526,6 @@ BEGIN
                 Usr_ID, 
                 OLD.user_e_mail, 
                 NEW.user_e_mail;
-
-		Any_ops_performed = TRUE;
-	END IF;
-
-
-		-- check if username is changed 
-	IF (NEW.user_name IS DISTINCT FROM OLD.user_name) THEN
-
-		UPDATE user_account
-		SET user_name = NEW.user_name
-		WHERE id = Usr_ID;
-
-		RAISE NOTICE 
-            'user_name updated for account ID: %. OLD: % NEW: %', 
-                Usr_ID, 
-                OLD.user_name, 
-                NEW.user_name;
 
 		Any_ops_performed = TRUE;
 	END IF;
