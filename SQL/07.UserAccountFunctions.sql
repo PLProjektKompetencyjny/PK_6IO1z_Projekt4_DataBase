@@ -31,6 +31,8 @@
 
         Date            Who                     What
         2024-03-22      Stanisław Horna         handling for last_modified_by, inactive user can not authenticate.
+
+        2024-03-23      Stanisław Horna         add SECURITY DEFINER <- to invoke functions with owner's permissions.
 */
 
 CREATE OR REPLACE FUNCTION insert_user_account(login varchar, user_password varchar, last_modified_by_id int)
@@ -85,7 +87,7 @@ BEGIN
 
 	RETURN New_User_ID;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
 
 
@@ -164,7 +166,7 @@ BEGIN
 
 	RETURN NULL;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
 
 
@@ -232,5 +234,5 @@ BEGIN
 	RAISE NOTICE 'Password for login: % is incorrect', login;
     RETURN NULL;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
