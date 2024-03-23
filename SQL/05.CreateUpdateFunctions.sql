@@ -498,7 +498,7 @@ BEGIN
 				'Value % can not be set as user_name, because it is an e-mail',
 				NEW.user_name;
 			RETURN NULL;
-		END IF
+		END IF;
 
 		UPDATE user_account
 		SET user_name = NEW.user_name
