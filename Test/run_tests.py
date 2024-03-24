@@ -106,7 +106,7 @@ def get_queries_from_file() -> list[dict[str, str | bool]]:
         )
 
         # check if query should end with success or fail
-        if (test["ExpectedResult"]) == "Success":
+        if (test["ExpectedResult"]).lower() == "success":
             expectedResult = True
         else:
             expectedResult = False

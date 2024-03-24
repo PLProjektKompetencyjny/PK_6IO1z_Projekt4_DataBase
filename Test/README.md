@@ -28,5 +28,10 @@ Each query file should contain only 1 statement with, structure of such file sho
 File should be saved in following name format: `<view_name>_<INSTRUCTION>_<descriptive_title>`
 
 Once query file is saved in proper location go to `Config.json` and add your query in a appropriate order to other queries. Script is executing them from top to the bottom.
-Entry line should look like: `<Success_or_Fail>/<created_file_name>`
+Entry line should look like: 
 
+    {
+        "ExpectedResult": <Success_or_Fail>,
+        "Username": <tn_api_read_or_tn_api_write>,
+        "TestName": <file_name.sql>
+    }
