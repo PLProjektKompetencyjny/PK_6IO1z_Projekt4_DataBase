@@ -38,3 +38,13 @@
         Date            Who                     What
 
 */
+
+CREATE OR REPLACE FUNCTION check_validate_e_mail(e_mail varchar)
+RETURNS boolean 
+AS $$
+BEGIN
+    RETURN (
+        e_mail ~* '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$'
+    );
+END;
+$$ LANGUAGE plpgsql;

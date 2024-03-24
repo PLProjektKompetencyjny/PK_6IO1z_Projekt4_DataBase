@@ -101,7 +101,7 @@ CREATE TABLE User_Account (
 	Last_modified_at timestamp DEFAULT now(),
 	Last_modified_by int NULL,
 
-	CONSTRAINT E_mail_chk CHECK (validate_e_mail(E_mail)), -- check if email is matching regex pattern
+	CONSTRAINT E_mail_chk CHECK (check_validate_e_mail(E_mail)), -- check if email is matching regex pattern
 	CONSTRAINT User_name_chk CHECK (User_name ~ '^[a-zA-Z]+$'), -- username contains letters only
 	-- check if user or email is present
 	CONSTRAINT E_mail_OR_User_name_chk CHECK (user_name IS NOT NULL OR E_mail IS NOT NULL) 

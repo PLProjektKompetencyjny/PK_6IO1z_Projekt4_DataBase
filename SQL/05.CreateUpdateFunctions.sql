@@ -493,7 +493,7 @@ BEGIN
 	-- check if username is changed 
 	IF (NEW.user_name IS DISTINCT FROM OLD.user_name) THEN
 
-		IF validate_e_mail(NEW.user_name) THEN
+		IF check_validate_e_mail(NEW.user_name) THEN
 			RAISE EXCEPTION 
 				'Value % can not be set as user_name, because it is an e-mail',
 				NEW.user_name;

@@ -41,7 +41,7 @@ DECLARE
 	New_User_ID int;
 BEGIN
     -- check if provided login is an e-mail
-    IF validate_e_mail(login) THEN
+    IF check_validate_e_mail(login) THEN
 
         -- create new account using e-mail field
 	    INSERT INTO user_account (e_mail, password)
@@ -98,7 +98,7 @@ DECLARE
     Is_Admin boolean;
 BEGIN
     -- check if provided login is an e-mail
-    IF validate_e_mail(login) THEN
+    IF check_validate_e_mail(login) THEN
 
         -- get ID for newly created user
         SELECT
@@ -178,7 +178,7 @@ DECLARE
 BEGIN
     -- check if login is an e-mail address
     -- based on it decide if authentication will be performed via e-mail or username
-	IF validate_e_mail(login) THEN
+	IF check_validate_e_mail(login) THEN
 
         -- get an ID for user with provided e-mail
         SELECT 
