@@ -3,9 +3,6 @@
         SQL script for PostgreSQL to configure Views in TravelNest DB.
         EXISTING DB VIEWS WILL BE REMOVED AND PRIVILEGES WILL BE FLUSHED.
 
-            SQL script for PostgreSQL to configure Tables in TravelNest DB.
-        EXISTING DB TABLES WILL BE REMOVED AND DATA WILL BE LOST.
-
 		Following actions will be performed in a given order:
 			1. DROP of all TravelNest Views.
 			2. CREATE all Views from scratch.
@@ -30,9 +27,14 @@
         ChangeLog:
 
         Date            Who                     What
-		2024-03-18		Stanisław Horna			Update views based on tables re-desing
+		2024-03-18		Stanisław Horna			Update views based on tables re-design
 						Grzegorz Kubicki		Passwords excluded from views,
 												DB will be responsible for checking if password is correct.
+
+		2024-03-22		Stanisław Horna			Password column removed from user_view.
+
+		2024-03-23		Stanisław Horna			Is_Paid and Price_gross moved from reservation to invoice table.
+
 */
 
 -- Drop existing Views
@@ -70,20 +72,17 @@ SELECT
 	r.Num_of_Children AS "reservation_number_of_children",
 	r.Start_Date AS "reservation_start_date",
 	r.End_Date AS "reservation_end_date",
-	r.Price_Gross AS "reservation_price_gross",
-	r.Is_Paid AS "reservation_is_paid",
 	rr.Room_ID AS "reservation_room_id",
 	rr.Room_status_ID AS "reservation_room_status_id",
 	r.Last_Modified_by AS "reservation_last_modified_by",
 	r.Last_Modified_at AS "reservation_last_modified_at"
 FROM Reservation r
-LEFT JOIN reservation_room rr ON rr.reservation_id = r.ID
-LEFT JOIN dict_reservation_status s ON s.ID = r.Status_id
-LEFT JOIN dict_reservation_room_status rrs ON rrs.ID = rr.Room_status_ID;
+LEFT JOIN reservation_room rr ON rr.reservation_id = r.ID;
 
 CREATE VIEW room_view AS
 SELECT
 	r.ID AS "room_id",
+	r.room_type_id AS "room_type_id",
 	r.status_ID AS "room_status_id",
 	t.Num_of_Single_Beds AS "room_number_of_single_beds", 
 	t.Num_of_Double_Beds AS "room_number_of_double_beds",
@@ -102,18 +101,18 @@ SELECT
     i.ID AS "invoice_id",
     i.Reservation_ID AS "invoice_reservation_id",
     i.Invoice_Date AS "invoice_date",
-	s.ID AS "invoice_status_id",
+	i.Price_Gross AS "invoice_price_gross",
+	i.Is_Paid AS "invoice_is_paid",
+	i.Status_ID AS "invoice_status_id",
 	i.Last_Modified_by AS "invoice_last_modified_by",
 	i.Last_Modified_at AS "invoice_last_modified_at"
-FROM Invoice i
-LEFT JOIN dict_invoice_status s ON s.ID = i.status_id;
+FROM Invoice i;
 
 CREATE VIEW user_view AS
 SELECT
     u.ID AS "user_id",
 	u.E_Mail AS "user_e_mail",
     u.User_Name AS "user_name",
-	u.password AS "user_password",
     u.Is_Active AS "user_is_active",
     u.Is_Admin AS "user_is_admin",
 	u.Last_Modified_by AS "user_last_modified_by",

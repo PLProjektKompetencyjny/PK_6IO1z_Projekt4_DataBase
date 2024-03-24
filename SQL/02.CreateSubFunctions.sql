@@ -3,7 +3,7 @@
         SQL script for PostgreSQL to define sub functions in TravelNest DB.
         EXISTING FUNCTIONS WILL BE REMOVED AND RE-CREATED WITH THIS FILES' DEFINITION.
 
-        This file is suposed to define all sub functions,
+        This file is supposed to define all sub functions,
         which will be used in another functions, most likely those executed by triggers.
 
 		Following actions will be performed in a given order:
@@ -31,5 +31,26 @@
         ChangeLog:
 
         Date            Who                     What
+        2024-03-22      Stanisław Horna         add SECURITY DEFINER <- to invoke functions with owner's permissions, 
+                                                    instead of caller ones.
 
 */
+
+
+CREATE OR REPLACE FUNCTION subf_get_reservation_id(new_entry RECORD) 
+RETURNS int 
+AS $$
+BEGIN
+    -- One customer can have only 1 reservation for the same time frame and guests number.
+    RETURN (
+        SELECT
+            ID
+        FROM Reservation
+        WHERE user_account_id = new_entry.reservation_customer_id AND
+                num_of_adults = new_entry.reservation_number_of_adults AND
+                num_of_children = new_entry.reservation_number_of_children AND
+                start_date = new_entry.reservation_start_date AND
+                end_date = new_entry.reservation_end_date
+    );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
