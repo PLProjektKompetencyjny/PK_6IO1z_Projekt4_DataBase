@@ -3,9 +3,6 @@
         SQL script for PostgreSQL to configure Views in TravelNest DB.
         EXISTING DB VIEWS WILL BE REMOVED AND PRIVILEGES WILL BE FLUSHED.
 
-            SQL script for PostgreSQL to configure Tables in TravelNest DB.
-        EXISTING DB TABLES WILL BE REMOVED AND DATA WILL BE LOST.
-
 		Following actions will be performed in a given order:
 			1. DROP of all TravelNest Views.
 			2. CREATE all Views from scratch.
