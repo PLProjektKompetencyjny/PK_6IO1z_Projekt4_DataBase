@@ -83,12 +83,9 @@ BEGIN
             NEW.reservation_start_date, 
             NEW.reservation_end_date, 
             NEW.reservation_last_modified_by
-            );
+            )
+        RETURNING ID INTO R_ID;
 
-        -- Get reservation ID of newly inserted record
-        SELECT
-            subf_get_reservation_id(NEW)
-        INTO R_ID;
 
         RAISE NOTICE 'New reservation inserted with ID: %', R_ID;
         -- complete rooms for NEW reservation
