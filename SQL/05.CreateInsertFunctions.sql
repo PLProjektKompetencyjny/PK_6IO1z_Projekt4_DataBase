@@ -30,7 +30,7 @@
 
     .NOTES
 
-        Version:            1.2
+        Version:            1.3
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -50,6 +50,8 @@
                                                     instead of caller ones.
 
         2024-03-23		Stanisław Horna			Is_Paid and Price_gross moved from reservation to invoice table.
+
+        2024-04-06      Stanisław Horna         Price gross calculation added to invoice insert function
             
 */
 
@@ -116,8 +118,10 @@ DECLARE
 	Price_gross float;
 BEGIN
 
+    -- assign reservation_id to local variable 
     Res_ID := NEW.invoice_reservation_id;
 
+    -- calculate price gross based on the reservation details
     SELECT
         SUM(
             RO.ROOM_PRICE_GROSS + (
