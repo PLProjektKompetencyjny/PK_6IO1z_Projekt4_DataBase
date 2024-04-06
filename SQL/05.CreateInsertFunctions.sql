@@ -111,7 +111,28 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 CREATE OR REPLACE FUNCTION insert_invoice_view()
 RETURNS TRIGGER AS $$
+DECLARE
+    Res_ID int;
+	Price_gross float;
 BEGIN
+
+    Res_ID := NEW.invoice_reservation_id;
+
+    SELECT
+        SUM(
+            RO.ROOM_PRICE_GROSS + (
+                (RT.ADULT_PRICE_GROSS * R.NUM_OF_ADULTS) + (RT.CHILD_PRICE_GROSS * R.NUM_OF_CHILDREN)
+            )
+        ) AS "total"
+    INTO Price_gross
+    FROM
+        RESERVATION R
+        LEFT JOIN RESERVATION_ROOM RR ON RR.RESERVATION_ID = R.ID
+        LEFT JOIN ROOM RO ON RO.ID = RR.ROOM_ID
+        LEFT JOIN ROOM_TYPE RT ON RT.ID = RO.ROOM_TYPE_ID
+    WHERE
+        R.ID = Res_ID;
+
 
     -- just insert new invoice
     -- all conditions will be check by defined CONSTRAINTS
@@ -121,9 +142,9 @@ BEGIN
         Price_gross
         )
     VALUES (
-        NEW.invoice_reservation_id, 
+        Res_ID, 
         NEW.invoice_last_modified_by,
-        NEW.invoice_price_gross
+        Price_gross
         );
 
 	RETURN NEW;
