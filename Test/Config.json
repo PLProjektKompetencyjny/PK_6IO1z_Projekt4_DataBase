@@ -1,0 +1,275 @@
+{
+    "QueriesDirectory": "TestQueries",
+    "Tests": [
+        {
+            "ExpectedResult": "Success",
+            "Username": "tn_api_write",
+            "TestName": "reservation_view_INSERT_1_room.sql"
+        },
+        {
+            "ExpectedResult": "Success",
+            "Username": "tn_api_write",
+            "TestName": "reservation_view_INSERT_2_room.sql"
+        },
+        {
+            "ExpectedResult": "Success",
+            "Username": "tn_api_write",
+            "TestName": "reservation_view_INSERT_3_room.sql"
+        },
+        {
+            "ExpectedResult": "Success",
+            "Username": "tn_api_write",
+            "TestName": "reservation_view_UPDATE_2_reservation_dates_to_future.sql"
+        },
+        {
+            "ExpectedResult": "Success",
+            "Username": "tn_api_write",
+            "TestName": "reservation_view_UPDATE_2_reservation_dates_to_past.sql"
+        },
+        {
+            "ExpectedResult": "Success",
+            "Username": "tn_api_write",
+            "TestName": "reservation_view_UPDATE_replace_room.sql"
+        },
+        {
+            "ExpectedResult": "Success",
+            "Username": "tn_api_write",
+            "TestName": "reservation_view_UPDATE_reservation_end_date_to_future.sql"
+        },
+        {
+            "ExpectedResult": "Success",
+            "Username": "tn_api_write",
+            "TestName": "reservation_view_UPDATE_reservation_end_date_to_past.sql"
+        },
+        {
+            "ExpectedResult": "Success",
+            "Username": "tn_api_write",
+            "TestName": "reservation_view_UPDATE_reservation_num_of_guests.sql"
+        },
+        {
+            "ExpectedResult": "Success",
+            "Username": "tn_api_write",
+            "TestName": "invoice_view_UPDATE_price_gross.sql"
+        },
+        {
+            "ExpectedResult": "Success",
+            "Username": "tn_api_write",
+            "TestName": "reservation_view_UPDATE_reservation_room_status.sql"
+        },
+        {
+            "ExpectedResult": "Success",
+            "Username": "tn_api_write",
+            "TestName": "reservation_view_UPDATE_reservation_start_date_to_future.sql"
+        },
+        {
+            "ExpectedResult": "Success",
+            "Username": "tn_api_write",
+            "TestName": "reservation_view_UPDATE_reservation_start_date_to_past.sql"
+        },
+        {
+            "ExpectedResult": "Success",
+            "Username": "tn_api_write",
+            "TestName": "room_view_INSERT_1_room.sql"
+        },
+        {
+            "ExpectedResult": "Success",
+            "Username": "tn_api_write",
+            "TestName": "room_view_INSERT_2_room.sql"
+        },
+        {
+            "ExpectedResult": "Success",
+            "Username": "tn_api_write",
+            "TestName": "room_view_INSERT_3_room.sql"
+        },
+        {
+            "ExpectedResult": "Success",
+            "Username": "tn_api_write",
+            "TestName": "room_view_UPDATE_room_price.sql"
+        },
+        {
+            "ExpectedResult": "Success",
+            "Username": "tn_api_write",
+            "TestName": "room_view_UPDATE_room_status.sql"
+        },
+        {
+            "ExpectedResult": "Success",
+            "Username": "tn_api_write",
+            "TestName": "invoice_view_INSERT_for_reservation_1.sql"
+        },
+        {
+            "ExpectedResult": "Success",
+            "Username": "tn_api_write",
+            "TestName": "invoice_view_INSERT_bulk_for_2_and_3.sql"
+        },
+        {
+            "ExpectedResult": "Success",
+            "Username": "tn_api_write",
+            "TestName": "invoice_view_UPDATE_invoice_status_for_reservation_2.sql"
+        },
+        {
+            "ExpectedResult": "Success",
+            "Username": "tn_api_write",
+            "TestName": "invoice_view_UPDATE_invoice_status_bulk_for_1_and_3.sql"
+        },
+        {
+            "ExpectedResult": "Fail",
+            "Username": "tn_api_write",
+            "TestName": "reservation_view_INSERT_incorrect_dates.sql"
+        },
+        {
+            "ExpectedResult": "Fail",
+            "Username": "tn_api_write",
+            "TestName": "reservation_view_INSERT_without_adults.sql"
+        },
+        {
+            "ExpectedResult": "Success",
+            "Username": "tn_api_write",
+            "TestName": "user_view_CREATE_new_user_with_e_mail.sql"
+        },
+        {
+            "ExpectedResult": "Success",
+            "Username": "tn_api_write",
+            "TestName": "user_view_CREATE_new_user_with_user_name.sql"
+        },
+        {
+            "ExpectedResult": "Fail",
+            "Username": "tn_api_write",
+            "TestName": "user_view_CREATE_new_user_with_e_mail_already_exist.sql"
+        },
+        {
+            "ExpectedResult": "Fail",
+            "Username": "tn_api_write",
+            "TestName": "user_view_CREATE_new_user_with_user_name_already_exist.sql"
+        },
+        {
+            "ExpectedResult": "Fail",
+            "Username": "tn_api_write",
+            "TestName": "user_view_CHANGE_user_password_as_user_wrong_old_pass.sql"
+        },
+        {
+            "ExpectedResult": "Success",
+            "Username": "tn_api_write",
+            "TestName": "user_view_CHANGE_user_password_as_user.sql"
+        },
+        {
+            "ExpectedResult": "Success",
+            "Username": "tn_api_write",
+            "TestName": "user_view_CHANGE_user_password_as_admin.sql"
+        },
+        {
+            "ExpectedResult": "Success",
+            "Username": "tn_api_write",
+            "TestName": "user_view_AUTH_active_user.sql"
+        },
+        {
+            "ExpectedResult": "Success",
+            "Username": "tn_api_write",
+            "TestName": "user_view_UPDATE_user_set_inactive.sql"
+        },
+        {
+            "ExpectedResult": "Fail",
+            "Username": "tn_api_write",
+            "TestName": "user_view_AUTH_user_with_incorrect_password.sql"
+        },
+        {
+            "ExpectedResult": "Fail",
+            "Username": "tn_api_write",
+            "TestName": "user_view_AUTH_user_inactive.sql"
+        },
+        {
+            "ExpectedResult": "Success",
+            "Username": "tn_api_write",
+            "TestName": "user_view_UPDATE_user_name.sql"
+        },
+        {
+            "ExpectedResult": "Fail",
+            "Username": "tn_api_write",
+            "TestName": "user_view_UPDATE_user_name_and_e_mail_to_NULL.sql"
+        },
+        {
+            "ExpectedResult": "Fail",
+            "Username": "tn_api_write",
+            "TestName": "user_view_UPDATE_promote_user_without_user_name_to_admin.sql"
+        },
+        {
+            "ExpectedResult": "Success",
+            "Username": "tn_api_write",
+            "TestName": "user_view_UPDATE_promote_user_with_user_name_to_admin.sql"
+        },
+        {
+            "ExpectedResult": "Fail",
+            "Username": "tn_api_write",
+            "TestName": "user_view_INSERT.sql"
+        },
+        {
+            "ExpectedResult": "Fail",
+            "Username": "tn_api_write",
+            "TestName": "invoice_view_DELETE.sql"
+        },
+        {
+            "ExpectedResult": "Fail",
+            "Username": "tn_api_write",
+            "TestName": "reservation_view_DELETE.sql"
+        },
+        {
+            "ExpectedResult": "Fail",
+            "Username": "tn_api_write",
+            "TestName": "room_view_DELETE.sql"
+        },
+        {
+            "ExpectedResult": "Fail",
+            "Username": "tn_api_write",
+            "TestName": "user_view_DELETE.sql"
+        },
+        {
+            "ExpectedResult": "Fail",
+            "Username": "tn_api_write",
+            "TestName": "customer_view_DELETE.sql"
+        },
+        {
+            "ExpectedResult": "Fail",
+            "Username": "tn_api_write",
+            "TestName": "invoice_view_UPDATE_invoice_date.sql"
+        },
+        {
+            "ExpectedResult": "Fail",
+            "Username": "tn_api_write",
+            "TestName": "room_view_UPDATE_num_of_beds.sql"
+        },
+        {
+            "ExpectedResult": "Success",
+            "Username": "tn_api_write",
+            "TestName": "customer_view_INSERT_1_customer.sql"
+        },
+        {
+            "ExpectedResult": "Success",
+            "Username": "tn_api_write",
+            "TestName": "customer_view_UPDATE_customer_address.sql"
+        },
+        {
+            "ExpectedResult": "Fail",
+            "Username": "tn_api_write",
+            "TestName": "customer_view_INSERT_empty_name.sql"
+        },
+        {
+            "ExpectedResult": "Fail",
+            "Username": "tn_api_write",
+            "TestName": "customer_view_INSERT_wrong_id.sql"
+        },
+        {
+            "ExpectedResult": "Fail",
+            "Username": "tn_api_write",
+            "TestName": "customer_view_UPDATE_e_mail.sql"
+        },
+        {
+            "ExpectedResult": "Fail",
+            "Username": "tn_api_write",
+            "TestName": "customer_view_UPDATE_invalid_phone.sql"
+        },
+        {
+            "ExpectedResult": "Fail",
+            "Username": "tn_api_write",
+            "TestName": "customer_view_UPDATE_invalid_postal_code.sql"
+        }
+    ]
+}

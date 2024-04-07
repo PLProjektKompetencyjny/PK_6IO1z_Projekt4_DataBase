@@ -3,7 +3,7 @@
         SQL script for PostgreSQL to define DELETE functions in TravelNest DB.
         EXISTING FUNCTIONS WILL BE REMOVED AND RE-CREATED WITH THIS FILES' DEFINITION.
 
-        This file is suposed to define all delete functions,
+        This file is supposed to define all delete functions,
         which will be used in INSTEAD OF DELETE view triggers.
 
 		Following actions will be performed in a given order:
@@ -16,7 +16,7 @@
 			so to make them easy easy-readable please use word separator.
 
         - Delete function must have a prefix 'delete_' followed by <view_name> in the name. 
-            Beacause all functions are located in the common Object explorer directory.
+            Because all functions are located in the common Object explorer directory.
 
         - Delete function must return NULL if operation was successful, 
             otherwise raise an descriptive exception, which will be capture by backend.
@@ -38,5 +38,16 @@
         ChangeLog:
 
         Date            Who                     What
-
+        2024-03-22      Stanisław Horna         delete_operation_not_permitted generic func for all not permitted ops.
 */
+
+CREATE OR REPLACE FUNCTION delete_operation_not_permitted()
+RETURNS TRIGGER AS $$
+BEGIN
+
+    RAISE EXCEPTION 'Operation not permitted.';
+
+	RETURN NULL;
+
+END;
+$$ LANGUAGE plpgsql;
