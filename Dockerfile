@@ -5,6 +5,9 @@ RUN apt-get update
 RUN apt-get install -y postgresql-plpython3-16
 RUN apt-get install -y locales locales-all
 
+# Install package to support top and free shell commands
+RUN apt-get install -y procps 
+
 # Set timezone
 ENV TZ="Europe/Warsaw"
 RUN date
