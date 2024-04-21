@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 ### DESCRIPTION
 # Script to set up PostgreSQL config file in order to support pg_stat_statements.
 # It should be invoked automatically during PostgreSQL container startup.
