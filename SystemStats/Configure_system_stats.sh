@@ -42,6 +42,4 @@ InstallCode(){
     PATH="/usr/local/pgsql/bin:$PATH" make install USE_PGXS=1
 }
 
-echo "$HOME"
-
 Main
