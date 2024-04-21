@@ -4,7 +4,7 @@
 # It requires to unpack archive file, compile code and install it.
 
 ### INPUTS
-# None
+# ArchiveFileName - name of archive file with system_stats extension code
 
 ### OUTPUTS
 # None
@@ -18,18 +18,19 @@
 # Date            Who                     What
 #
 
-ArchiveFileName="system_stats-2.1.tar.gz"
+archiveFileName="$EXTENSION_SYSTEM_STATS_FILE"
+workingDir="$EXTENSION_SYSTEM_STATS_WORKDIR"
 
 Main(){
-    cd "/tmp" || exit 1
+    cd "$workingDir" || exit 1
     UnpackArchive
     CompileCode
     InstallCode
 }
 
 UnpackArchive(){
-    tar -zxvf "./$ArchiveFileName" 
-    directoryName="${ArchiveFileName%.*}"
+    tar -zxvf "./$archiveFileName" 
+    directoryName="${archiveFileName%.*}"
     directoryName="${directoryName%.*}"
     cd "./$directoryName" || exit 1
 }
