@@ -1,5 +1,5 @@
 # TravelNest Database
-### [Starting DB container](/DB_startup.md)
+### [Uruchamianie kontenera bazy danych](/DB_startup.md)
 ![image](/Pictures/DB_model.png)
 
 # Spis treści
