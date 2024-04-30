@@ -30,7 +30,7 @@
 
     .NOTES
 
-        Version:            1.3
+        Version:            1.5
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -51,8 +51,10 @@
 
         2024-03-23		Stanisław Horna			Is_Paid and Price_gross moved from reservation to invoice table.
 
-        2024-04-06      Stanisław Horna         Price gross calculation added to invoice insert function
-            
+        2024-04-06      Stanisław Horna         Price gross calculation added to invoice insert function.
+		
+		2024-04-30		Stanisław Horna			add insert_service_view function.
+
 */
 
 CREATE OR REPLACE FUNCTION insert_reservation_view()
@@ -229,6 +231,41 @@ BEGIN
             NEW.customer_building_number,
             NEW.customer_last_modified_by
             );
+
+	RETURN NEW;
+
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE OR REPLACE FUNCTION insert_service_view()
+RETURNS TRIGGER AS $$
+BEGIN
+
+    IF NEW.service_name IS NOT NULL THEN
+        INSERT INTO service (
+            name,
+            unit_price,
+            last_modified_by
+        )
+        VALUES(
+            NEW.service_name,
+            NEW.service_price,
+            NEW.service_last_modified_by
+        );
+
+    ELSE
+        INSERT INTO reservation_service (
+            reservation_id,
+            service_id,
+            quantity
+        )
+        VALUES (
+            NEW.reservation_id,
+            NEW.service_id,
+            NEW.service_quantity
+        );
+
+    END IF;
 
 	RETURN NEW;
 
