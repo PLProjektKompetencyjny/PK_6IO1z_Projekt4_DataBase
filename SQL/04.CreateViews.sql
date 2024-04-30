@@ -19,7 +19,7 @@
 
     .NOTES
 
-        Version:            1.1
+        Version:            1.4
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -34,6 +34,8 @@
 		2024-03-22		Stanisław Horna			Password column removed from user_view.
 
 		2024-03-23		Stanisław Horna			Is_Paid and Price_gross moved from reservation to invoice table.
+
+		2024-04-30		Stanisław Horna			add service_view.
 
 */
 
@@ -119,3 +121,14 @@ SELECT
 	u.Last_Modified_at AS "user_last_modified_at"
 FROM user_account u;
 
+CREATE VIEW service_view AS
+SELECT
+	s.ID AS "service_id",
+	s.Name AS "service_name",
+	s.unit_price AS "service_price",
+	rs.reservation_id AS "reservation_id",
+	rs.quantity AS "service_quantity",
+	s.Last_Modified_by AS "service_last_modified_by",
+	s.Last_Modified_at AS "service_last_modified_at"
+FROM service s
+LEFT JOIN reservation_service rs ON rs.service_id = s.id
