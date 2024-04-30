@@ -126,7 +126,7 @@ SELECT
 	s.ID AS "service_id",
 	s.Name AS "service_name",
 	s.unit_price AS "service_price",
-	rs.reservation_id AS "reservation_id",
+	rs.reservation_id AS "service_reservation_id",
 	rs.quantity AS "service_quantity",
 	s.Last_Modified_by AS "service_last_modified_by",
 	s.Last_Modified_at AS "service_last_modified_at"

@@ -863,11 +863,12 @@ BEGIN
 
 
 	-- Check if service price is changed
-	IF (NEW.service_quantity IS DISTINCT FROM OLD.service_quantity) THEN
+	IF (NEW.service_quantity IS DISTINCT FROM OLD.service_quantity) AND 
+		NEW.service_reservation_id IS NOT NULL THEN
 
 		UPDATE reservation_service
 		SET quantity = NEW.service_quantity
-		WHERE id = svr_ID;
+		WHERE id = svr_ID AND reservation_id = NEW.service_reservation_id;
 
 		RAISE NOTICE 
             'service_quantity updated for service ID: %. OLD: % NEW: %', 

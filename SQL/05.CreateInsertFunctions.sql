@@ -260,7 +260,7 @@ BEGIN
             quantity
         )
         VALUES (
-            NEW.reservation_id,
+            NEW.service_reservation_id,
             NEW.service_id,
             NEW.service_quantity
         );
