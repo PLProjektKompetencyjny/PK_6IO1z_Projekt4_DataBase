@@ -19,6 +19,7 @@
             4. [invoice_view](#1224-invoice_view)
             5. [user_view](#1225-user_view)
 
+
 # 1. Struktura 
 
 ## 1.1. Wewnętrzna
@@ -33,6 +34,8 @@ Tabele główne:
 - `user_account` - przechowuje konta użytkowników systemu
 - `user_details` - przechowuje dane kontaktowe klientów
 - `invoice` - reprezentuje faktury wystawiane do zamówień
+- `service` - przechowuje dostępne usługi hotelu
+- `reservation_service` - łączy rezerwacje z wykupionymi usługami
 
 Tabele słowniki:
 - `dict_reservation_status`
@@ -89,7 +92,7 @@ Struktura zewnętrzna bazy danych (widziana przez `Backend`) składa się z 5 wi
 classDiagram
 direction LR
 
-class reservation_view{
+class reservation_view {
     reservation_id
     customer_id
     reservation_room_id
@@ -125,10 +128,18 @@ class user_view {
     UPDATE()
 }
 
-class invoice {
+class invoice_view {
     invoice_id
     invoice_reservation_id
     invoice_last_modified_by
+
+    INSERT()
+    UPDATE()
+}
+
+class service_view {
+    reservation_id
+    service_last_modified_by
 
     INSERT()
     UPDATE()
@@ -141,8 +152,10 @@ room_view <--> user_view : (room_last_modified_by - user_id)
 customer_view <--> user_view : (customer_id - user_id)
 customer_view <--> user_view : (customer_last_modified_by - user_id)
 user_view <--> user_view  : (user_last_modified_by - user_id)
-invoice <--> reservation_view: (invoice_reservation_id - reservation_id)
-invoice <--> user_view : (user_last_modified_by - user_id)
+invoice_view <--> reservation_view: (invoice_reservation_id - reservation_id)
+invoice_view <--> user_view : (user_last_modified_by - user_id)
+service_view <--> reservation_view: (service_reservation_id - reservation_id)
+service_view <--> user_view : (service_last_modified_by - user_id)
 
 ```
 
@@ -171,6 +184,7 @@ wszystkie odwołują się do pola o nazwie `ID` w tabelach jak poniżej.
 | customer_id                    | customer_view    | user_account                 | customer_view           |
 | invoice_status_id              | invoice_view     | dict_invoice_status          | --                      |
 | invoice_reservation_id         | invoice_view     | reservation                  | reservation_view        |
+| service_reservation_id         | service_view     | reservation                  | reservation_view        |
 
 #### 1.2.2.1 reservation_view
 | Nazwa kolumny w widoku         |  UPDATE | INSERT  |
@@ -298,4 +312,16 @@ Poniższe operacje nie są możliwe do wykonania przy użyciu instrukcji `UPDATE
         - user_passoword <- hasło do autentykacji dla tworzonego użytkownika
 
 
-# 2. Weryfikacja danych
+#### 1.2.2.5 user_view
+| Nazwa kolumny w widoku    |  UPDATE | INSERT  |
+|---------------------------|---------|---------|
+| service_id                |         |         |
+| service_name              |    X    |    X    |
+| service_price             |    X    |    X    |
+| service_reservation_id    |         |    X    |
+| service_quantity          |    X    |    X    |
+| service_last_modified_by  |    X    |         |
+| service_last_modified_at  |         |         |
+
+- `service_id` <- generowane automatycznie.
+- `service_reservation_id` <- można ustawić tylko przy instrukcji `INSERT`
