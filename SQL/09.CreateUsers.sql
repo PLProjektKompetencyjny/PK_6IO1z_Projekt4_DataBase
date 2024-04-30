@@ -8,7 +8,7 @@
 
     .NOTES
 
-        Version:            1.0
+        Version:            1.2
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -19,6 +19,8 @@
         2024-03-23      Stanisław Horna         add privileges for user management functions,
                                                 UPDATES do not work without SELECT rights,
                                                 to be investigated
+        
+        2024-04-30		Stanisław Horna			add privileges to service_view.
 
 */
 
@@ -35,6 +37,7 @@ GRANT SELECT ON invoice_view to "tn_api_read";
 GRANT SELECT ON reservation_view to "tn_api_read";
 GRANT SELECT ON room_view to "tn_api_read";
 GRANT SELECT ON user_view to "tn_api_read";
+GRANT SELECT ON service_view to "tn_api_read";
 
 
 -- Grant privileges for WRITE user
@@ -45,6 +48,7 @@ GRANT SELECT, INSERT, UPDATE ON invoice_view to "tn_api_write";
 GRANT SELECT, INSERT, UPDATE ON reservation_view to "tn_api_write";
 GRANT SELECT, INSERT, UPDATE ON room_view to "tn_api_write";
 GRANT SELECT, INSERT, UPDATE ON user_view to "tn_api_write";
+GRANT SELECT, INSERT, UPDATE ON service_view to "tn_api_write";
 
 GRANT EXECUTE ON FUNCTION authenticate_user_account(varchar, varchar) to "tn_api_write";
 GRANT EXECUTE ON FUNCTION insert_user_account(varchar, varchar, int) to "tn_api_write";
