@@ -1,5 +1,5 @@
 # TravelNest Database
-### [Starting DB container](/DB_startup.md)
+### [Uruchamianie kontenera bazy danych](/DB_startup.md)
 ![image](/Pictures/DB_model.png)
 
 # Spis treści
@@ -17,7 +17,7 @@
             2. [room_view](#1222-room_view)
             3. [customer_view](#1223-customer_view)
             4. [invoice_view](#1224-invoice_view)
-            5. [user_view](#1222-room_view)
+            5. [user_view](#1225-user_view)
 
 # 1. Struktura 
 
