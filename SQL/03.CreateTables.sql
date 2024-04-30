@@ -46,7 +46,7 @@
 
     .NOTES
 
-        Version:            1.2
+        Version:            1.6
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -69,10 +69,13 @@
 												which are not required for admin account
 		
 		2024-03-20		Stanisław Horna			Removed auto-gen id in Room table.
+
 		2024-03-22		Stanisław Horna			Additional constraint to check if user_name or e_mail is provided.
 												fkeys for last_modified_by added.
 
 		2024-03-23		Stanisław Horna			Is_Paid and Price_gross moved from reservation to invoice table
+
+		2024-04-30		Stanisław Horna			add service tables and constraints.
 
 */
 
@@ -223,8 +226,33 @@ CREATE TABLE dict_room_status (
 	Status_value varchar NOT NULL
 );
 
+CREATE TABLE service (
+	ID serial PRIMARY KEY NOT NULL,
+	Name varchar NOT NULL,
+	Unit_price float NOT NULL,
+	Last_modified_at timestamp DEFAULT now(),
+	Last_modified_by int NULL,
+
+	CONSTRAINT Unit_price_chk CHECK (Unit_price > 0) -- must be positive
+);
+
+CREATE TABLE reservation_service (
+	Reservation_ID int NOT NULL,
+	Service_ID int NOT NULL,
+	Quantity int NOT NULL,
+
+	CONSTRAINT Reservation_service_pkey PRIMARY KEY (Reservation_ID,Service_ID)
+);
 
 -- Create foreign keys
+ALTER TABLE reservation_service
+ADD CONSTRAINT Reservation_fkey FOREIGN KEY (Reservation_ID) 
+REFERENCES Reservation (ID) MATCH SIMPLE;
+
+ALTER TABLE reservation_service
+ADD CONSTRAINT Service_fkey FOREIGN KEY (Service_ID) 
+REFERENCES service (ID) MATCH SIMPLE;
+
 ALTER TABLE User_Details		-- link login credentials with names, contact, addresses
 ADD CONSTRAINT User_fkey FOREIGN KEY (User_ID) 
 REFERENCES User_account (ID) MATCH SIMPLE;
@@ -289,5 +317,9 @@ ADD CONSTRAINT last_modified_by_fkey FOREIGN KEY (last_modified_by)
 REFERENCES user_account (ID) MATCH SIMPLE;
 
 ALTER TABLE Room_Type			-- only known accounts can be modifiers
+ADD CONSTRAINT last_modified_by_fkey FOREIGN KEY (last_modified_by) 
+REFERENCES user_account (ID) MATCH SIMPLE;
+
+ALTER TABLE service			-- only known accounts can be modifiers
 ADD CONSTRAINT last_modified_by_fkey FOREIGN KEY (last_modified_by) 
 REFERENCES user_account (ID) MATCH SIMPLE;
