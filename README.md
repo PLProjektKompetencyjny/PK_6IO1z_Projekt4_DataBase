@@ -18,6 +18,7 @@
             3. [customer_view](#1223-customer_view)
             4. [invoice_view](#1224-invoice_view)
             5. [user_view](#1225-user_view)
+            6. [service_view](#1226-service_view)
 
 
 # 1. Struktura 
@@ -312,7 +313,7 @@ Poniższe operacje nie są możliwe do wykonania przy użyciu instrukcji `UPDATE
         - user_passoword <- hasło do autentykacji dla tworzonego użytkownika
 
 
-#### 1.2.2.5 user_view
+#### 1.2.2.6 service_view
 | Nazwa kolumny w widoku    |  UPDATE | INSERT  |
 |---------------------------|---------|---------|
 | service_id                |         |         |
