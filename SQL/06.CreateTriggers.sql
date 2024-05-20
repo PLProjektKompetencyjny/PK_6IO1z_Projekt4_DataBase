@@ -27,7 +27,7 @@
 
     .NOTES
 
-        Version:            1.0
+        Version:            1.3
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -35,7 +35,7 @@
         ChangeLog:
 
         Date            Who                     What
-        2024-03-20      Stanisław Horna         added triggers:
+        2024-03-20      Stanisław Horna         add triggers:
                                                     - INSTEAD OF INSERT
                                                         - reservation_view
                                                         - invoice_view
@@ -45,7 +45,7 @@
                                                         - invoice_view
                                                         - room_view
         
-        2024-03-22      Stanisław Horna         added triggers:
+        2024-03-22      Stanisław Horna         add triggers:
                                                     - INSTEAD OF INSERT
                                                         - user_view
                                                         - customer_view
@@ -58,6 +58,8 @@
                                                         - room_view
                                                         - user_view
                                                         - customer_view
+
+        2024-04-30		Stanisław Horna			add set of triggers for service_view.
 
 */
 
@@ -93,6 +95,12 @@ INSTEAD OF INSERT ON customer_view
 FOR EACH ROW
 EXECUTE FUNCTION insert_customer_view();
 
+------ service_view
+CREATE TRIGGER ioi
+INSTEAD OF INSERT ON service_view
+FOR EACH ROW
+EXECUTE FUNCTION insert_service_view();
+
 
 ---- INSTEAD OF UPDATE triggers
 
@@ -126,6 +134,12 @@ INSTEAD OF UPDATE ON customer_view
 FOR EACH ROW
 EXECUTE FUNCTION update_customer_view();
 
+------ service_view
+CREATE TRIGGER iou
+INSTEAD OF UPDATE ON service_view
+FOR EACH ROW
+EXECUTE FUNCTION update_service_view();
+
 
 -- INSTEAD OF DELETE triggers
 
@@ -156,5 +170,11 @@ EXECUTE FUNCTION delete_operation_not_permitted();
 ------ customer_view
 CREATE TRIGGER iod
 INSTEAD OF DELETE ON customer_view
+FOR EACH ROW
+EXECUTE FUNCTION delete_operation_not_permitted();
+
+------ service_view
+CREATE TRIGGER iod
+INSTEAD OF DELETE ON service_view
 FOR EACH ROW
 EXECUTE FUNCTION delete_operation_not_permitted();

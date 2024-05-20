@@ -30,7 +30,7 @@
 
     .NOTES
 
-        Version:            1.3
+        Version:            1.5
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -52,6 +52,9 @@
 
 		2024-03-23		Stanisław Horna			Is_Paid and Price_gross moved from reservation to invoice table.
 												Additional validation for update_user_view() added.
+
+		2024-04-30		Stanisław Horna			add update_service_view function.
+
 */
 
 CREATE OR REPLACE FUNCTION update_reservation_view()
@@ -801,6 +804,115 @@ BEGIN
 	RAISE NOTICE 
 		'last_modified_at updated for account ID: %.', 
 			Usr_ID;
+
+	RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+
+CREATE OR REPLACE FUNCTION update_service_view()
+RETURNS TRIGGER AS $$
+DECLARE
+    svr_ID int;
+	Any_ops_performed boolean;
+BEGIN
+
+    Any_ops_performed := FALSE;
+
+    -- Check if there is anything to update
+	IF (NEW IS NOT DISTINCT FROM OLD) THEN
+		RAISE NOTICE 'Seems like there is nothing to update';
+	END IF;
+
+	-- Assign service ID which will be modified to the local variable
+    svr_ID := NEW.service_ID;
+
+
+	-- Check if service name is changed
+	IF (NEW.service_name IS DISTINCT FROM OLD.service_name) THEN
+
+		UPDATE service
+		SET name = NEW.service_name
+		WHERE id = svr_ID;
+
+		RAISE NOTICE 
+            'service_name updated for service ID: %. OLD: % NEW: %', 
+                svr_ID, 
+                OLD.service_name, 
+                NEW.service_name;
+
+		Any_ops_performed = TRUE;
+	END IF;
+
+
+	-- Check if service price is changed
+	IF (NEW.service_price IS DISTINCT FROM OLD.service_price) THEN
+
+		UPDATE service
+		SET unit_price = NEW.service_price
+		WHERE id = svr_ID;
+
+		RAISE NOTICE 
+            'service_price updated for service ID: %. OLD: % NEW: %', 
+                svr_ID, 
+                OLD.service_price, 
+                NEW.service_price;
+
+		Any_ops_performed = TRUE;
+	END IF;
+
+
+	-- Check if service price is changed
+	IF (NEW.service_quantity IS DISTINCT FROM OLD.service_quantity) AND 
+		NEW.service_reservation_id IS NOT NULL THEN
+
+		UPDATE reservation_service
+		SET quantity = NEW.service_quantity
+		WHERE id = svr_ID AND reservation_id = NEW.service_reservation_id;
+
+		RAISE NOTICE 
+            'service_quantity updated for service ID: %. OLD: % NEW: %', 
+                svr_ID, 
+                OLD.service_quantity, 
+                NEW.service_quantity;
+
+		Any_ops_performed = TRUE;
+	END IF;
+
+
+	-- check if any operation was performed,
+	-- if not raise an exception to notify that wanted operation was not performed
+	IF Any_ops_performed = FALSE THEN
+
+		RAISE EXCEPTION 
+			'No update was performed';
+
+		RETURN NULL;
+	END IF;
+
+
+	-- check if last modifier changed and is not null
+	IF (NEW.service_last_modified_by IS DISTINCT FROM OLD.service_last_modified_by) AND 
+		NEW.service_last_modified_by IS NOT NULL THEN
+		
+		UPDATE service
+		SET last_modified_by = NEW.service_last_modified_by
+		WHERE id = svr_ID;
+
+		RAISE NOTICE 
+			'last_modified_by updated for service ID: %.', 
+			svr_ID;
+
+	END IF;
+
+	-- update last modify date (DEFAULT value is NOW())
+	UPDATE service
+	SET last_modified_at = DEFAULT
+	WHERE id = svr_ID;
+
+	RAISE NOTICE 
+		'last_modified_at updated for service ID: %.', 
+			svr_ID;
 
 	RETURN NEW;
 END;
