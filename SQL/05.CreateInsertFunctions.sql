@@ -30,7 +30,8 @@
 
     .NOTES
 
-        Version:            1.5
+
+        Version:            1.6
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -55,6 +56,9 @@
 		
 		2024-04-30		Stanisław Horna			add insert_service_view function.
 
+        2024-05-24      Stanisław Horna         add verification if room is available, before inserting reservation.
+                                                Duplicated code simplified in insert_reservation_view().
+
 */
 
 CREATE OR REPLACE FUNCTION insert_reservation_view()
@@ -67,6 +71,9 @@ BEGIN
     SELECT
         subf_get_reservation_id(NEW)
     INTO R_ID;
+
+    -- check if room can be booked
+    PERFORM check_room_availability(NEW.reservation_room_id, NEW.reservation_start_date, NEW.reservation_end_date);
 
     -- if reservation with provided details does not exist insert a new one
     IF R_ID IS NULL THEN
@@ -90,24 +97,14 @@ BEGIN
             )
         RETURNING ID INTO R_ID;
 
-
-        RAISE NOTICE 'New reservation inserted with ID: %', R_ID;
-        -- complete rooms for NEW reservation
-        INSERT INTO Reservation_room (reservation_id, room_id)
-        VALUES (R_ID, NEW.reservation_room_id);
-
-		RETURN NEW;
-    ELSE
-        RAISE NOTICE 'Reservation found, ID: %', R_ID;
-        
-        -- complete rooms for existing reservation
-        INSERT INTO Reservation_room (reservation_id, room_id)
-        VALUES (R_ID, NEW.reservation_room_id);
-
-        RAISE NOTICE 'Room % added to reservation with ID: %',NEW.reservation_room_id, R_ID;
-
-        RETURN NEW;
     END IF;
+
+    -- Add rooms for reservation with more than 1 room
+    INSERT INTO Reservation_room (reservation_id, room_id)
+    VALUES (R_ID, NEW.reservation_room_id);
+
+	RETURN NEW;
+
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 

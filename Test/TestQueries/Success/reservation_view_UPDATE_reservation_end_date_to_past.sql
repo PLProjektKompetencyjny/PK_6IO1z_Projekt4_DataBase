@@ -6,5 +6,5 @@
 
 UPDATE reservation_view 
 SET 
-	reservation_end_date = '2025-03-20'
+	reservation_end_date = '2026-03-20'
 WHERE reservation_id = 2;
