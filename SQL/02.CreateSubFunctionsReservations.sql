@@ -35,7 +35,7 @@
 
 */
 
-CREATE OR REPLACE FUNCTION is_room_available(room_to_check_id int, new_reservation_start_date timestamp, new_reservation_end_date timestamp) 
+CREATE OR REPLACE FUNCTION check_room_availability(room_to_check_id int, new_reservation_start_date timestamp, new_reservation_end_date timestamp) 
 RETURNS int 
 AS $$
 BEGIN
