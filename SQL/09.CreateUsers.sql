@@ -28,7 +28,6 @@
 -- create required roles
 CREATE ROLE "tn_api_write" LOGIN PASSWORD 'cba';
 
-
 -- Grant privileges for WRITE user
 GRANT CONNECT ON DATABASE "TravelNest" to "tn_api_write";
 GRANT USAGE ON SCHEMA public TO "tn_api_write";

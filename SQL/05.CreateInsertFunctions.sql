@@ -30,6 +30,7 @@
 
     .NOTES
 
+
         Version:            1.6
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
