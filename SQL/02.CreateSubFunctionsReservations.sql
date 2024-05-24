@@ -91,7 +91,7 @@ BEGIN
                 )
             )
     ) THEN
-        RAISE EXCEPTION 'Room is already booked in provided time frame';
+        RAISE EXCEPTION 'Room % is already booked in provided time frame', room_to_check_id;
         RETURN -1;
     END IF;
     
