@@ -19,7 +19,7 @@
 
     .NOTES
 
-        Version:            1.4
+        Version:            1.5
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -36,6 +36,8 @@
 		2024-03-23		Stanisław Horna			Is_Paid and Price_gross moved from reservation to invoice table.
 
 		2024-04-30		Stanisław Horna			add service_view.
+
+		2024-05-25		Stanisław Horna			move number of guest to reservation room table.
 
 */
 

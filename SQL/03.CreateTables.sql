@@ -46,7 +46,7 @@
 
     .NOTES
 
-        Version:            1.6
+        Version:            1.7
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -77,6 +77,7 @@
 
 		2024-04-30		Stanisław Horna			add service tables and constraints.
 
+		2024-05-25		Stanisław Horna			move number of guest to reservation room table.
 */
 
 -- Drop existing tables
