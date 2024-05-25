@@ -57,12 +57,17 @@
 
         2024-05-25      Stanisław Horna         add verification if number of people assigned to the room
                                                 is not grater then number of beds.
+												Remove option to update following fields in reservation_view:
+													- start_date
+													- end_date
+													- room_id
 */
 
 CREATE OR REPLACE FUNCTION update_reservation_view()
 RETURNS TRIGGER AS $$
 DECLARE
     Res_ID int;
+    Roo_ID int;
 	Any_ops_performed boolean;
 BEGIN
 
@@ -86,7 +91,7 @@ BEGIN
 		WHERE reservation_id = Res_ID
 			AND room_id = OLD.reservation_room_id;
 
-		PERFORM check_room_guest_number(OLD.reservation_room_id, OLD.reservation_room_id);
+		PERFORM check_room_guest_number(OLD.reservation_room_id, Res_ID);
 
 		RAISE NOTICE 
 			'num_of_adults updated for reservation ID: %. OLD: % NEW: %', 
@@ -106,7 +111,7 @@ BEGIN
 		WHERE reservation_id = Res_ID
 			AND room_id = OLD.reservation_room_id;
 
-		PERFORM check_room_guest_number(OLD.reservation_room_id, OLD.reservation_room_id);
+		PERFORM check_room_guest_number(OLD.reservation_room_id, Res_ID);
 
 		RAISE NOTICE 
 			'num_of_childrem updated for reservation ID: %. OLD: % NEW: %', 
@@ -115,62 +120,6 @@ BEGIN
 				NEW.room_number_of_children;
 
 		Any_ops_performed = TRUE;
-	END IF;
-
-	-- To omit raising an error by CONSTRAINT check, which is verifying if end_date > start_date,
-	-- in case of changing both dates at the same time we have to perform it in appropriate order,
-	-- which is handled in sub function
-	IF (NEW.reservation_start_date IS DISTINCT FROM OLD.reservation_start_date) AND 
-		(NEW.reservation_end_date IS DISTINCT FROM OLD.reservation_end_date) THEN
-		
-		UPDATE reservation
-		SET 
-			start_date = NEW.reservation_start_date,
-			end_date = NEW.reservation_end_date
-		WHERE id = Res_ID;
-
-		RAISE NOTICE 
-			'booking period updated for reservation ID: %. OLD: % - % NEW: % - %', 
-				Res_ID, 
-				OLD.reservation_start_date, 
-				OLD.reservation_end_date, 
-				NEW.reservation_start_date,
-				NEW.reservation_end_date;
-
-		Any_ops_performed = TRUE;
-	ELSE
-		-- Check if reservation_start_date is changed
-		IF (NEW.reservation_start_date IS DISTINCT FROM OLD.reservation_start_date) THEN
-
-			UPDATE reservation
-			SET start_date = NEW.reservation_start_date
-			WHERE id = Res_ID;
-
-			RAISE NOTICE 
-				'start_date updated for reservation ID: %. OLD: % NEW: %', 
-					Res_ID, 
-					OLD.reservation_start_date, 
-					NEW.reservation_start_date;
-
-			Any_ops_performed = TRUE;
-		END IF;
-
-
-		-- Check if reservation_end_date is changed
-		IF (NEW.reservation_end_date IS DISTINCT FROM OLD.reservation_end_date) THEN
-
-			UPDATE reservation
-			SET end_date = NEW.reservation_end_date
-			WHERE id = Res_ID;
-
-			RAISE NOTICE 
-				'end_date updated for reservation ID: %. OLD: % NEW: %', 
-					Res_ID, 
-					OLD.reservation_end_date, 
-					NEW.reservation_end_date;
-
-		Any_ops_performed = TRUE;
-		END IF;
 	END IF;
 
 
@@ -186,24 +135,6 @@ BEGIN
 			Res_ID, 
 			OLD.reservation_status_id, 
 			NEW.reservation_status_id;
-
-		Any_ops_performed = TRUE;
-	END IF;
-
-
-	-- Check if reservation_room_id is changed
-	IF (NEW.reservation_room_id IS DISTINCT FROM OLD.reservation_room_id) THEN
-		
-		UPDATE reservation_room
-		SET room_id = NEW.reservation_room_id
-		WHERE reservation_id = Res_ID AND 
-			room_id = OLD.reservation_room_id;
-
-		RAISE NOTICE 
-			'room_id updated for reservation ID: %. OLD: % NEW: %', 
-				Res_ID, 
-				OLD.reservation_room_id, 
-				NEW.reservation_room_id;
 
 		Any_ops_performed = TRUE;
 	END IF;
