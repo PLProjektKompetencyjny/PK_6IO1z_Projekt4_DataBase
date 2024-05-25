@@ -6,6 +6,6 @@
 
 UPDATE reservation_view 
 SET 
-	reservation_number_of_children = 4,
-    reservation_number_of_adults = 2
+	room_number_of_children = 0,
+    room_number_of_adults = 2
 WHERE reservation_id = 3;

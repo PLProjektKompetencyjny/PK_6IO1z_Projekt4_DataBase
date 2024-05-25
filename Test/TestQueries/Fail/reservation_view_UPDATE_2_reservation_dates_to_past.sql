@@ -8,4 +8,4 @@ UPDATE reservation_view
 SET 
 	reservation_start_date = '2024-11-21',
 	reservation_end_date = '2024-11-30'
-WHERE reservation_id = 1;
+WHERE reservation_id = 1 AND reservation_room_id = 1;

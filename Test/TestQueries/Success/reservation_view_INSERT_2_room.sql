@@ -4,8 +4,8 @@
 */
 INSERT INTO reservation_view (
     reservation_customer_id, 
-    reservation_number_of_adults, 
-    reservation_number_of_children, 
+    room_number_of_adults, 
+    room_number_of_children, 
     reservation_start_date, 
     reservation_end_date, 
     reservation_room_id)

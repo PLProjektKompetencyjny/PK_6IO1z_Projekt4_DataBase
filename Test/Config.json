@@ -17,27 +17,27 @@
             "TestName": "reservation_view_INSERT_3_room.sql"
         },
         {
-            "ExpectedResult": "Success",
+            "ExpectedResult": "Fail",
             "Username": "tn_api_write",
             "TestName": "reservation_view_UPDATE_2_reservation_dates_to_future.sql"
         },
         {
-            "ExpectedResult": "Success",
+            "ExpectedResult": "Fail",
             "Username": "tn_api_write",
             "TestName": "reservation_view_UPDATE_2_reservation_dates_to_past.sql"
         },
         {
-            "ExpectedResult": "Success",
+            "ExpectedResult": "Fail",
             "Username": "tn_api_write",
             "TestName": "reservation_view_UPDATE_replace_room.sql"
         },
         {
-            "ExpectedResult": "Success",
+            "ExpectedResult": "Fail",
             "Username": "tn_api_write",
             "TestName": "reservation_view_UPDATE_reservation_end_date_to_future.sql"
         },
         {
-            "ExpectedResult": "Success",
+            "ExpectedResult": "Fail",
             "Username": "tn_api_write",
             "TestName": "reservation_view_UPDATE_reservation_end_date_to_past.sql"
         },
@@ -57,12 +57,12 @@
             "TestName": "reservation_view_UPDATE_reservation_room_status.sql"
         },
         {
-            "ExpectedResult": "Success",
+            "ExpectedResult": "Fail",
             "Username": "tn_api_write",
             "TestName": "reservation_view_UPDATE_reservation_start_date_to_future.sql"
         },
         {
-            "ExpectedResult": "Success",
+            "ExpectedResult": "Fail",
             "Username": "tn_api_write",
             "TestName": "reservation_view_UPDATE_reservation_start_date_to_past.sql"
         },
