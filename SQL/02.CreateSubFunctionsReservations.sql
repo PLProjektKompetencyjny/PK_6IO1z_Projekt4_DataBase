@@ -21,7 +21,7 @@
 
     .NOTES
 
-        Version:            1.0
+        Version:            1.1
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -29,7 +29,7 @@
         ChangeLog:
 
         Date            Who                     What
-
+        2024-05-25      Stanisław Horna         add check_room_guest_number()
 
 */
 
@@ -98,9 +98,44 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- CREATE OR REPLACE FUNCTION check_room_guest_number(room_to_check_id int, reservation_id_to_check int) 
--- RETURNS int 
--- AS $$
--- BEGIN
+CREATE OR REPLACE FUNCTION check_room_guest_number(room_to_check_id int, reservation_id_to_check int) 
+RETURNS void 
+AS $$
+BEGIN
 
--- END;
+    -- raise an exception if there is not enough beds for assigned adults to the room
+    -- or there is not enough beds for assigned children.
+    IF EXISTS (
+        SELECT
+            ROOM_ID
+        FROM
+            (
+                -- select necessary data for provided room_id and reservation
+                SELECT
+                    RR.ROOM_ID,
+                    (
+                        RT.NUM_OF_SINGLE_BEDS + (RT.NUM_OF_DOUBLE_BEDS * 2)
+                    ) AS "adult_space",
+                    NUM_OF_CHILD_BEDS AS "child_space",
+                    RR.NUM_OF_ADULTS,
+                    RR.NUM_OF_CHILDREN
+                FROM
+                    RESERVATION_ROOM RR
+                    LEFT JOIN ROOM R ON R.ID = RR.ROOM_ID
+                    LEFT JOIN ROOM_TYPE RT ON RT.ID = R.ROOM_TYPE_ID
+                WHERE
+                    RESERVATION_ID = reservation_id_to_check
+                    AND ROOM_ID = room_to_check_id
+            )
+        WHERE
+            -- check if there are more adults then beds
+            ADULT_SPACE < NUM_OF_ADULTS
+            -- check if there are more children then beds
+            OR CHILD_SPACE < NUM_OF_CHILDREN
+    ) THEN
+        RAISE EXCEPTION 'Too many people assigned to room id: %', room_to_check_id;
+    END IF;
+
+    RETURN;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;

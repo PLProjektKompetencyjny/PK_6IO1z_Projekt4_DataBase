@@ -30,7 +30,7 @@
 
     .NOTES
 
-        Version:            1.5
+        Version:            1.6
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -55,6 +55,8 @@
 
 		2024-04-30		Stanisław Horna			add update_service_view function.
 
+        2024-05-25      Stanisław Horna         add verification if number of people assigned to the room
+                                                is not grater then number of beds.
 */
 
 CREATE OR REPLACE FUNCTION update_reservation_view()
@@ -84,6 +86,8 @@ BEGIN
 		WHERE reservation_id = Res_ID
 			AND room_id = OLD.reservation_room_id;
 
+		PERFORM check_room_guest_number(OLD.reservation_room_id, OLD.reservation_room_id);
+
 		RAISE NOTICE 
 			'num_of_adults updated for reservation ID: %. OLD: % NEW: %', 
 				Res_ID, 
@@ -101,6 +105,8 @@ BEGIN
 		SET num_of_children = NEW.room_number_of_children
 		WHERE reservation_id = Res_ID
 			AND room_id = OLD.reservation_room_id;
+
+		PERFORM check_room_guest_number(OLD.reservation_room_id, OLD.reservation_room_id);
 
 		RAISE NOTICE 
 			'num_of_childrem updated for reservation ID: %. OLD: % NEW: %', 

@@ -31,7 +31,7 @@
     .NOTES
 
 
-        Version:            1.6
+        Version:            1.7
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -58,6 +58,9 @@
 
         2024-05-24      Stanisław Horna         add verification if room is available, before inserting reservation.
                                                 Duplicated code simplified in insert_reservation_view().
+
+        2024-05-25      Stanisław Horna         add verification if number of people assigned to the room
+                                                is not grater then number of beds.
 
 */
 
@@ -108,6 +111,8 @@ BEGIN
         NEW.room_number_of_adults, 
         NEW.room_number_of_children
         );
+
+    PERFORM check_room_guest_number(NEW.reservation_room_id, R_ID);
 
 	RETURN NEW;
 
