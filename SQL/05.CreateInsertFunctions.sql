@@ -114,6 +114,8 @@ BEGIN
 
     PERFORM check_room_guest_number(NEW.reservation_room_id, R_ID);
 
+    PERFORM calculate_reservation_room_price(NEW.reservation_room_id, R_ID);
+
 	RETURN NEW;
 
 END;
@@ -131,35 +133,18 @@ BEGIN
     -- assign reservation_id to local variable 
     Res_ID := NEW.invoice_reservation_id;
 
-    -- calculate price gross based on the reservation details
-    SELECT
-        SUM(
-            RO.ROOM_PRICE_GROSS + (
-                (RT.ADULT_PRICE_GROSS * R.NUM_OF_ADULTS) + (RT.CHILD_PRICE_GROSS * R.NUM_OF_CHILDREN)
-            )
-        ) AS "total"
-    INTO Price_gross
-    FROM
-        RESERVATION R
-        LEFT JOIN RESERVATION_ROOM RR ON RR.RESERVATION_ID = R.ID
-        LEFT JOIN ROOM RO ON RO.ID = RR.ROOM_ID
-        LEFT JOIN ROOM_TYPE RT ON RT.ID = RO.ROOM_TYPE_ID
-    WHERE
-        R.ID = Res_ID;
-
-
     -- just insert new invoice
     -- all conditions will be check by defined CONSTRAINTS
     INSERT INTO invoice (
         reservation_id, 
-        last_modified_by,
-        Price_gross
+        last_modified_by
         )
     VALUES (
         Res_ID, 
-        NEW.invoice_last_modified_by,
-        Price_gross
+        NEW.invoice_last_modified_by
         );
+
+    PERFORM calculate_invoice_price(Res_ID);
 
 	RETURN NEW;
 

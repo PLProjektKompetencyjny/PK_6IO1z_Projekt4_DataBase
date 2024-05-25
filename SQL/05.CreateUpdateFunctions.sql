@@ -93,6 +93,8 @@ BEGIN
 
 		PERFORM check_room_guest_number(OLD.reservation_room_id, Res_ID);
 
+		PERFORM calculate_reservation_room_price(OLD.reservation_room_id, Res_ID);
+
 		RAISE NOTICE 
 			'num_of_adults updated for reservation ID: %. OLD: % NEW: %', 
 				Res_ID, 
@@ -113,8 +115,10 @@ BEGIN
 
 		PERFORM check_room_guest_number(OLD.reservation_room_id, Res_ID);
 
+		PERFORM calculate_reservation_room_price(OLD.reservation_room_id, Res_ID);
+
 		RAISE NOTICE 
-			'num_of_childrem updated for reservation ID: %. OLD: % NEW: %', 
+			'num_of_children updated for reservation ID: %. OLD: % NEW: %', 
 				Res_ID, 
 				OLD.room_number_of_children, 
 				NEW.room_number_of_children;

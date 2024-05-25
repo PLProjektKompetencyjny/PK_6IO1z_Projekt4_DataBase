@@ -139,3 +139,38 @@ BEGIN
     RETURN;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE OR REPLACE FUNCTION calculate_reservation_room_price(room_to_calc_id int, reservation_to_calc_id int) 
+RETURNS void 
+AS $$
+DECLARE
+    Room_price_calculated float;
+BEGIN
+
+    -- calculate price gross for provided room and reservation id
+    -- store the value in Room_price_calculated
+    SELECT
+        (
+            (RR.NUM_OF_ADULTS * RT.ADULT_PRICE_GROSS) + (RR.NUM_OF_CHILDREN * RT.CHILD_PRICE_GROSS) + R.ROOM_PRICE_GROSS
+        )
+    INTO
+        Room_price_calculated
+    FROM
+        RESERVATION_ROOM RR
+        LEFT JOIN ROOM R ON R.ID = RR.ROOM_ID
+        LEFT JOIN ROOM_TYPE RT ON RT.ID = R.ROOM_TYPE_ID
+    WHERE
+        RR.RESERVATION_ID = reservation_to_calc_id
+        AND RR.ROOM_ID = room_to_calc_id;
+
+    -- update the reservation room entry with calculated value
+    UPDATE RESERVATION_ROOM
+    SET
+        RESERVATION_ROOM_PRICE_GROSS = ROOM_PRICE_CALCULATED
+    WHERE
+        RESERVATION_ID = RESERVATION_TO_CALC_ID
+        AND ROOM_ID = ROOM_TO_CALC_ID;
+        
+        RETURN;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;

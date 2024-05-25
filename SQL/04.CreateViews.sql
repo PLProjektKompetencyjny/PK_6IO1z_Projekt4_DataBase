@@ -104,13 +104,17 @@ CREATE VIEW invoice_view AS
 SELECT
     i.ID AS "invoice_id",
     i.Reservation_ID AS "invoice_reservation_id",
+	rr.Room_ID AS "invoice_room_id",
+	rr.Reservation_Room_Price_gross AS "invoice_room_price_gross",
     i.Invoice_Date AS "invoice_date",
 	i.Price_Gross AS "invoice_price_gross",
 	i.Is_Paid AS "invoice_is_paid",
 	i.Status_ID AS "invoice_status_id",
 	i.Last_Modified_by AS "invoice_last_modified_by",
 	i.Last_Modified_at AS "invoice_last_modified_at"
-FROM Invoice i;
+FROM Invoice i
+LEFT JOIN Reservation r ON r.ID = i.Reservation_ID
+LEFT JOIN Reservation_room rr ON rr.reservation_id = r.ID;
 
 CREATE VIEW user_view AS
 SELECT

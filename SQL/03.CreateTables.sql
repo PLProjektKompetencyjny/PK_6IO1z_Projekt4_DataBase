@@ -157,6 +157,7 @@ CREATE TABLE Reservation_Room ( -- to handle many rooms on the same reservation
 	Room_status_ID int DEFAULT 1,	
 	Num_of_adults int NOT NULL,
 	Num_of_children int NOT NULL,
+	Reservation_Room_Price_gross float NULL,
 
 	CONSTRAINT Num_of_adults_chk CHECK (Num_of_adults >= 1), -- must be on reservation at least one
 	CONSTRAINT Num_of_children_chk CHECK (Num_of_children >= 0),  -- can be on reservation
@@ -178,7 +179,7 @@ CREATE TABLE Invoice (
 	ID serial PRIMARY KEY NOT NULL,
 	Reservation_ID int UNIQUE NOT NULL, -- can be only 1 invoice for 1 reservation
 	Invoice_date timestamp DEFAULT now(),
-	Price_gross float NOT NULL,
+	Price_gross float NULL,
 	Is_paid bool DEFAULT FALSE,
 	Status_ID int DEFAULT 1,
 	Last_modified_at timestamp DEFAULT now(),
