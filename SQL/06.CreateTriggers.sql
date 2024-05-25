@@ -27,7 +27,7 @@
 
     .NOTES
 
-        Version:            1.3
+        Version:            1.4
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -60,6 +60,8 @@
                                                         - customer_view
 
         2024-04-30		Stanisław Horna			add set of triggers for service_view.
+
+        2024-05-25      Stanisław Horna         add delete on reservation_view.
 
 */
 
@@ -143,11 +145,11 @@ EXECUTE FUNCTION update_service_view();
 
 -- INSTEAD OF DELETE triggers
 
------- reservetion_view
+------ reservation_view
 CREATE TRIGGER iod
 INSTEAD OF DELETE ON reservation_view
 FOR EACH ROW
-EXECUTE FUNCTION delete_operation_not_permitted();
+EXECUTE FUNCTION delete_reservation_view();
 
 ------ invoice_view
 CREATE TRIGGER iod
