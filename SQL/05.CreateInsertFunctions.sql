@@ -81,16 +81,12 @@ BEGIN
         
         INSERT INTO Reservation (
             user_account_id, 
-            num_of_adults, 
-            num_of_children, 
             start_date, 
             end_date, 
             last_modified_by
             )
 		VALUES (
             NEW.reservation_customer_id, 
-            NEW.reservation_number_of_adults, 
-            NEW.reservation_number_of_children, 
             NEW.reservation_start_date, 
             NEW.reservation_end_date, 
             NEW.reservation_last_modified_by
@@ -100,8 +96,18 @@ BEGIN
     END IF;
 
     -- Add rooms for reservation with more than 1 room
-    INSERT INTO Reservation_room (reservation_id, room_id)
-    VALUES (R_ID, NEW.reservation_room_id);
+    INSERT INTO Reservation_room (
+        reservation_id, 
+        room_id,
+        Num_of_adults, 
+        Num_of_children 
+        )
+    VALUES (
+        R_ID, 
+        NEW.reservation_room_id,
+        NEW.room_number_of_adults, 
+        NEW.room_number_of_children
+        );
 
 	RETURN NEW;
 

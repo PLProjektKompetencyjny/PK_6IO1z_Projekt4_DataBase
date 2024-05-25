@@ -76,33 +76,37 @@ BEGIN
 
 
 	-- Check if reservation_number_of_adults is changed
-	IF (NEW.reservation_number_of_adults IS DISTINCT FROM OLD.reservation_number_of_adults) THEN
+	IF (NEW.room_number_of_adults IS DISTINCT FROM OLD.room_number_of_adults)
+		AND (OLD.reservation_room_id IS NOT NULL) THEN
 
-		UPDATE reservation
-		SET num_of_adults = NEW.reservation_number_of_adults
-		WHERE id = Res_ID;
+		UPDATE reservation_room
+		SET num_of_adults = NEW.room_number_of_adults
+		WHERE reservation_id = Res_ID
+			AND room_id = OLD.reservation_room_id;
 
 		RAISE NOTICE 
 			'num_of_adults updated for reservation ID: %. OLD: % NEW: %', 
 				Res_ID, 
-				OLD.reservation_number_of_adults, 
-				NEW.reservation_number_of_adults;
+				OLD.room_number_of_adults, 
+				NEW.room_number_of_adults;
 
 		Any_ops_performed = TRUE;
 	END IF;
 
 	-- Check if reservation_number_of_children is changed
-	IF (NEW.reservation_number_of_children IS DISTINCT FROM OLD.reservation_number_of_children) THEN
+	IF (NEW.room_number_of_children IS DISTINCT FROM OLD.room_number_of_children) 
+		AND (OLD.reservation_room_id IS NOT NULL) THEN
 
-		UPDATE reservation
-		SET num_of_children = NEW.reservation_number_of_children
-		WHERE id = Res_ID;
+		UPDATE reservation_room
+		SET num_of_children = NEW.room_number_of_children
+		WHERE reservation_id = Res_ID
+			AND room_id = OLD.reservation_room_id;
 
 		RAISE NOTICE 
 			'num_of_childrem updated for reservation ID: %. OLD: % NEW: %', 
 				Res_ID, 
-				OLD.reservation_number_of_children, 
-				NEW.reservation_number_of_children;
+				OLD.room_number_of_children, 
+				NEW.room_number_of_children;
 
 		Any_ops_performed = TRUE;
 	END IF;

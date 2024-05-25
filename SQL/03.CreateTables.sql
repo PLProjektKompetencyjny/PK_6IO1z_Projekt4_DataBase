@@ -139,16 +139,12 @@ CREATE TABLE Reservation (
 	ID serial PRIMARY KEY NOT NULL,
 	User_account_ID int NOT NULL,
 	Status_ID int DEFAULT 1,
-	Num_of_adults int NOT NULL,
-	Num_of_children int NOT NULL,
 	Start_date timestamp NOT NULL,
 	End_date timestamp NOT NULL,
 	Creation_date timestamp DEFAULT now(),
 	Last_modified_at timestamp DEFAULT now(),
 	Last_modified_by int NULL,
 
-	CONSTRAINT Num_of_adults_chk CHECK (Num_of_adults >= 1), -- must be on reservation at least one
-	CONSTRAINT Num_of_children_chk CHECK (Num_of_children >= 0),  -- can be on reservation
 	CONSTRAINT Start_date_chk CHECK (Start_date > NOW()), -- can not be reserved for past
 	CONSTRAINT End_date_chk CHECK (End_date > NOW()), -- can not be reserved for past
 	CONSTRAINT Reservation_dates_chk CHECK (End_date > Start_date) -- must have duration
@@ -157,8 +153,12 @@ CREATE TABLE Reservation (
 CREATE TABLE Reservation_Room ( -- to handle many rooms on the same reservation
 	Reservation_ID int NOT NULL,
 	Room_ID int NOT NULL,
-	Room_status_ID int DEFAULT 1,
+	Room_status_ID int DEFAULT 1,	
+	Num_of_adults int NOT NULL,
+	Num_of_children int NOT NULL,
 
+	CONSTRAINT Num_of_adults_chk CHECK (Num_of_adults >= 1), -- must be on reservation at least one
+	CONSTRAINT Num_of_children_chk CHECK (Num_of_children >= 0),  -- can be on reservation
 	CONSTRAINT Reservation_room_pkey PRIMARY KEY (Reservation_ID,Room_ID) -- 1 room cannot be book twice
 																			-- on the same reservation
 );

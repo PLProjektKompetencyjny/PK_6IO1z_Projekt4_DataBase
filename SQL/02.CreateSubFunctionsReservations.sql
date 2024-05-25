@@ -15,8 +15,6 @@
 			Object names such as tables, constraints, functions are not case sensitive,
 			so to make them easy easy-readable please use word separator.
 
-        - Sub function must have a prefix 'subf_' followed by descriptive name what they are doing. 
-
         - Sub function can be written in SQL or PL/Python, both languages are supported,
             decision which one to use is made by person who need to use it.
 
@@ -99,3 +97,10 @@ BEGIN
 
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- CREATE OR REPLACE FUNCTION check_room_guest_number(room_to_check_id int, reservation_id_to_check int) 
+-- RETURNS int 
+-- AS $$
+-- BEGIN
+
+-- END;
