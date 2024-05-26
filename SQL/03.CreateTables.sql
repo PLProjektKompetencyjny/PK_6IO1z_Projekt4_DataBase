@@ -230,7 +230,7 @@ CREATE TABLE dict_room_status (
 
 CREATE TABLE service (
 	ID serial PRIMARY KEY NOT NULL,
-	Name varchar NOT NULL,
+	Name varchar UNIQUE NOT NULL,
 	Unit_price float NOT NULL,
 	Last_modified_at timestamp DEFAULT now(),
 	Last_modified_by int NULL,

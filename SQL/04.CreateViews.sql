@@ -19,7 +19,7 @@
 
     .NOTES
 
-        Version:            1.5
+        Version:            1.6
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -38,6 +38,8 @@
 		2024-04-30		Stanisław Horna			add service_view.
 
 		2024-05-25		Stanisław Horna			move number of guest to reservation room table.
+
+		2024-05-26		Stanisław Horna			add management views
 
 */
 
@@ -137,4 +139,36 @@ SELECT
 	s.Last_Modified_by AS "service_last_modified_by",
 	s.Last_Modified_at AS "service_last_modified_at"
 FROM service s
-LEFT JOIN reservation_service rs ON rs.service_id = s.id
+LEFT JOIN reservation_service rs ON rs.service_id = s.id;
+
+CREATE VIEW service_mgmt AS
+SELECT
+	s.ID,
+	s.Name,
+	s.unit_price,
+	s.Last_Modified_by,
+	s.Last_Modified_at 
+FROM service s;
+
+CREATE VIEW room_type_mgmt AS
+SELECT
+	ID,
+	Num_of_single_beds,
+	Num_of_double_beds,
+	Num_of_child_beds,
+	Adult_price_gross,
+	Child_price_gross,
+	Photos_dir,
+	Last_modified_at,
+	Last_modified_by
+FROM room_type;
+
+CREATE VIEW room_mgmt AS
+SELECT
+	ID,
+	Room_type_ID,
+	Status_ID,
+	Room_price_gross,
+	Last_modified_at, 
+	Last_modified_by
+FROM room;

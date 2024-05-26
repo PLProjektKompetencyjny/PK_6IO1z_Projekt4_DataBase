@@ -83,7 +83,7 @@ EXECUTE FUNCTION insert_invoice_view();
 CREATE TRIGGER ioi
 INSTEAD OF INSERT ON room_view
 FOR EACH ROW
-EXECUTE FUNCTION insert_room_view();
+EXECUTE FUNCTION delete_operation_not_permitted();
 
 ------ user_view
 CREATE TRIGGER ioi
