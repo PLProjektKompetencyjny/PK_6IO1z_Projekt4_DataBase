@@ -2,15 +2,23 @@
 FOR TESTING ONLY
 */
 
-INSERT INTO user_account(user_name, password,e_mail)
-VALUES
-    ('aaaOne','bbb','ONE@wp.pl'),
-    ('aaaTwo','bbb','TWO@wp.pl'),
-    ('aaaThree','bbb','THREE@wp.pl');
+SELECT insert_user_account('ONE@wp.pl','mypass', NULL);
+SELECT insert_user_account('TWO@wp.pl','mypass', NULL);
+SELECT insert_user_account('THREE@wp.pl','mypass', NULL);
 
+DO $$
+DECLARE
+	user_id_var int;
+BEGIN
+	SELECT
+		insert_user_account('ADMIN','mypass', NULL)
+	INTO user_id_var;
 
-INSERT INTO user_account(user_name, password,e_mail,is_admin)
-VALUES ('ADMIN','ADMIN','ADMIN@admin.pl', TRUE);
+	UPDATE user_view
+	SET user_is_admin = TRUE
+	WHERE user_id = user_id_var;
+	
+END $$;
 
 INSERT INTO user_details(user_id, nip_num, name, surname, phone_num, city, postal_code, street, building_num)
 VALUES
