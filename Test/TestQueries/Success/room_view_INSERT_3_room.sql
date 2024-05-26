@@ -3,7 +3,7 @@
     Expected result: success
 */
 
-INSERT INTO room_view(room_id,room_type_id,room_gross_price)
+INSERT INTO room_mgmt(id,room_type_id,room_price_gross)
 VALUES 
     (7,2,1000),
     (8,2,200),
