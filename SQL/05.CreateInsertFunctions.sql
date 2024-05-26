@@ -83,7 +83,6 @@ BEGIN
 
     -- if reservation with provided details does not exist insert a new one
     IF R_ID IS NULL THEN
-        RAISE NOTICE 'Reservation not found';
         
         INSERT INTO Reservation (
             user_account_id, 
