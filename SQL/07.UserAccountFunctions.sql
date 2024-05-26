@@ -22,7 +22,7 @@
 
     .NOTES
 
-        Version:            1.0
+        Version:            1.3
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -33,6 +33,8 @@
         2024-03-22      Stanisław Horna         handling for last_modified_by, inactive user can not authenticate.
 
         2024-03-23      Stanisław Horna         add SECURITY DEFINER <- to invoke functions with owner's permissions.
+
+        2024-05-26      Stanisław Horna         use hash functions for passwords
 */
 
 CREATE OR REPLACE FUNCTION insert_user_account(login varchar, user_password varchar, last_modified_by_id int)
