@@ -24,7 +24,8 @@
         2024-05-24      Stanisław Horna         remove api_read user.
 
         2024-05-26      Stanisław Horna         add privileges to check_room_availability, check_room_guest_number.
-                                                add privileges to management views
+                                                add privileges to management views.
+                                                add privileges to get_available_services.
 
 */
 
@@ -55,3 +56,4 @@ GRANT EXECUTE ON FUNCTION update_user_account_password(varchar, varchar, varchar
 -- Grant privileges for WRITE user to utility functions
 GRANT EXECUTE ON FUNCTION check_room_availability(int, timestamp, timestamp) to "tn_api_write";
 GRANT EXECUTE ON FUNCTION check_room_guest_number(int, int) to "tn_api_write";
+GRANT EXECUTE ON FUNCTION get_available_services() to "tn_api_write";
