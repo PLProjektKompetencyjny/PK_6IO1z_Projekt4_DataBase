@@ -6,5 +6,5 @@
 
 UPDATE reservation_view 
 SET 
-	reservation_room_id = 3
+	reservation_room_status_id = 3
 WHERE reservation_id = 2 AND reservation_room_id = 1;

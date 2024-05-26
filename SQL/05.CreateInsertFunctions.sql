@@ -30,7 +30,8 @@
 
     .NOTES
 
-        Version:            1.5
+
+        Version:            1.8
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -55,6 +56,15 @@
 		
 		2024-04-30		Stanisław Horna			add insert_service_view function.
 
+        2024-05-24      Stanisław Horna         add verification if room is available, before inserting reservation.
+                                                Duplicated code simplified in insert_reservation_view().
+
+        2024-05-25      Stanisław Horna         add verification if number of people assigned to the room
+                                                is not grater then number of beds.
+
+        2024-05-26      Stanisław Horna         add invoice recalculation after reservation changes.
+                                                add invoice recalculation if there is invoice for provided reservation
+
 */
 
 CREATE OR REPLACE FUNCTION insert_reservation_view()
@@ -65,49 +75,53 @@ BEGIN
     -- Get reservation if this reservation already exists in DB,
     -- otherwise R_ID will be NULL
     SELECT
-        subf_get_reservation_id(NEW)
+        get_reservation_id(NEW)
     INTO R_ID;
+
+    -- check if room can be booked
+    PERFORM check_room_availability(NEW.reservation_room_id, NEW.reservation_start_date, NEW.reservation_end_date);
 
     -- if reservation with provided details does not exist insert a new one
     IF R_ID IS NULL THEN
-        RAISE NOTICE 'Reservation not found';
         
         INSERT INTO Reservation (
             user_account_id, 
-            num_of_adults, 
-            num_of_children, 
             start_date, 
             end_date, 
             last_modified_by
             )
 		VALUES (
             NEW.reservation_customer_id, 
-            NEW.reservation_number_of_adults, 
-            NEW.reservation_number_of_children, 
             NEW.reservation_start_date, 
             NEW.reservation_end_date, 
             NEW.reservation_last_modified_by
             )
         RETURNING ID INTO R_ID;
 
-
-        RAISE NOTICE 'New reservation inserted with ID: %', R_ID;
-        -- complete rooms for NEW reservation
-        INSERT INTO Reservation_room (reservation_id, room_id)
-        VALUES (R_ID, NEW.reservation_room_id);
-
-		RETURN NEW;
-    ELSE
-        RAISE NOTICE 'Reservation found, ID: %', R_ID;
-        
-        -- complete rooms for existing reservation
-        INSERT INTO Reservation_room (reservation_id, room_id)
-        VALUES (R_ID, NEW.reservation_room_id);
-
-        RAISE NOTICE 'Room % added to reservation with ID: %',NEW.reservation_room_id, R_ID;
-
-        RETURN NEW;
     END IF;
+
+    -- Add rooms for reservation with more than 1 room
+    INSERT INTO Reservation_room (
+        reservation_id, 
+        room_id,
+        Num_of_adults, 
+        Num_of_children 
+        )
+    VALUES (
+        R_ID, 
+        NEW.reservation_room_id,
+        NEW.room_number_of_adults, 
+        NEW.room_number_of_children
+        );
+
+    PERFORM check_room_guest_number(NEW.reservation_room_id, R_ID);
+
+    PERFORM calculate_reservation_room_price(NEW.reservation_room_id, R_ID);
+
+    PERFORM calculate_invoice_price(R_ID);
+
+	RETURN NEW;
+
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
@@ -123,35 +137,29 @@ BEGIN
     -- assign reservation_id to local variable 
     Res_ID := NEW.invoice_reservation_id;
 
-    -- calculate price gross based on the reservation details
-    SELECT
-        SUM(
-            RO.ROOM_PRICE_GROSS + (
-                (RT.ADULT_PRICE_GROSS * R.NUM_OF_ADULTS) + (RT.CHILD_PRICE_GROSS * R.NUM_OF_CHILDREN)
+    IF NOT EXISTS (
+        SELECT
+            ID
+        FROM
+            INVOICE
+        WHERE
+            reservation_id = Res_ID
+    ) THEN
+
+        -- just insert new invoice
+        -- all conditions will be check by defined CONSTRAINTS
+        INSERT INTO invoice (
+            reservation_id, 
+            last_modified_by
             )
-        ) AS "total"
-    INTO Price_gross
-    FROM
-        RESERVATION R
-        LEFT JOIN RESERVATION_ROOM RR ON RR.RESERVATION_ID = R.ID
-        LEFT JOIN ROOM RO ON RO.ID = RR.ROOM_ID
-        LEFT JOIN ROOM_TYPE RT ON RT.ID = RO.ROOM_TYPE_ID
-    WHERE
-        R.ID = Res_ID;
+        VALUES (
+            Res_ID, 
+            NEW.invoice_last_modified_by
+            );
 
+    END IF;
 
-    -- just insert new invoice
-    -- all conditions will be check by defined CONSTRAINTS
-    INSERT INTO invoice (
-        reservation_id, 
-        last_modified_by,
-        Price_gross
-        )
-    VALUES (
-        Res_ID, 
-        NEW.invoice_last_modified_by,
-        Price_gross
-        );
+    PERFORM calculate_invoice_price(Res_ID);
 
 	RETURN NEW;
 

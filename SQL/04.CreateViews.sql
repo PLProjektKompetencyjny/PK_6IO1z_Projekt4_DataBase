@@ -19,7 +19,7 @@
 
     .NOTES
 
-        Version:            1.4
+        Version:            1.5
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -36,6 +36,8 @@
 		2024-03-23		Stanisław Horna			Is_Paid and Price_gross moved from reservation to invoice table.
 
 		2024-04-30		Stanisław Horna			add service_view.
+
+		2024-05-25		Stanisław Horna			move number of guest to reservation room table.
 
 */
 
@@ -70,8 +72,8 @@ SELECT
 	r.ID AS "reservation_id",
 	r.User_account_ID AS "reservation_customer_id",
 	r.status_ID AS "reservation_status_id",
-	r.Num_of_Adults AS "reservation_number_of_adults",
-	r.Num_of_Children AS "reservation_number_of_children",
+	rr.Num_of_Adults AS "room_number_of_adults",
+	rr.Num_of_Children AS "room_number_of_children",
 	r.Start_Date AS "reservation_start_date",
 	r.End_Date AS "reservation_end_date",
 	rr.Room_ID AS "reservation_room_id",
@@ -102,13 +104,17 @@ CREATE VIEW invoice_view AS
 SELECT
     i.ID AS "invoice_id",
     i.Reservation_ID AS "invoice_reservation_id",
+	rr.Room_ID AS "invoice_room_id",
+	rr.Reservation_Room_Price_gross AS "invoice_room_price_gross",
     i.Invoice_Date AS "invoice_date",
 	i.Price_Gross AS "invoice_price_gross",
 	i.Is_Paid AS "invoice_is_paid",
 	i.Status_ID AS "invoice_status_id",
 	i.Last_Modified_by AS "invoice_last_modified_by",
 	i.Last_Modified_at AS "invoice_last_modified_at"
-FROM Invoice i;
+FROM Invoice i
+LEFT JOIN Reservation r ON r.ID = i.Reservation_ID
+LEFT JOIN Reservation_room rr ON rr.reservation_id = r.ID;
 
 CREATE VIEW user_view AS
 SELECT

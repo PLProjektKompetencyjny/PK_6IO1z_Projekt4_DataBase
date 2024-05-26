@@ -30,7 +30,7 @@
 
     .NOTES
 
-        Version:            1.5
+        Version:            1.7
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -55,12 +55,21 @@
 
 		2024-04-30		Stanisław Horna			add update_service_view function.
 
+        2024-05-25      Stanisław Horna         add verification if number of people assigned to the room
+                                                is not grater then number of beds.
+												Remove option to update following fields in reservation_view:
+													- start_date
+													- end_date
+													- room_id
+
+        2024-05-26      Stanisław Horna         add invoice recalculation after reservation changes.
 */
 
 CREATE OR REPLACE FUNCTION update_reservation_view()
 RETURNS TRIGGER AS $$
 DECLARE
     Res_ID int;
+    Roo_ID int;
 	Any_ops_performed boolean;
 BEGIN
 
@@ -76,91 +85,39 @@ BEGIN
 
 
 	-- Check if reservation_number_of_adults is changed
-	IF (NEW.reservation_number_of_adults IS DISTINCT FROM OLD.reservation_number_of_adults) THEN
+	IF (NEW.room_number_of_adults IS DISTINCT FROM OLD.room_number_of_adults)
+		AND (OLD.reservation_room_id IS NOT NULL) THEN
 
-		UPDATE reservation
-		SET num_of_adults = NEW.reservation_number_of_adults
-		WHERE id = Res_ID;
+		UPDATE reservation_room
+		SET num_of_adults = NEW.room_number_of_adults
+		WHERE reservation_id = Res_ID
+			AND room_id = OLD.reservation_room_id;
 
-		RAISE NOTICE 
-			'num_of_adults updated for reservation ID: %. OLD: % NEW: %', 
-				Res_ID, 
-				OLD.reservation_number_of_adults, 
-				NEW.reservation_number_of_adults;
+		PERFORM check_room_guest_number(OLD.reservation_room_id, Res_ID);
+
+		PERFORM calculate_reservation_room_price(OLD.reservation_room_id, Res_ID);
+
+		PERFORM calculate_invoice_price(Res_ID);
 
 		Any_ops_performed = TRUE;
 	END IF;
 
 	-- Check if reservation_number_of_children is changed
-	IF (NEW.reservation_number_of_children IS DISTINCT FROM OLD.reservation_number_of_children) THEN
+	IF (NEW.room_number_of_children IS DISTINCT FROM OLD.room_number_of_children) 
+		AND (OLD.reservation_room_id IS NOT NULL) THEN
 
-		UPDATE reservation
-		SET num_of_children = NEW.reservation_number_of_children
-		WHERE id = Res_ID;
+		UPDATE reservation_room
+		SET num_of_children = NEW.room_number_of_children
+		WHERE reservation_id = Res_ID
+			AND room_id = OLD.reservation_room_id;
 
-		RAISE NOTICE 
-			'num_of_childrem updated for reservation ID: %. OLD: % NEW: %', 
-				Res_ID, 
-				OLD.reservation_number_of_children, 
-				NEW.reservation_number_of_children;
+		PERFORM check_room_guest_number(OLD.reservation_room_id, Res_ID);
 
-		Any_ops_performed = TRUE;
-	END IF;
-
-	-- To omit raising an error by CONSTRAINT check, which is verifying if end_date > start_date,
-	-- in case of changing both dates at the same time we have to perform it in appropriate order,
-	-- which is handled in sub function
-	IF (NEW.reservation_start_date IS DISTINCT FROM OLD.reservation_start_date) AND 
-		(NEW.reservation_end_date IS DISTINCT FROM OLD.reservation_end_date) THEN
+		PERFORM calculate_reservation_room_price(OLD.reservation_room_id, Res_ID);
 		
-		UPDATE reservation
-		SET 
-			start_date = NEW.reservation_start_date,
-			end_date = NEW.reservation_end_date
-		WHERE id = Res_ID;
-
-		RAISE NOTICE 
-			'booking period updated for reservation ID: %. OLD: % - % NEW: % - %', 
-				Res_ID, 
-				OLD.reservation_start_date, 
-				OLD.reservation_end_date, 
-				NEW.reservation_start_date,
-				NEW.reservation_end_date;
+		PERFORM calculate_invoice_price(Res_ID);
 
 		Any_ops_performed = TRUE;
-	ELSE
-		-- Check if reservation_start_date is changed
-		IF (NEW.reservation_start_date IS DISTINCT FROM OLD.reservation_start_date) THEN
-
-			UPDATE reservation
-			SET start_date = NEW.reservation_start_date
-			WHERE id = Res_ID;
-
-			RAISE NOTICE 
-				'start_date updated for reservation ID: %. OLD: % NEW: %', 
-					Res_ID, 
-					OLD.reservation_start_date, 
-					NEW.reservation_start_date;
-
-			Any_ops_performed = TRUE;
-		END IF;
-
-
-		-- Check if reservation_end_date is changed
-		IF (NEW.reservation_end_date IS DISTINCT FROM OLD.reservation_end_date) THEN
-
-			UPDATE reservation
-			SET end_date = NEW.reservation_end_date
-			WHERE id = Res_ID;
-
-			RAISE NOTICE 
-				'end_date updated for reservation ID: %. OLD: % NEW: %', 
-					Res_ID, 
-					OLD.reservation_end_date, 
-					NEW.reservation_end_date;
-
-		Any_ops_performed = TRUE;
-		END IF;
 	END IF;
 
 
@@ -170,30 +127,6 @@ BEGIN
 		UPDATE reservation
 		SET status_id = NEW.reservation_status_id
 		WHERE id = Res_ID;
-
-		RAISE NOTICE 
-			'status_id updated for reservation ID: %. OLD: % NEW: %', 
-			Res_ID, 
-			OLD.reservation_status_id, 
-			NEW.reservation_status_id;
-
-		Any_ops_performed = TRUE;
-	END IF;
-
-
-	-- Check if reservation_room_id is changed
-	IF (NEW.reservation_room_id IS DISTINCT FROM OLD.reservation_room_id) THEN
-		
-		UPDATE reservation_room
-		SET room_id = NEW.reservation_room_id
-		WHERE reservation_id = Res_ID AND 
-			room_id = OLD.reservation_room_id;
-
-		RAISE NOTICE 
-			'room_id updated for reservation ID: %. OLD: % NEW: %', 
-				Res_ID, 
-				OLD.reservation_room_id, 
-				NEW.reservation_room_id;
 
 		Any_ops_performed = TRUE;
 	END IF;
@@ -206,12 +139,6 @@ BEGIN
 		SET room_status_id = NEW.reservation_room_status_id
 		WHERE reservation_id = Res_ID AND 
 			room_id = OLD.reservation_room_id;
-
-		RAISE NOTICE 
-			'reservation_room_status_id updated for reservation ID: %. OLD: % NEW: %', 
-				Res_ID, 
-				OLD.reservation_room_status_id, 
-				NEW.reservation_room_status_id;
 
 		Any_ops_performed = TRUE;
 	END IF;
@@ -236,9 +163,6 @@ BEGIN
 		SET last_modified_by = NEW.reservation_last_modified_by
 		WHERE id = Res_ID;
 
-		RAISE NOTICE 
-			'last_modified_by updated for reservation ID: %.', 
-			Res_ID;
 
 	END IF;
 
@@ -247,9 +171,6 @@ BEGIN
 	SET last_modified_at = DEFAULT
 	WHERE id = Res_ID;
 
-	RAISE NOTICE 
-		'last_modified_at updated for reservation ID: %.', 
-			Res_ID;
 
 	RETURN NEW;
 END;
@@ -261,19 +182,18 @@ CREATE OR REPLACE FUNCTION update_invoice_view()
 RETURNS TRIGGER AS $$
 DECLARE
     Inv_ID int;
-	Any_ops_performed boolean;
+	R_ID int;
 BEGIN
-
-    Any_ops_performed := FALSE;
-
-    -- Check if there is anything to update
-	IF (NEW IS NOT DISTINCT FROM OLD) THEN
-		RAISE NOTICE 'Seems like there is nothing to update';
-	END IF;
 
 	-- Assign invoice ID which will be modified to the local variable
     Inv_ID := NEW.invoice_id;
 
+	SELECT
+		RESERVATION_ID INTO R_ID
+	FROM
+		INVOICE
+	WHERE
+		ID = INV_ID;
 
 	-- Check if invoice status is changed
 	IF (NEW.invoice_status_id IS DISTINCT FROM OLD.invoice_status_id) THEN
@@ -282,32 +202,24 @@ BEGIN
 		SET status_id = NEW.invoice_status_id
 		WHERE id = Inv_ID;
 
-		RAISE NOTICE 
-            'status_id updated for invoice ID: %. OLD: % NEW: %', 
-                Inv_ID, 
-                OLD.invoice_status_id, 
-                NEW.invoice_status_id;
-
-		Any_ops_performed = TRUE;
 	END IF;
 
 
-	-- Check if invoice_price_gross is changed
-	IF (NEW.invoice_price_gross IS DISTINCT FROM OLD.invoice_price_gross) THEN
+	IF (NEW.invoice_date IS DISTINCT FROM OLD.invoice_date) THEN
+
+		RAISE EXCEPTION 'Modification of invoice date is not allowed';
+		RETURN NEW;
+
+	END IF;
+
+	-- Check if invoice status is changed
+	IF (NEW.invoice_status_id IS DISTINCT FROM OLD.invoice_status_id) THEN
 
 		UPDATE invoice
-		SET price_gross = NEW.invoice_price_gross
+		SET status_id = NEW.invoice_status_id
 		WHERE id = Inv_ID;
 
-		RAISE NOTICE 
-			'price_gross updated for invoice ID: %. OLD: % NEW: %', 
-				Res_ID, 
-				OLD.invoice_price_gross, 
-				NEW.invoice_price_gross;
-
-		Any_ops_performed = TRUE;
 	END IF;
-
 
 	-- Check if invoice_is_paid is changed
 	IF (NEW.invoice_is_paid IS DISTINCT FROM OLD.invoice_is_paid) THEN
@@ -316,26 +228,7 @@ BEGIN
 		SET is_paid = NEW.invoice_is_paid
 		WHERE id = Inv_ID;
 
-		RAISE NOTICE 
-			'is_paid updated for invoice ID: %. OLD: % NEW: %', 
-				Res_ID, 
-				OLD.invoice_is_paid, 
-				NEW.invoice_is_paid;
-
-		Any_ops_performed = TRUE;
 	END IF;
-
-
-	-- check if any operation was performed,
-	-- if not raise an exception to notify that wanted operation was not performed
-	IF Any_ops_performed = FALSE THEN
-
-		RAISE EXCEPTION 
-			'No update was performed';
-
-		RETURN NULL;
-	END IF;
-
 
 	-- check if last modifier changed and is not null
 	IF (NEW.invoice_last_modified_by IS DISTINCT FROM OLD.invoice_last_modified_by) AND 
@@ -345,10 +238,6 @@ BEGIN
 		SET last_modified_by = NEW.invoice_last_modified_by
 		WHERE id = Inv_ID;
 
-		RAISE NOTICE 
-			'last_modified_by updated for invoice ID: %.', 
-			Inv_ID;
-
 	END IF;
 
 	-- update last modify date (DEFAULT value is NOW())
@@ -356,9 +245,7 @@ BEGIN
 	SET last_modified_at = DEFAULT
 	WHERE id = Inv_ID;
 
-	RAISE NOTICE 
-		'last_modified_at updated for invoice ID: %.', 
-			Inv_ID;
+	PERFORM calculate_invoice_price(R_ID);
 
 	RETURN NEW;
 END;
@@ -391,12 +278,6 @@ BEGIN
 		SET status_id = NEW.room_status_id
 		WHERE id = Roo_ID;
 
-		RAISE NOTICE 
-            'status_id updated for room ID: %. OLD: % NEW: %', 
-                Roo_ID, 
-                OLD.room_status_id, 
-                NEW.room_status_id;
-
 		Any_ops_performed = TRUE;
 	END IF;
 
@@ -408,12 +289,6 @@ BEGIN
 		SET room_type_id = NEW.room_type_id
 		WHERE id = Roo_ID;
 
-		RAISE NOTICE 
-            'room_type_id updated for room ID: %. OLD: % NEW: %', 
-                Roo_ID, 
-                OLD.room_status_id, 
-                NEW.room_status_id;
-
 		Any_ops_performed = TRUE;
 	END IF;
 
@@ -424,12 +299,6 @@ BEGIN
 		UPDATE room
 		SET room_price_gross = NEW.room_gross_price
 		WHERE id = Roo_ID;
-
-		RAISE NOTICE 
-            'room_type_id updated for room ID: %. OLD: % NEW: %', 
-                Roo_ID, 
-                OLD.room_status_id, 
-                NEW.room_status_id;
 
 		Any_ops_performed = TRUE;
 	END IF;
@@ -454,20 +323,12 @@ BEGIN
 		SET last_modified_by = NEW.room_last_modified_by
 		WHERE id = Roo_ID;
 
-		RAISE NOTICE 
-			'last_modified_by updated for room ID: %.', 
-			Roo_ID;
-
 	END IF;
 
 	-- update last modify date (DEFAULT value is NOW())
 	UPDATE room
 	SET last_modified_at = DEFAULT
 	WHERE id = Roo_ID;
-
-	RAISE NOTICE 
-		'last_modified_at updated for room ID: %.', 
-			Roo_ID;
 
 	RETURN NEW;
 END;
@@ -507,12 +368,6 @@ BEGIN
 		SET user_name = NEW.user_name
 		WHERE id = Usr_ID;
 
-		RAISE NOTICE 
-            'user_name updated for account ID: %. OLD: % NEW: %', 
-                Usr_ID, 
-                OLD.user_name, 
-                NEW.user_name;
-
 		Any_ops_performed = TRUE;
 	END IF;
 
@@ -524,12 +379,6 @@ BEGIN
 		SET e_mail = NEW.user_e_mail
 		WHERE id = Usr_ID;
 
-		RAISE NOTICE 
-            'e_mail updated for account ID: %. OLD: % NEW: %', 
-                Usr_ID, 
-                OLD.user_e_mail, 
-                NEW.user_e_mail;
-
 		Any_ops_performed = TRUE;
 	END IF;
 
@@ -540,12 +389,6 @@ BEGIN
 		UPDATE user_account
 		SET is_active = NEW.user_is_active
 		WHERE id = Usr_ID;
-
-		RAISE NOTICE 
-            'is_active updated for account ID: %. OLD: % NEW: %', 
-                Usr_ID, 
-                OLD.user_is_active, 
-                NEW.user_is_active;
 
 		Any_ops_performed = TRUE;
 	END IF;
@@ -559,12 +402,6 @@ BEGIN
 			UPDATE user_account
 			SET is_active = NEW.user_is_admin
 			WHERE id = Usr_ID;
-
-			RAISE NOTICE 
-				'is_admin updated for account ID: %. OLD: % NEW: %', 
-					Usr_ID, 
-					OLD.user_is_admin, 
-					NEW.user_is_admin;
 
 		ELSE
 
@@ -596,20 +433,12 @@ BEGIN
 		SET last_modified_by = NEW.user_last_modified_by
 		WHERE id = Usr_ID;
 
-		RAISE NOTICE 
-			'last_modified_by updated for account ID: %.', 
-			Usr_ID;
-
 	END IF;
 
 	-- update last modify date (DEFAULT value is NOW())
 	UPDATE user_account
 	SET last_modified_at = DEFAULT
 	WHERE id = Usr_ID;
-
-	RAISE NOTICE 
-		'last_modified_at updated for account ID: %.', 
-			Usr_ID;
 
 	RETURN NEW;
 END;
@@ -642,12 +471,6 @@ BEGIN
 		SET nip_num = NEW.customer_nip_number
 		WHERE user_id = Usr_ID;
 
-		RAISE NOTICE 
-            'nip_num updated for account ID: %. OLD: % NEW: %', 
-                Usr_ID, 
-                OLD.customer_nip_number, 
-                NEW.customer_nip_number;
-
 		Any_ops_performed = TRUE;
 	END IF;
 
@@ -658,12 +481,6 @@ BEGIN
 		UPDATE user_details
 		SET name = NEW.customer_name
 		WHERE user_id = Usr_ID;
-
-		RAISE NOTICE 
-            'name updated for account ID: %. OLD: % NEW: %', 
-                Usr_ID, 
-                OLD.customer_name, 
-                NEW.customer_name;
 
 		Any_ops_performed = TRUE;
 	END IF;
@@ -676,12 +493,6 @@ BEGIN
 		SET surname = NEW.customer_surname
 		WHERE user_id = Usr_ID;
 
-		RAISE NOTICE 
-            'surname updated for account ID: %. OLD: % NEW: %', 
-                Usr_ID, 
-                OLD.customer_surname, 
-                NEW.customer_surname;
-
 		Any_ops_performed = TRUE;
 	END IF;
 
@@ -692,12 +503,6 @@ BEGIN
 		UPDATE user_details
 		SET phone_num = NEW.customer_phone
 		WHERE user_id = Usr_ID;
-
-		RAISE NOTICE 
-            'phone_num updated for account ID: %. OLD: % NEW: %', 
-                Usr_ID, 
-                OLD.customer_phone, 
-                NEW.customer_phone;
 
 		Any_ops_performed = TRUE;
 	END IF;
@@ -710,12 +515,6 @@ BEGIN
 		SET city = NEW.customer_city
 		WHERE user_id = Usr_ID;
 
-		RAISE NOTICE 
-            'city updated for account ID: %. OLD: % NEW: %', 
-                Usr_ID, 
-                OLD.customer_city, 
-                NEW.customer_city;
-
 		Any_ops_performed = TRUE;
 	END IF;
 
@@ -726,12 +525,6 @@ BEGIN
 		UPDATE user_details
 		SET Postal_code = NEW.customer_postal_code
 		WHERE user_id = Usr_ID;
-
-		RAISE NOTICE 
-            'city updated for account ID: %. OLD: % NEW: %', 
-                Usr_ID, 
-                OLD.customer_postal_code, 
-                NEW.customer_postal_code;
 
 		Any_ops_performed = TRUE;
 	END IF;
@@ -744,12 +537,6 @@ BEGIN
 		SET Street = NEW.customer_street
 		WHERE user_id = Usr_ID;
 
-		RAISE NOTICE 
-            'city updated for account ID: %. OLD: % NEW: %', 
-                Usr_ID, 
-                OLD.customer_street, 
-                NEW.customer_street;
-
 		Any_ops_performed = TRUE;
 	END IF;
 
@@ -760,12 +547,6 @@ BEGIN
 		UPDATE user_details
 		SET Building_Num = NEW.customer_building_number
 		WHERE user_id = Usr_ID;
-
-		RAISE NOTICE 
-            'city updated for account ID: %. OLD: % NEW: %', 
-                Usr_ID, 
-                OLD.customer_building_number, 
-                NEW.customer_building_number;
 
 		Any_ops_performed = TRUE;
 	END IF;
@@ -790,20 +571,12 @@ BEGIN
 		SET last_modified_by = NEW.customer_last_modified_by
 		WHERE user_id = Usr_ID;
 
-		RAISE NOTICE 
-			'last_modified_by updated for account ID: %.', 
-			Usr_ID;
-
 	END IF;
 
 	-- update last modify date (DEFAULT value is NOW())
 	UPDATE user_details
 	SET last_modified_at = DEFAULT
 	WHERE user_id = Usr_ID;
-
-	RAISE NOTICE 
-		'last_modified_at updated for account ID: %.', 
-			Usr_ID;
 
 	RETURN NEW;
 END;
@@ -835,12 +608,6 @@ BEGIN
 		SET name = NEW.service_name
 		WHERE id = svr_ID;
 
-		RAISE NOTICE 
-            'service_name updated for service ID: %. OLD: % NEW: %', 
-                svr_ID, 
-                OLD.service_name, 
-                NEW.service_name;
-
 		Any_ops_performed = TRUE;
 	END IF;
 
@@ -851,12 +618,6 @@ BEGIN
 		UPDATE service
 		SET unit_price = NEW.service_price
 		WHERE id = svr_ID;
-
-		RAISE NOTICE 
-            'service_price updated for service ID: %. OLD: % NEW: %', 
-                svr_ID, 
-                OLD.service_price, 
-                NEW.service_price;
 
 		Any_ops_performed = TRUE;
 	END IF;
@@ -869,12 +630,6 @@ BEGIN
 		UPDATE reservation_service
 		SET quantity = NEW.service_quantity
 		WHERE id = svr_ID AND reservation_id = NEW.service_reservation_id;
-
-		RAISE NOTICE 
-            'service_quantity updated for service ID: %. OLD: % NEW: %', 
-                svr_ID, 
-                OLD.service_quantity, 
-                NEW.service_quantity;
 
 		Any_ops_performed = TRUE;
 	END IF;
@@ -899,20 +654,12 @@ BEGIN
 		SET last_modified_by = NEW.service_last_modified_by
 		WHERE id = svr_ID;
 
-		RAISE NOTICE 
-			'last_modified_by updated for service ID: %.', 
-			svr_ID;
-
 	END IF;
 
 	-- update last modify date (DEFAULT value is NOW())
 	UPDATE service
 	SET last_modified_at = DEFAULT
 	WHERE id = svr_ID;
-
-	RAISE NOTICE 
-		'last_modified_at updated for service ID: %.', 
-			svr_ID;
 
 	RETURN NEW;
 END;

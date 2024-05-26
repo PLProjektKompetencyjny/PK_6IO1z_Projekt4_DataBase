@@ -30,7 +30,7 @@
 
     .NOTES
 
-        Version:            1.0
+        Version:            1.2
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -39,6 +39,9 @@
 
         Date            Who                     What
         2024-03-22      Stanisław Horna         delete_operation_not_permitted generic func for all not permitted ops.
+
+        2024-05-25      Stanisław Horna         add delete_reservation_view()
+
 */
 
 CREATE OR REPLACE FUNCTION delete_operation_not_permitted()
@@ -46,6 +49,20 @@ RETURNS TRIGGER AS $$
 BEGIN
 
     RAISE EXCEPTION 'Operation not permitted.';
+
+	RETURN NULL;
+
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION delete_reservation_view()
+RETURNS TRIGGER AS $$
+BEGIN
+
+    DELETE FROM RESERVATION_ROOM
+    WHERE
+        ROOM_ID = OLD.RESERVATION_ROOM_ID
+        AND RESERVATION_ID = OLD.RESERVATION_ID;
 
 	RETURN NULL;
 
