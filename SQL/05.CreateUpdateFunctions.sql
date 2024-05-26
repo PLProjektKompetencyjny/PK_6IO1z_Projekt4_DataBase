@@ -99,12 +99,6 @@ BEGIN
 
 		PERFORM calculate_invoice_price(Res_ID);
 
-		RAISE NOTICE 
-			'num_of_adults updated for reservation ID: %. OLD: % NEW: %', 
-				Res_ID, 
-				OLD.room_number_of_adults, 
-				NEW.room_number_of_adults;
-
 		Any_ops_performed = TRUE;
 	END IF;
 
@@ -123,12 +117,6 @@ BEGIN
 		
 		PERFORM calculate_invoice_price(Res_ID);
 
-		RAISE NOTICE 
-			'num_of_children updated for reservation ID: %. OLD: % NEW: %', 
-				Res_ID, 
-				OLD.room_number_of_children, 
-				NEW.room_number_of_children;
-
 		Any_ops_performed = TRUE;
 	END IF;
 
@@ -139,12 +127,6 @@ BEGIN
 		UPDATE reservation
 		SET status_id = NEW.reservation_status_id
 		WHERE id = Res_ID;
-
-		RAISE NOTICE 
-			'status_id updated for reservation ID: %. OLD: % NEW: %', 
-			Res_ID, 
-			OLD.reservation_status_id, 
-			NEW.reservation_status_id;
 
 		Any_ops_performed = TRUE;
 	END IF;
@@ -157,12 +139,6 @@ BEGIN
 		SET room_status_id = NEW.reservation_room_status_id
 		WHERE reservation_id = Res_ID AND 
 			room_id = OLD.reservation_room_id;
-
-		RAISE NOTICE 
-			'reservation_room_status_id updated for reservation ID: %. OLD: % NEW: %', 
-				Res_ID, 
-				OLD.reservation_room_status_id, 
-				NEW.reservation_room_status_id;
 
 		Any_ops_performed = TRUE;
 	END IF;
