@@ -400,7 +400,7 @@ BEGIN
 		IF NEW.user_is_admin = TRUE AND (OLD.user_name IS NOT NULL) THEN
 
 			UPDATE user_account
-			SET is_active = NEW.user_is_admin
+			SET is_admin = NEW.user_is_admin
 			WHERE id = Usr_ID;
 
 		ELSE

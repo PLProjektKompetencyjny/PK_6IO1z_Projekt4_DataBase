@@ -3,7 +3,7 @@
         SQL script for PostgreSQL to define sub functions in TravelNest DB.
         EXISTING FUNCTIONS WILL BE REMOVED AND RE-CREATED WITH THIS FILES' DEFINITION.
 
-        This file is supposed to define all sub functions (related to reservation),
+        This file is supposed to define all sub functions (related to services),
         which will be used in another functions, most likely those executed by triggers.
 
 		Following actions will be performed in a given order:

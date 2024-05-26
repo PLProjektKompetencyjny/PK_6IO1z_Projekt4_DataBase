@@ -5,4 +5,4 @@
 
 UPDATE user_view
 SET user_is_admin = TRUE
-WHERE user_id = 2;
+WHERE user_id = 6;

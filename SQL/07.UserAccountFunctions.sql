@@ -22,7 +22,7 @@
 
     .NOTES
 
-        Version:            1.0
+        Version:            1.3
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -33,6 +33,8 @@
         2024-03-22      Stanisław Horna         handling for last_modified_by, inactive user can not authenticate.
 
         2024-03-23      Stanisław Horna         add SECURITY DEFINER <- to invoke functions with owner's permissions.
+
+        2024-05-26      Stanisław Horna         use hash functions for passwords
 */
 
 CREATE OR REPLACE FUNCTION insert_user_account(login varchar, user_password varchar, last_modified_by_id int)
@@ -45,7 +47,7 @@ BEGIN
 
         -- create new account using e-mail field
 	    INSERT INTO user_account (e_mail, password)
-	    VALUES (login, user_password);
+	    VALUES (login, get_hash(user_password));
 
         -- get ID for newly created user
         SELECT
@@ -58,7 +60,7 @@ BEGIN
 
         -- create new account using username field
     	INSERT INTO user_account (user_name, password)
-	    VALUES (login, user_password);
+	    VALUES (login, get_hash(user_password));
 
         -- get ID for newly created user
         SELECT
@@ -131,30 +133,26 @@ BEGIN
     FROM user_account acc_tab
     WHERE id = last_modified_by_id;
 
-
-    -- check if user can be authenticated or if requestor is admin
-    IF (authenticate_user_account(login, old_user_password) = User_ID_To_Return) OR Is_Admin = TRUE THEN
+    -- update password if last_modified_by_id is admin user
+    IF Is_Admin IS TRUE THEN
 
         -- change password
         UPDATE user_account
-        SET password = new_user_password
+        SET password = get_hash(new_user_password),
+            last_modified_by = last_modified_by_id
         WHERE id = User_ID_To_Return;
 
-        -- update last modified by field
-        -- if admin is a requestor set admin's account ID in last_modified_by
-        IF Is_Admin = TRUE THEN
+        RETURN User_ID_To_Return;
+    END IF;
 
-            UPDATE user_account
-            SET last_modified_by = last_modified_by_id
-            WHERE id = User_ID_To_Return;
+    -- check if user can be authenticated or if requestor is admin
+    IF (authenticate_user_account(login, old_user_password) = User_ID_To_Return) THEN
 
-        ELSE  -- if admin is not a requestor set user id in last_modified_by
-
-            UPDATE user_account
-            SET last_modified_by = User_ID_To_Return
-            WHERE id = User_ID_To_Return;
-
-        END IF;
+        -- change password
+        UPDATE user_account
+        SET password = get_hash(new_user_password),
+            last_modified_by = User_ID_To_Return
+        WHERE id = User_ID_To_Return;
 
         -- return ID of the user which account was modified
         RETURN User_ID_To_Return;
@@ -217,21 +215,24 @@ BEGIN
         RETURN NULL;
     END IF;
 
-
     -- check if provided password matches the one stored in DB
     -- if yes return authenticated user ID
-    IF ((
-        SELECT 
-            password 
-        FROM User_account
-        WHERE id = User_ID_To_Return
-        ) IS NOT DISTINCT FROM user_password) THEN
+    IF (
+        SELECT
+            compare_hashes(user_password, (        
+                SELECT 
+                    "password"
+                FROM User_account
+                WHERE id = User_ID_To_Return
+                )
+            )
+    ) THEN
 
         RETURN User_ID_To_Return;
     END IF;
 	
     -- if password was not correct raise a notice and do not return user ID
-	RAISE NOTICE 'Password for login: % is incorrect', login;
+	RAISE EXCEPTION 'Can not authenticate';
     RETURN NULL;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;

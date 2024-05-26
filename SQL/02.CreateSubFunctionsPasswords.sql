@@ -3,7 +3,7 @@
         SQL script for PostgreSQL to define sub functions in TravelNest DB.
         EXISTING FUNCTIONS WILL BE REMOVED AND RE-CREATED WITH THIS FILES' DEFINITION.
 
-        This file is supposed to define all sub functions (related to invoices),
+        This file is supposed to define all sub functions (related to user passwords),
         which will be used in another functions, most likely those executed by triggers.
 
 		Following actions will be performed in a given order:
@@ -25,35 +25,37 @@
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
-        Creation Date:      25-May-2024
+        Creation Date:      26-May-2024
         ChangeLog:
 
         Date            Who                     What
 
-
 */
 
-CREATE OR REPLACE FUNCTION calculate_invoice_price(reservation_to_calc_id int) 
-RETURNS void 
+CREATE OR REPLACE FUNCTION get_hash(phrase_to_hash varchar) 
+RETURNS varchar
 AS $$
-DECLARE
-    Invoice_Price_gross int;
-BEGIN
 
-    SELECT
-        SUM(RESERVATION_ROOM_PRICE_GROSS)
-    INTO Invoice_Price_gross
-    FROM
-        RESERVATION_ROOM
-    WHERE
-        RESERVATION_ID = reservation_to_calc_id;
+    import bcrypt
+    
+    salt = bcrypt.gensalt()
 
-    UPDATE INVOICE
-    SET
-        PRICE_GROSS = INVOICE_PRICE_GROSS
-    WHERE
-        RESERVATION_ID = RESERVATION_TO_CALC_ID;
+    hashed_phrase = bcrypt.hashpw(phrase_to_hash.encode('utf-8'), salt)
 
-    RETURN;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+    hashed_phrase_str = hashed_phrase.decode('utf-8')
+
+    return hashed_phrase_str
+
+$$ LANGUAGE plpython3u SECURITY DEFINER;
+
+CREATE OR REPLACE FUNCTION compare_hashes(external_phrase varchar, hash_from_db varchar) 
+RETURNS boolean
+AS $$
+
+    import bcrypt
+
+    db_hash_value = hash_from_db.encode('utf-8')
+
+    return bcrypt.checkpw(external_phrase.encode('utf-8'), db_hash_value)
+
+$$ LANGUAGE plpython3u SECURITY DEFINER;

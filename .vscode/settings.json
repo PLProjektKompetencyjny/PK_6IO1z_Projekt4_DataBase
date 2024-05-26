@@ -1,9 +1,13 @@
 {
     "editor.formatOnSave": false,
     "cSpell.words": [
+        "checkpw",
         "fkey",
+        "gensalt",
         "Grzegorz",
+        "hashpw",
         "Kubicki",
-        "mgmt"
+        "mgmt",
+        "plpython"
     ]
 }

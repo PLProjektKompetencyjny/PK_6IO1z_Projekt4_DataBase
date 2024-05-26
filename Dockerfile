@@ -47,6 +47,7 @@ ENV EXTENSION_PG_STAT_COUNTED_STATEMENTS="all"
 # Install plpython extension for code written in Python support
 RUN apt-get update
 RUN apt-get install -y postgresql-plpython3-16
+RUN apt-get install -y python3-pip
 RUN apt-get install -y locales locales-all
 
 # Install package to support top and free shell commands
@@ -68,6 +69,9 @@ COPY ./SQL/* /docker-entrypoint-initdb.d/
 # Copy archive with system_stats extension code and initialization script
 COPY ./SystemStats/*  ${EXTENSION_SYSTEM_STATS_WORKDIR}/
 
+# Copy python requirements file and install
+COPY ./requirements.txt ./requirements.txt
+RUN pip install -r requirements.txt --break-system-packages
 
 #######################################################################################################################
 ########################################### Init system_stats dependencies ############################################
