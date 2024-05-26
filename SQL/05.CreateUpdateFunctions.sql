@@ -206,19 +206,18 @@ CREATE OR REPLACE FUNCTION update_invoice_view()
 RETURNS TRIGGER AS $$
 DECLARE
     Inv_ID int;
-	Any_ops_performed boolean;
+	R_ID int;
 BEGIN
-
-    Any_ops_performed := FALSE;
-
-    -- Check if there is anything to update
-	IF (NEW IS NOT DISTINCT FROM OLD) THEN
-		RAISE NOTICE 'Seems like there is nothing to update';
-	END IF;
 
 	-- Assign invoice ID which will be modified to the local variable
     Inv_ID := NEW.invoice_id;
 
+	SELECT
+		RESERVATION_ID INTO R_ID
+	FROM
+		INVOICE
+	WHERE
+		ID = INV_ID;
 
 	-- Check if invoice status is changed
 	IF (NEW.invoice_status_id IS DISTINCT FROM OLD.invoice_status_id) THEN
@@ -227,20 +226,24 @@ BEGIN
 		SET status_id = NEW.invoice_status_id
 		WHERE id = Inv_ID;
 
-		Any_ops_performed = TRUE;
 	END IF;
 
 
-	-- Check if invoice_price_gross is changed
-	IF (NEW.invoice_price_gross IS DISTINCT FROM OLD.invoice_price_gross) THEN
+	IF (NEW.invoice_date IS DISTINCT FROM OLD.invoice_date) THEN
+
+		RAISE EXCEPTION 'Modification of invoice date is not allowed';
+		RETURN NEW;
+
+	END IF;
+
+	-- Check if invoice status is changed
+	IF (NEW.invoice_status_id IS DISTINCT FROM OLD.invoice_status_id) THEN
 
 		UPDATE invoice
-		SET price_gross = NEW.invoice_price_gross
+		SET status_id = NEW.invoice_status_id
 		WHERE id = Inv_ID;
 
-		Any_ops_performed = TRUE;
 	END IF;
-
 
 	-- Check if invoice_is_paid is changed
 	IF (NEW.invoice_is_paid IS DISTINCT FROM OLD.invoice_is_paid) THEN
@@ -249,20 +252,7 @@ BEGIN
 		SET is_paid = NEW.invoice_is_paid
 		WHERE id = Inv_ID;
 
-		Any_ops_performed = TRUE;
 	END IF;
-
-
-	-- check if any operation was performed,
-	-- if not raise an exception to notify that wanted operation was not performed
-	IF Any_ops_performed = FALSE THEN
-
-		RAISE EXCEPTION 
-			'No update was performed';
-
-		RETURN NULL;
-	END IF;
-
 
 	-- check if last modifier changed and is not null
 	IF (NEW.invoice_last_modified_by IS DISTINCT FROM OLD.invoice_last_modified_by) AND 
@@ -278,6 +268,8 @@ BEGIN
 	UPDATE invoice
 	SET last_modified_at = DEFAULT
 	WHERE id = Inv_ID;
+
+	PERFORM calculate_invoice_price(R_ID);
 
 	RETURN NEW;
 END;
