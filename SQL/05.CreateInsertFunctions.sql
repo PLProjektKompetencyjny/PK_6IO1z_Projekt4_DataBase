@@ -63,6 +63,7 @@
                                                 is not grater then number of beds.
 
         2024-05-26      Stanisław Horna         add invoice recalculation after reservation changes.
+                                                add invoice recalculation if there is invoice for provided reservation
 
 */
 
@@ -137,16 +138,27 @@ BEGIN
     -- assign reservation_id to local variable 
     Res_ID := NEW.invoice_reservation_id;
 
-    -- just insert new invoice
-    -- all conditions will be check by defined CONSTRAINTS
-    INSERT INTO invoice (
-        reservation_id, 
-        last_modified_by
-        )
-    VALUES (
-        Res_ID, 
-        NEW.invoice_last_modified_by
-        );
+    IF NOT EXISTS (
+        SELECT
+            ID
+        FROM
+            INVOICE
+        WHERE
+            reservation_id = Res_ID
+    ) THEN
+
+        -- just insert new invoice
+        -- all conditions will be check by defined CONSTRAINTS
+        INSERT INTO invoice (
+            reservation_id, 
+            last_modified_by
+            )
+        VALUES (
+            Res_ID, 
+            NEW.invoice_last_modified_by
+            );
+
+    END IF;
 
     PERFORM calculate_invoice_price(Res_ID);
 
