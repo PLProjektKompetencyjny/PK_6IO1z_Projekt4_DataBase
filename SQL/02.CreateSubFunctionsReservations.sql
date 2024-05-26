@@ -33,6 +33,23 @@
 
 */
 
+CREATE OR REPLACE FUNCTION get_reservation_id(new_entry RECORD) 
+RETURNS int 
+AS $$
+BEGIN
+    -- One customer can have only 1 reservation for the same time frame and guests number.
+    RETURN (
+        SELECT
+            ID
+        FROM Reservation
+        WHERE user_account_id = new_entry.reservation_customer_id AND
+                start_date = new_entry.reservation_start_date AND
+                end_date = new_entry.reservation_end_date
+    );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+
 CREATE OR REPLACE FUNCTION check_room_availability(room_to_check_id int, new_reservation_start_date timestamp, new_reservation_end_date timestamp) 
 RETURNS int 
 AS $$

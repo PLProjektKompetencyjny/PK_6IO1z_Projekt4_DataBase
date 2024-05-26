@@ -74,7 +74,7 @@ BEGIN
     -- Get reservation if this reservation already exists in DB,
     -- otherwise R_ID will be NULL
     SELECT
-        subf_get_reservation_id(NEW)
+        get_reservation_id(NEW)
     INTO R_ID;
 
     -- check if room can be booked
