@@ -31,7 +31,7 @@
     .NOTES
 
 
-        Version:            1.7
+        Version:            1.8
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -61,6 +61,8 @@
 
         2024-05-25      Stanisław Horna         add verification if number of people assigned to the room
                                                 is not grater then number of beds.
+
+        2024-05-26      Stanisław Horna         add invoice recalculation after reservation changes.
 
 */
 
@@ -115,6 +117,8 @@ BEGIN
     PERFORM check_room_guest_number(NEW.reservation_room_id, R_ID);
 
     PERFORM calculate_reservation_room_price(NEW.reservation_room_id, R_ID);
+
+    PERFORM calculate_invoice_price(R_ID);
 
 	RETURN NEW;
 

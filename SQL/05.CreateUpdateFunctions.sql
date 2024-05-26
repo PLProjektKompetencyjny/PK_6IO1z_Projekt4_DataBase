@@ -30,7 +30,7 @@
 
     .NOTES
 
-        Version:            1.6
+        Version:            1.7
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -61,6 +61,8 @@
 													- start_date
 													- end_date
 													- room_id
+
+        2024-05-26      Stanisław Horna         add invoice recalculation after reservation changes.
 */
 
 CREATE OR REPLACE FUNCTION update_reservation_view()
@@ -95,6 +97,8 @@ BEGIN
 
 		PERFORM calculate_reservation_room_price(OLD.reservation_room_id, Res_ID);
 
+		PERFORM calculate_invoice_price(Res_ID);
+
 		RAISE NOTICE 
 			'num_of_adults updated for reservation ID: %. OLD: % NEW: %', 
 				Res_ID, 
@@ -116,6 +120,8 @@ BEGIN
 		PERFORM check_room_guest_number(OLD.reservation_room_id, Res_ID);
 
 		PERFORM calculate_reservation_room_price(OLD.reservation_room_id, Res_ID);
+		
+		PERFORM calculate_invoice_price(Res_ID);
 
 		RAISE NOTICE 
 			'num_of_children updated for reservation ID: %. OLD: % NEW: %', 
