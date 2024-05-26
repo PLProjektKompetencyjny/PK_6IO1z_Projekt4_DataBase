@@ -167,40 +167,13 @@ END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 
-
-CREATE OR REPLACE FUNCTION insert_room_view()
-RETURNS TRIGGER AS $$
-BEGIN
-
-    -- just insert new room
-    -- all conditions will be check by defined CONSTRAINTS
-    INSERT INTO room (
-        id, 
-        room_type_id, 
-        room_price_gross, 
-        last_modified_by
-        )
-    VALUES (
-        NEW.room_id, 
-        NEW.room_type_id, 
-        NEW.room_gross_price, 
-        NEW.room_last_modified_by
-        );
-
-	RETURN NEW;
-
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-
-
-
 CREATE OR REPLACE FUNCTION insert_user_view()
 RETURNS TRIGGER AS $$
 BEGIN
 
     -- Raise exception as it is not allowed, because view does not contain passwords due to security reasons.
     -- the only way to create user and provide password is to use dedicated function
-    RAISE EXCEPTION 'Operation not permitted, to insert user use insert_user_account() function.';
+    RAISE EXCEPTION 'Operation not permitted.';
 
 	RETURN NULL;
 
@@ -250,16 +223,9 @@ RETURNS TRIGGER AS $$
 BEGIN
 
     IF NEW.service_name IS NOT NULL THEN
-        INSERT INTO service (
-            name,
-            unit_price,
-            last_modified_by
-        )
-        VALUES(
-            NEW.service_name,
-            NEW.service_price,
-            NEW.service_last_modified_by
-        );
+
+        RAISE EXCEPTION 'Inserting new services is not allowed in this view';
+        RETURN NEW;
 
     ELSE
         INSERT INTO reservation_service (

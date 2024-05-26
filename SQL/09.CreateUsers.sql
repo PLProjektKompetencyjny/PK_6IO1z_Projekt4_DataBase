@@ -23,14 +23,15 @@
 
         2024-05-24      Stanisław Horna         remove api_read user.
 
-        2024-05-26      Stanisław Horna         add privileges to check_room_availability, check_room_guest_number
+        2024-05-26      Stanisław Horna         add privileges to check_room_availability, check_room_guest_number.
+                                                add privileges to management views
 
 */
 
 -- create required roles
 CREATE ROLE "tn_api_write" LOGIN PASSWORD 'cba';
 
--- Grant privileges for WRITE user
+-- Grant privileges for WRITE user to operation views
 GRANT CONNECT ON DATABASE "TravelNest" to "tn_api_write";
 GRANT USAGE ON SCHEMA public TO "tn_api_write";
 GRANT SELECT, INSERT, UPDATE ON customer_view to "tn_api_write";
@@ -40,8 +41,17 @@ GRANT SELECT, INSERT, UPDATE ON room_view to "tn_api_write";
 GRANT SELECT, INSERT, UPDATE ON user_view to "tn_api_write";
 GRANT SELECT, INSERT, UPDATE ON service_view to "tn_api_write";
 
+-- Grant privileges for WRITE user to management views
+GRANT SELECT, INSERT, UPDATE ON service_mgmt to "tn_api_write";
+GRANT SELECT, INSERT, UPDATE ON room_type_mgmt to "tn_api_write";
+GRANT SELECT, INSERT, UPDATE ON room_mgmt to "tn_api_write";
+
+-- Grant privileges for WRITE user to user functions
 GRANT EXECUTE ON FUNCTION authenticate_user_account(varchar, varchar) to "tn_api_write";
 GRANT EXECUTE ON FUNCTION insert_user_account(varchar, varchar, int) to "tn_api_write";
 GRANT EXECUTE ON FUNCTION update_user_account_password(varchar, varchar, varchar, int) to "tn_api_write";
+
+
+-- Grant privileges for WRITE user to utility functions
 GRANT EXECUTE ON FUNCTION check_room_availability(int, timestamp, timestamp) to "tn_api_write";
 GRANT EXECUTE ON FUNCTION check_room_guest_number(int, int) to "tn_api_write";

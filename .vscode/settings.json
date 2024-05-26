@@ -1,1 +1,8 @@
-{ "editor.formatOnSave": false }
+{
+    "editor.formatOnSave": false,
+    "cSpell.words": [
+        "Grzegorz",
+        "Kubicki",
+        "mgmt"
+    ]
+}
