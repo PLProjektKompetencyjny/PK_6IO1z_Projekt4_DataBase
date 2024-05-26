@@ -52,7 +52,6 @@ GRANT EXECUTE ON FUNCTION authenticate_user_account(varchar, varchar) to "tn_api
 GRANT EXECUTE ON FUNCTION insert_user_account(varchar, varchar, int) to "tn_api_write";
 GRANT EXECUTE ON FUNCTION update_user_account_password(varchar, varchar, varchar, int) to "tn_api_write";
 
-
 -- Grant privileges for WRITE user to utility functions
 GRANT EXECUTE ON FUNCTION check_room_availability(int, timestamp, timestamp) to "tn_api_write";
 GRANT EXECUTE ON FUNCTION check_room_guest_number(int, int) to "tn_api_write";
