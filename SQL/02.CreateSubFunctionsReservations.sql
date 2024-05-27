@@ -31,6 +31,8 @@
         Date            Who                     What
         2024-05-25      Stanisław Horna         add check_room_guest_number()
 
+        2024-05-27      Stanisław Horna         remove exception if room is busy in check_room_availability()
+
 */
 
 CREATE OR REPLACE FUNCTION get_reservation_id(new_entry RECORD) 
@@ -58,19 +60,19 @@ BEGIN
     -- check if input is not null
     IF room_to_check_id IS NULL THEN
         RAISE EXCEPTION 'Room ID cannot be NULL';
-        RETURN -1;
+        RETURN NULL;
     END IF;
 
     -- check if input is not null
     IF new_reservation_start_date IS NULL THEN
         RAISE EXCEPTION 'Start date cannot be NULL';
-        RETURN -1;
+        RETURN NULL;
     END IF;
 
     -- check if input is not null
     IF new_reservation_end_date IS NULL THEN
         RAISE EXCEPTION 'End date cannot be NULL';
-        RETURN -1;
+        RETURN NULL;
     END IF;
 
     -- check if provided room id exists
@@ -80,7 +82,7 @@ BEGIN
         FROM ROOM
     ) THEN
         RAISE EXCEPTION 'Room does not exist';
-        RETURN -1;
+        RETURN NULL;
     END IF;
 
 
@@ -106,8 +108,7 @@ BEGIN
                 )
             )
     ) THEN
-        RAISE EXCEPTION 'Room % is already booked in provided time frame', room_to_check_id;
-        RETURN -1;
+        RETURN NULL;
     END IF;
     
     RETURN room_to_check_id;
