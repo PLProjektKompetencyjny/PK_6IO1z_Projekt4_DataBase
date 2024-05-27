@@ -224,7 +224,7 @@ BEGIN
 	-- Check if invoice_is_paid is changed
 	IF (NEW.invoice_is_paid IS DISTINCT FROM OLD.invoice_is_paid) THEN
 
-		UPDATE reservation
+		UPDATE invoice
 		SET is_paid = NEW.invoice_is_paid
 		WHERE id = Inv_ID;
 
