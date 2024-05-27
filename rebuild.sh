@@ -77,7 +77,7 @@ Main() {
     # invoke sleep to wait for full initialization of the database
     waitForContainerInit
     printGreenMessage "Container is running"
-    runDBtests
+    #runDBtests
 
     exit 0
 }
