@@ -31,7 +31,7 @@
     .NOTES
 
 
-        Version:            1.8
+        Version:            1.9
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -65,6 +65,8 @@
         2024-05-26      Stanisław Horna         add invoice recalculation after reservation changes.
                                                 add invoice recalculation if there is invoice for provided reservation
 
+        2024-05-28      Stanisław Horna         add custom SQLSTATE to exceptions.
+
 */
 
 CREATE OR REPLACE FUNCTION insert_reservation_view()
@@ -84,8 +86,11 @@ BEGIN
         NEW.reservation_start_date,
         NEW.reservation_end_date) IS NULL THEN
 
-        RAISE EXCEPTION 'Room is not available';
-    
+        RAISE EXCEPTION 'Room is not available'
+            USING ERRCODE = '23515',
+                COLUMN = 'reservation_room_id',
+                TABLE = 'reservation_view';
+        
     END IF;
 
     -- if reservation with provided details does not exist insert a new one
@@ -180,7 +185,9 @@ BEGIN
 
     -- Raise exception as it is not allowed, because view does not contain passwords due to security reasons.
     -- the only way to create user and provide password is to use dedicated function
-    RAISE EXCEPTION 'Operation not permitted.';
+    RAISE EXCEPTION 'Operation not permitted.'
+    USING ERRCODE = '23999',
+          TABLE = 'user_view';
 
 	RETURN NULL;
 
@@ -231,7 +238,10 @@ BEGIN
 
     IF NEW.service_name IS NOT NULL THEN
 
-        RAISE EXCEPTION 'Inserting new services is not allowed in this view';
+        RAISE EXCEPTION 'Operation not permitted.'
+            USING ERRCODE = '23999',
+                COLUMN = 'service_name',
+                TABLE = 'service_view';
         RETURN NEW;
 
     ELSE

@@ -21,7 +21,7 @@
 
     .NOTES
 
-        Version:            1.1
+        Version:            1.3
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -32,6 +32,8 @@
         2024-05-25      Stanisław Horna         add check_room_guest_number()
 
         2024-05-27      Stanisław Horna         remove exception if room is busy in check_room_availability()
+
+        2024-05-28      Stanisław Horna         add custom SQLSTATE to exceptions.
 
 */
 
@@ -59,19 +61,28 @@ BEGIN
 
     -- check if input is not null
     IF room_to_check_id IS NULL THEN
-        RAISE EXCEPTION 'Room ID cannot be NULL';
+        RAISE EXCEPTION 'Room ID can not be null'
+			USING ERRCODE = '23502',
+                TABLE = 'reservation_view',
+                COLUMN = 'reservation_room_id';
         RETURN NULL;
     END IF;
 
     -- check if input is not null
     IF new_reservation_start_date IS NULL THEN
-        RAISE EXCEPTION 'Start date cannot be NULL';
+        RAISE EXCEPTION 'Start date can not be null'
+			USING ERRCODE = '23502',
+                TABLE = 'reservation_view',
+                COLUMN = 'reservation_start_date';
         RETURN NULL;
     END IF;
 
     -- check if input is not null
     IF new_reservation_end_date IS NULL THEN
-        RAISE EXCEPTION 'End date cannot be NULL';
+        RAISE EXCEPTION 'End date can not be null'
+			USING ERRCODE = '23502',
+                TABLE = 'reservation_view',
+                COLUMN = 'reservation_end_date';
         RETURN NULL;
     END IF;
 
@@ -81,7 +92,10 @@ BEGIN
             ID
         FROM ROOM
     ) THEN
-        RAISE EXCEPTION 'Room does not exist';
+        RAISE EXCEPTION 'Room with ID does not exist'
+			USING ERRCODE = '23503',
+            TABLE = 'reservation_view',
+            COLUMN = 'reservation_room_id';
         RETURN NULL;
     END IF;
 
@@ -151,7 +165,10 @@ BEGIN
             -- check if there are more children then beds
             OR CHILD_SPACE < NUM_OF_CHILDREN
     ) THEN
-        RAISE EXCEPTION 'Too many people assigned to room id: %', room_to_check_id;
+        RAISE EXCEPTION 'Too many people assigned to room id: %', room_to_check_id
+			USING ERRCODE = '23518',
+            TABLE = 'reservation_view',
+            COLUMN = 'room_id';
     END IF;
 
     RETURN;
