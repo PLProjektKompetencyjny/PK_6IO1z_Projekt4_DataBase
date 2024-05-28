@@ -241,6 +241,8 @@ BEGIN
 
     END IF;
 
+    PERFORM calculate_invoice_price(NEW.service_reservation_id);
+
 	RETURN NEW;
 
 END;
