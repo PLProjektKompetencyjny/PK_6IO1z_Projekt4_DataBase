@@ -185,7 +185,7 @@ INSERT INTO
 		RESERVATION_ROOM_ID
 	)
 VALUES
-	(3, 1, 1, (current_date  + 1), (current_date + 2), 1);
+	(3, 1, 1, (current_date  + 41), (current_date + 42), 1);
 
 INSERT INTO
 	SERVICE_VIEW (
@@ -206,8 +206,8 @@ INSERT INTO
 		RESERVATION_ROOM_ID
 	)
 VALUES
-	(3, 1, 1, (current_date + 3), (current_date + 5), 1),
-	(3, 1, 1, (current_date + 3), (current_date + 5), 2);
+	(3, 1, 1, (current_date + 33), (current_date + 35), 1),
+	(3, 1, 1, (current_date + 33), (current_date + 35), 2);
 
 INSERT INTO
 	SERVICE_VIEW (
