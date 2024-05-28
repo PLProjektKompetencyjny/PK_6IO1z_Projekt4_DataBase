@@ -21,7 +21,7 @@
 
     .NOTES
 
-        Version:            1.1
+        Version:            1.2
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -30,6 +30,7 @@
 
         Date            Who                     What
         2024-05-28      Stanisław Horna         include services in invoice price gross.
+                                                include days of stay in invoice price gross.
 
 */
 
@@ -38,29 +39,50 @@ RETURNS void
 AS $$
 DECLARE
     Room_Price float;
-    Service_Price float;
+    Service_Price_calc float;
+    Days_of_stay int;
 BEGIN
 
+    -- count number of days stayed at hotel
+    SELECT 
+        EXTRACT(
+            DAY
+            FROM
+                (END_DATE - START_DATE)
+        ) 
+    INTO Days_of_stay
+    FROM
+        RESERVATION
+    WHERE
+        ID = reservation_to_calc_id
+    LIMIT 1;
+
+    -- calculate sum of all room prices including number of days at hotel
     SELECT
-        SUM(RESERVATION_ROOM_PRICE_GROSS)
+        SUM(RESERVATION_ROOM_PRICE_GROSS * Days_of_stay)
     INTO Room_Price
     FROM
         RESERVATION_ROOM
     WHERE
         RESERVATION_ID = reservation_to_calc_id;
 
+    -- calculate sum of all service prices including quantity
     SELECT
-        SUM(S.UNIT_PRICE * RS.QUANTITY)
-    INTO Service_Price
+        CASE
+            WHEN SUM(S.UNIT_PRICE * RS.QUANTITY) IS NOT NULL THEN SUM(S.UNIT_PRICE * RS.QUANTITY)
+            ELSE 0
+        END 
+    INTO Service_Price_calc
     FROM
         RESERVATION_SERVICE RS
         LEFT JOIN SERVICE S ON S.ID = RS.SERVICE_ID
     WHERE
         RESERVATION_ID = reservation_to_calc_id;
 
+    -- update invoice entry
     UPDATE INVOICE
     SET
-        PRICE_GROSS = Room_Price + Service_Price
+        PRICE_GROSS = Room_Price + Service_Price_calc
     WHERE
         RESERVATION_ID = reservation_to_calc_id;
 
