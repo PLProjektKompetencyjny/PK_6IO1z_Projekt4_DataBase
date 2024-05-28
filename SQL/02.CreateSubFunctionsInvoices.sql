@@ -48,13 +48,13 @@ BEGIN
         EXTRACT(
             DAY
             FROM
-                (RESERVATION_END_DATE - RESERVATION_START_DATE)
+                (END_DATE - START_DATE)
         ) 
     INTO Days_of_stay
     FROM
-        RESERVATION_VIEW
+        RESERVATION
     WHERE
-        RESERVATION_ID = reservation_to_calc_id
+        ID = reservation_to_calc_id
     LIMIT 1;
 
     -- calculate sum of all room prices including number of days at hotel
