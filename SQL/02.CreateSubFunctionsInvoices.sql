@@ -21,7 +21,7 @@
 
     .NOTES
 
-        Version:            1.0
+        Version:            1.1
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -29,7 +29,7 @@
         ChangeLog:
 
         Date            Who                     What
-
+        2024-05-28      Stanisław Horna         include services in invoice price gross.
 
 */
 
@@ -37,22 +37,32 @@ CREATE OR REPLACE FUNCTION calculate_invoice_price(reservation_to_calc_id int)
 RETURNS void 
 AS $$
 DECLARE
-    Invoice_Price_gross int;
+    Room_Price float;
+    Service_Price float;
 BEGIN
 
     SELECT
         SUM(RESERVATION_ROOM_PRICE_GROSS)
-    INTO Invoice_Price_gross
+    INTO Room_Price
     FROM
         RESERVATION_ROOM
     WHERE
         RESERVATION_ID = reservation_to_calc_id;
 
+    SELECT
+        SUM(S.UNIT_PRICE * RS.QUANTITY)
+    INTO Service_Price
+    FROM
+        RESERVATION_SERVICE RS
+        LEFT JOIN SERVICE S ON S.ID = RS.SERVICE_ID
+    WHERE
+        RESERVATION_ID = reservation_to_calc_id;
+
     UPDATE INVOICE
     SET
-        PRICE_GROSS = INVOICE_PRICE_GROSS
+        PRICE_GROSS = Room_Price + Service_Price
     WHERE
-        RESERVATION_ID = RESERVATION_TO_CALC_ID;
+        RESERVATION_ID = reservation_to_calc_ids;
 
     RETURN;
 END;
