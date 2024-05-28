@@ -30,7 +30,7 @@
 
     .NOTES
 
-        Version:            1.7
+        Version:            1.8
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -63,6 +63,8 @@
 													- room_id
 
         2024-05-26      Stanisław Horna         add invoice recalculation after reservation changes.
+
+		2024-05-28      Stanisław Horna         add custom SQLSTATE to exceptions.
 */
 
 CREATE OR REPLACE FUNCTION update_reservation_view()
@@ -148,8 +150,9 @@ BEGIN
 	-- if not raise an exception to notify that wanted operation was not performed
 	IF Any_ops_performed = FALSE THEN
 
-		RAISE EXCEPTION 
-			'No update was performed';
+		RAISE EXCEPTION 'No operation performed'
+			USING ERRCODE = '23998',
+				TABLE = 'reservation_view';
 
 		RETURN NULL;
 	END IF;
@@ -207,7 +210,9 @@ BEGIN
 
 	IF (NEW.invoice_date IS DISTINCT FROM OLD.invoice_date) THEN
 
-		RAISE EXCEPTION 'Modification of invoice date is not allowed';
+		RAISE EXCEPTION 'Operation not permitted.'
+			USING ERRCODE = '23999',
+				TABLE = 'invoice_view';
 		RETURN NEW;
 
 	END IF;
@@ -308,8 +313,9 @@ BEGIN
 	-- if not raise an exception to notify that wanted operation was not performed
 	IF Any_ops_performed = FALSE THEN
 
-		RAISE EXCEPTION 
-			'No update was performed';
+		RAISE EXCEPTION 'No operation performed'
+			USING ERRCODE = '23998',
+				TABLE = 'reservation_view';
 
 		RETURN NULL;
 	END IF;
@@ -358,9 +364,11 @@ BEGIN
 	IF (NEW.user_name IS DISTINCT FROM OLD.user_name) THEN
 
 		IF check_validate_e_mail(NEW.user_name) THEN
-			RAISE EXCEPTION 
-				'Value % can not be set as user_name, because it is an e-mail',
-				NEW.user_name;
+
+			RAISE EXCEPTION 'Value passed as user name is an e-mail address'
+				USING ERRCODE = '23516',
+					TABLE = 'user_view';
+		
 			RETURN NULL;
 		END IF;
 
@@ -405,8 +413,10 @@ BEGIN
 
 		ELSE
 
-			RAISE EXCEPTION 
-				'account without user_name can not be promoted to admin';
+			RAISE EXCEPTION 'Account without user name can not be an admin'
+				USING ERRCODE = '23517',
+					TABLE = 'user_view';
+
 			RETURN NULL;
 		END IF;
 
@@ -418,8 +428,9 @@ BEGIN
 	-- if not raise an exception to notify that wanted operation was not performed
 	IF Any_ops_performed = FALSE THEN
 
-		RAISE EXCEPTION 
-			'No update was performed';
+		RAISE EXCEPTION 'No operation performed'
+			USING ERRCODE = '23998',
+				TABLE = 'reservation_view';
 
 		RETURN NULL;
 	END IF;
@@ -556,8 +567,9 @@ BEGIN
 	-- if not raise an exception to notify that wanted operation was not performed
 	IF Any_ops_performed = FALSE THEN
 
-		RAISE EXCEPTION 
-			'No update was performed';
+		RAISE EXCEPTION 'No operation performed'
+			USING ERRCODE = '23998',
+				TABLE = 'reservation_view';
 
 		RETURN NULL;
 	END IF;
@@ -639,8 +651,9 @@ BEGIN
 	-- if not raise an exception to notify that wanted operation was not performed
 	IF Any_ops_performed = FALSE THEN
 
-		RAISE EXCEPTION 
-			'No update was performed';
+		RAISE EXCEPTION 'No operation performed'
+			USING ERRCODE = '23998',
+				TABLE = 'reservation_view';
 
 		RETURN NULL;
 	END IF;

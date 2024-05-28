@@ -22,7 +22,7 @@
 
     .NOTES
 
-        Version:            1.3
+        Version:            1.4
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -35,6 +35,8 @@
         2024-03-23      Stanisław Horna         add SECURITY DEFINER <- to invoke functions with owner's permissions.
 
         2024-05-26      Stanisław Horna         use hash functions for passwords
+
+        2024-05-28      Stanisław Horna         add custom SQLSTATE to exceptions.
 */
 
 CREATE OR REPLACE FUNCTION insert_user_account(login varchar, user_password varchar, last_modified_by_id int)
@@ -122,7 +124,9 @@ BEGIN
 
     -- if provided username does not exist in DB raise exception
     IF User_ID_To_Return IS NULL THEN
-        RAISE EXCEPTION 'User with login: % does not exist', login;
+        RAISE EXCEPTION 'Cannot change user password'
+                USING ERRCODE = '23520',
+                TABLE = 'user';
         RETURN NULL;
     END IF;
 
@@ -158,7 +162,9 @@ BEGIN
         RETURN User_ID_To_Return;
     
     ELSE
-        RAISE EXCEPTION 'User old password is incorrect, account is inactive or requestor is not admin';
+        RAISE EXCEPTION 'Cannot change user password'
+                USING ERRCODE = '23520',
+                TABLE = 'user';
     END IF;
 
 
@@ -198,7 +204,9 @@ BEGIN
 
     -- if provided username does not exist in DB raise exception
     IF User_ID_To_Return IS NULL THEN
-        RAISE EXCEPTION 'User with login: % does not exist', login;
+        RAISE EXCEPTION 'Cannot authenticate user'
+                USING ERRCODE = '23518',
+                TABLE = 'user';
     END IF;
 
     -- get user is active status
@@ -211,7 +219,9 @@ BEGIN
 
     -- if user account is not active it can not be authenticated successfully 
     IF User_Is_Active <> TRUE THEN
-        RAISE NOTICE 'User with login: % is not active', login;
+        RAISE EXCEPTION 'User is inactive'
+                USING ERRCODE = '23519',
+                TABLE = 'user';
         RETURN NULL;
     END IF;
 
@@ -232,7 +242,9 @@ BEGIN
     END IF;
 	
     -- if password was not correct raise a notice and do not return user ID
-	RAISE EXCEPTION 'Can not authenticate';
+	RAISE EXCEPTION 'Cannot authenticate user'
+			USING ERRCODE = '23518',
+			TABLE = 'user';
     RETURN NULL;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;

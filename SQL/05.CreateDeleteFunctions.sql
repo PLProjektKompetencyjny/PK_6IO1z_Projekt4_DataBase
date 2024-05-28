@@ -30,7 +30,7 @@
 
     .NOTES
 
-        Version:            1.2
+        Version:            1.3
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -42,13 +42,16 @@
 
         2024-05-25      Stanisław Horna         add delete_reservation_view()
 
+        2024-05-28      Stanisław Horna         add custom SQLSTATE to exceptions.
+
 */
 
 CREATE OR REPLACE FUNCTION delete_operation_not_permitted()
 RETURNS TRIGGER AS $$
 BEGIN
 
-    RAISE EXCEPTION 'Operation not permitted.';
+    RAISE EXCEPTION 'Operation not permitted.'
+    USING ERRCODE = '23999';
 
 	RETURN NULL;
 
