@@ -62,7 +62,7 @@ BEGIN
     SET
         PRICE_GROSS = Room_Price + Service_Price
     WHERE
-        RESERVATION_ID = reservation_to_calc_ids;
+        RESERVATION_ID = reservation_to_calc_id;
 
     RETURN;
 END;
