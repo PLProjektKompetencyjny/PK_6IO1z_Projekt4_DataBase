@@ -79,7 +79,14 @@ BEGIN
     INTO R_ID;
 
     -- check if room can be booked
-    PERFORM check_room_availability(NEW.reservation_room_id, NEW.reservation_start_date, NEW.reservation_end_date);
+    IF check_room_availability(
+        NEW.reservation_room_id, 
+        NEW.reservation_start_date,
+        NEW.reservation_end_date) IS NULL THEN
+
+        RAISE EXCEPTION 'Room is not available';
+    
+    END IF;
 
     -- if reservation with provided details does not exist insert a new one
     IF R_ID IS NULL THEN
