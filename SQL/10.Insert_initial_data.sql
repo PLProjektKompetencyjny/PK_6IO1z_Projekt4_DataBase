@@ -81,6 +81,7 @@ INSERT INTO
 		PHOTOS_DIR
 	)
 VALUES
+  -- If new assets added in the future for the same room they must be seperated by semicolon ';' ie 'assets/imgs/rooms/1/1.jpg;assets/imgs/rooms/1/2.jpg'
 	(0, 1, 0, 40, 0, 'assets/imgs/rooms/1/1.jpg'),
 	(0, 1, 0, 20, 0, 'assets/imgs/rooms/2/1.jpg'),
 	(0, 2, 2, 100, 50, 'assets/imgs/rooms/3/1.jpg'),
