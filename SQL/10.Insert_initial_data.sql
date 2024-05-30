@@ -131,8 +131,8 @@ INSERT INTO
 		RESERVATION_ROOM_ID
 	)
 VALUES
-	(1, 1, 0, (current_date + 10), (current_date + 15), 1),
-	(1, 2, 2, (current_date + 10), (current_date + 15), 3);
+	(1, 1, 0, (current_date + 10), (current_date + 15), 10),
+	(1, 2, 2, (current_date + 10), (current_date + 15), 12);
 
 INSERT INTO
 	SERVICE_VIEW (
@@ -155,8 +155,10 @@ INSERT INTO
 		RESERVATION_ROOM_ID
 	)
 VALUES
-	(2, 1, 0, (current_date + 1), (current_date + 5), 1),
-	(2, 1, 0, (current_date + 1), (current_date + 5), 2);
+	(2, 1, 0, (current_date + 1), (current_date + 5), 13),
+	(2, 1, 0, (current_date + 1), (current_date + 5), 14),
+	(2, 1, 0, (current_date + 1), (current_date + 5), 16),
+	(2, 1, 0, (current_date + 1), (current_date + 5), 17);
 
 INSERT INTO
 	SERVICE_VIEW (
@@ -205,7 +207,7 @@ INSERT INTO
 		RESERVATION_ROOM_ID
 	)
 VALUES
-	(3, 1, 0, (current_date  + 41), (current_date + 42), 1);
+	(3, 1, 0, (current_date  + 41), (current_date + 42), 4);
 
 INSERT INTO
 	SERVICE_VIEW (
@@ -226,8 +228,8 @@ INSERT INTO
 		RESERVATION_ROOM_ID
 	)
 VALUES
-	(3, 1, 0, (current_date + 33), (current_date + 35), 1),
-	(3, 1, 0, (current_date + 33), (current_date + 35), 2);
+	(3, 1, 0, (current_date + 33), (current_date + 35), 5),
+	(3, 2, 3, (current_date + 33), (current_date + 35), 6);
 
 INSERT INTO
 	SERVICE_VIEW (
@@ -249,9 +251,9 @@ INSERT INTO
 		RESERVATION_ROOM_ID
 	)
 VALUES
-	(1, 1, 0, (current_date + 100), (current_date + 120), 1),
-	(1, 1, 0, (current_date + 100), (current_date + 120), 2),
-	(1, 2, 2, (current_date + 100), (current_date + 120), 3);
+	(1, 1, 0, (current_date + 100), (current_date + 120), 7),
+	(1, 1, 0, (current_date + 100), (current_date + 120), 8),
+	(1, 2, 2, (current_date + 100), (current_date + 120), 9);
 
 INSERT INTO
 	INVOICE_VIEW (INVOICE_RESERVATION_ID)
