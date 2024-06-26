@@ -31,7 +31,7 @@
     .NOTES
 
 
-        Version:            1.9
+        Version:            1.10
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -66,6 +66,8 @@
                                                 add invoice recalculation if there is invoice for provided reservation
 
         2024-05-28      Stanisław Horna         add custom SQLSTATE to exceptions.
+
+        2024-06-26      Stanisław Horna         reflect new column (service_price) in reservation_service.
 
 */
 
@@ -234,6 +236,8 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 CREATE OR REPLACE FUNCTION insert_service_view()
 RETURNS TRIGGER AS $$
+DECLARE
+    S_price float;
 BEGIN
 
     IF NEW.service_name IS NOT NULL THEN
@@ -255,6 +259,16 @@ BEGIN
             NEW.service_id,
             NEW.service_quantity
         );
+
+        SELECT
+            Unit_price
+        INTO S_price
+        FROM service
+        WHERE ID = NEW.service_id;
+
+        UPDATE reservation_service
+        SET Service_price = S_price
+        WHERE reservation_id = NEW.service_reservation_id AND service_id = NEW.service_id;
 
     END IF;
 
