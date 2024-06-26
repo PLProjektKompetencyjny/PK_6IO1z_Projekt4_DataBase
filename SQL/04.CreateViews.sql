@@ -137,7 +137,7 @@ SELECT
 	s.ID AS "service_id",
 	s.Name AS "service_name",
 	rs.Service_price AS "service_price",
-	(rs.Service_price * rs.reservation_id) AS "service_price_total",
+	(rs.Service_price * rs.quantity) AS "service_price_total",
 	rs.reservation_id AS "service_reservation_id",
 	rs.quantity AS "service_quantity",
 	s.Last_Modified_by AS "service_last_modified_by",
