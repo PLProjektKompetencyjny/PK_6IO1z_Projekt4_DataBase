@@ -46,7 +46,7 @@
 
     .NOTES
 
-        Version:            1.7
+        Version:            1.8
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -78,6 +78,9 @@
 		2024-04-30		Stanisław Horna			add service tables and constraints.
 
 		2024-05-25		Stanisław Horna			move number of guest to reservation room table.
+
+		2024-06-26		Stanisław Horna			add column to reservation_service to prevent modification of historical 
+												invoices, when service price is changed.
 */
 
 -- Drop existing tables
@@ -242,6 +245,7 @@ CREATE TABLE reservation_service (
 	Reservation_ID int NOT NULL,
 	Service_ID int NOT NULL,
 	Quantity int NOT NULL,
+	Service_price float NULL,
 
 	CONSTRAINT Reservation_service_pkey PRIMARY KEY (Reservation_ID,Service_ID)
 );

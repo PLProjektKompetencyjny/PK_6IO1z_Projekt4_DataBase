@@ -19,7 +19,7 @@
 
     .NOTES
 
-        Version:            1.6
+        Version:            1.7
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -40,6 +40,9 @@
 		2024-05-25		Stanisław Horna			move number of guest to reservation room table.
 
 		2024-05-26		Stanisław Horna			add management views
+
+		2024-06-26		Stanisław Horna			replace service unit_price from services to reservation_service table.
+												add service total calculation on the fly.
 
 */
 
@@ -133,7 +136,8 @@ CREATE VIEW service_view AS
 SELECT
 	s.ID AS "service_id",
 	s.Name AS "service_name",
-	s.unit_price AS "service_price",
+	rs.Service_price AS "service_price",
+	(rs.Service_price * rs.reservation_id) AS "service_price_total",
 	rs.reservation_id AS "service_reservation_id",
 	rs.quantity AS "service_quantity",
 	s.Last_Modified_by AS "service_last_modified_by",

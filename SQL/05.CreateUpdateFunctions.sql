@@ -30,7 +30,7 @@
 
     .NOTES
 
-        Version:            1.8
+        Version:            1.9
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -65,6 +65,8 @@
         2024-05-26      Stanisław Horna         add invoice recalculation after reservation changes.
 
 		2024-05-28      Stanisław Horna         add custom SQLSTATE to exceptions.
+
+		2024-06-26		Stanisław Horna			remove support for price and name in update_service_view.
 */
 
 CREATE OR REPLACE FUNCTION update_reservation_view()
@@ -611,28 +613,6 @@ BEGIN
 
 	-- Assign service ID which will be modified to the local variable
     svr_ID := NEW.service_ID;
-
-
-	-- Check if service name is changed
-	IF (NEW.service_name IS DISTINCT FROM OLD.service_name) THEN
-
-		UPDATE service
-		SET name = NEW.service_name
-		WHERE id = svr_ID;
-
-		Any_ops_performed = TRUE;
-	END IF;
-
-
-	-- Check if service price is changed
-	IF (NEW.service_price IS DISTINCT FROM OLD.service_price) THEN
-
-		UPDATE service
-		SET unit_price = NEW.service_price
-		WHERE id = svr_ID;
-
-		Any_ops_performed = TRUE;
-	END IF;
 
 
 	-- Check if service price is changed

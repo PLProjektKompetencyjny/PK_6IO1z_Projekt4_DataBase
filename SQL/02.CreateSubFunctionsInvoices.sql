@@ -21,7 +21,7 @@
 
     .NOTES
 
-        Version:            1.2
+        Version:            1.3
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -31,6 +31,8 @@
         Date            Who                     What
         2024-05-28      Stanisław Horna         include services in invoice price gross.
                                                 include days of stay in invoice price gross.
+
+        2024-06-26      Stanisław Horna         reflect new column (service_price) in reservation_service.
 
 */
 
@@ -69,7 +71,7 @@ BEGIN
     -- calculate sum of all service prices including quantity
     SELECT
         CASE
-            WHEN SUM(S.UNIT_PRICE * RS.QUANTITY) IS NOT NULL THEN SUM(S.UNIT_PRICE * RS.QUANTITY)
+            WHEN SUM(RS.SERVICE_PRICE * RS.QUANTITY) IS NOT NULL THEN SUM(RS.SERVICE_PRICE * RS.QUANTITY)
             ELSE 0
         END 
     INTO Service_Price_calc
