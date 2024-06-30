@@ -621,7 +621,7 @@ BEGIN
 
 		UPDATE reservation_service
 		SET quantity = NEW.service_quantity
-		WHERE id = svr_ID AND reservation_id = NEW.service_reservation_id;
+		WHERE service_id = svr_ID AND reservation_id = NEW.service_reservation_id;
 
 		Any_ops_performed = TRUE;
 	END IF;
