@@ -205,7 +205,7 @@ BEGIN
     -- if provided username does not exist in DB raise exception
     IF User_ID_To_Return IS NULL THEN
         RAISE EXCEPTION 'Cannot authenticate user'
-                USING ERRCODE = '23518',
+                USING ERRCODE = '23521',
                 TABLE = 'user';
     END IF;
 
@@ -243,7 +243,7 @@ BEGIN
 	
     -- if password was not correct raise a notice and do not return user ID
 	RAISE EXCEPTION 'Cannot authenticate user'
-			USING ERRCODE = '23518',
+			USING ERRCODE = '23521',
 			TABLE = 'user';
     RETURN NULL;
 END;
