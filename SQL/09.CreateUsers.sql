@@ -7,7 +7,7 @@
 
     .NOTES
 
-        Version:            1.5
+        Version:            1.6
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -28,6 +28,7 @@
                                                 add privileges to get_available_services.
 
         2024-06-30      Stanisław Horna         add privileges to sequences for tn_api_write.
+                                                add privileges to DELETE statement on views
 
 */
 
@@ -37,17 +38,17 @@ CREATE ROLE "tn_api_write" LOGIN PASSWORD 'cba';
 -- Grant privileges for WRITE user to operation views
 GRANT CONNECT ON DATABASE "TravelNest" to "tn_api_write";
 GRANT USAGE ON SCHEMA public TO "tn_api_write";
-GRANT SELECT, INSERT, UPDATE ON customer_view to "tn_api_write";
-GRANT SELECT, INSERT, UPDATE ON invoice_view to "tn_api_write";
-GRANT SELECT, INSERT, UPDATE ON reservation_view to "tn_api_write";
-GRANT SELECT, INSERT, UPDATE ON room_view to "tn_api_write";
-GRANT SELECT, INSERT, UPDATE ON user_view to "tn_api_write";
-GRANT SELECT, INSERT, UPDATE ON service_view to "tn_api_write";
+GRANT SELECT, INSERT, UPDATE, DELETE ON customer_view to "tn_api_write";
+GRANT SELECT, INSERT, UPDATE, DELETE ON invoice_view to "tn_api_write";
+GRANT SELECT, INSERT, UPDATE, DELETE ON reservation_view to "tn_api_write";
+GRANT SELECT, INSERT, UPDATE, DELETE ON room_view to "tn_api_write";
+GRANT SELECT, INSERT, UPDATE, DELETE ON user_view to "tn_api_write";
+GRANT SELECT, INSERT, UPDATE, DELETE ON service_view to "tn_api_write";
 
 -- Grant privileges for WRITE user to management views
-GRANT SELECT, INSERT, UPDATE ON service_mgmt to "tn_api_write";
-GRANT SELECT, INSERT, UPDATE ON room_type_mgmt to "tn_api_write";
-GRANT SELECT, INSERT, UPDATE ON room_mgmt to "tn_api_write";
+GRANT SELECT, INSERT, UPDATE, DELETE ON service_mgmt to "tn_api_write";
+GRANT SELECT, INSERT, UPDATE, DELETE ON room_type_mgmt to "tn_api_write";
+GRANT SELECT, INSERT, UPDATE, DELETE ON room_mgmt to "tn_api_write";
 
 -- Grant privileges for WRITE user to user functions
 GRANT EXECUTE ON FUNCTION authenticate_user_account(varchar, varchar) to "tn_api_write";
