@@ -44,6 +44,7 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON reservation_view to "tn_api_write";
 GRANT SELECT, INSERT, UPDATE, DELETE ON room_view to "tn_api_write";
 GRANT SELECT, INSERT, UPDATE, DELETE ON user_view to "tn_api_write";
 GRANT SELECT, INSERT, UPDATE, DELETE ON service_view to "tn_api_write";
+GRANT SELECT, INSERT, UPDATE, DELETE ON reservation_service to "tn_api_write";
 
 -- Grant privileges for WRITE user to management views
 GRANT SELECT, INSERT, UPDATE, DELETE ON service_mgmt to "tn_api_write";
