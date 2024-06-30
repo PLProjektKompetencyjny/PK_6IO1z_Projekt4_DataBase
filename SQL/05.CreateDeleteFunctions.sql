@@ -30,7 +30,7 @@
 
     .NOTES
 
-        Version:            1.3
+        Version:            1.4
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -43,6 +43,8 @@
         2024-05-25      Stanisław Horna         add delete_reservation_view()
 
         2024-05-28      Stanisław Horna         add custom SQLSTATE to exceptions.
+
+        2024-06-30      Stanisław Horna         add delete_service_view() 
 
 */
 
@@ -66,6 +68,20 @@ BEGIN
     WHERE
         ROOM_ID = OLD.RESERVATION_ROOM_ID
         AND RESERVATION_ID = OLD.RESERVATION_ID;
+
+	RETURN NULL;
+
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION delete_service_view()
+RETURNS TRIGGER AS $$
+BEGIN
+
+    DELETE FROM RESERVATION_SERVICE
+    WHERE
+        SERVICE_ID = OLD.SERVICE_ID
+        AND RESERVATION_ID = OLD.SERVICE_RESERVATION_ID;
 
 	RETURN NULL;
 
