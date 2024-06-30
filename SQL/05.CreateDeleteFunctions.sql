@@ -30,7 +30,7 @@
 
     .NOTES
 
-        Version:            1.4
+        Version:            1.5
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -44,7 +44,7 @@
 
         2024-05-28      Stanisław Horna         add custom SQLSTATE to exceptions.
 
-        2024-06-30      Stanisław Horna         add delete_service_view() 
+        2024-06-30      Stanisław Horna         add delete_service_view(), remove reservation entry if no room is assigned
 
 */
 
@@ -68,6 +68,20 @@ BEGIN
     WHERE
         ROOM_ID = OLD.RESERVATION_ROOM_ID
         AND RESERVATION_ID = OLD.RESERVATION_ID;
+
+    IF NOT EXISTS (
+        SELECT
+            ROOM_ID
+        FROM RESERVATION_ROOM
+        WHERE RESERVATION_ID = OLD.RESERVATION_ID
+    ) THEN
+        DELETE FROM RESERVATION_SERVICE
+        WHERE RESERVATION_ID = OLD.RESERVATION_ID;
+
+        DELETE FROM RESERVATION
+        WHERE ID = OLD.RESERVATION_ID;
+
+    END IF;
 
 	RETURN NULL;
 
