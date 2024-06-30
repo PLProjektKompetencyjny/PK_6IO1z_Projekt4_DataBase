@@ -7,7 +7,7 @@
 
     .NOTES
 
-        Version:            1.4
+        Version:            1.5
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -26,6 +26,8 @@
         2024-05-26      Stanisław Horna         add privileges to check_room_availability, check_room_guest_number.
                                                 add privileges to management views.
                                                 add privileges to get_available_services.
+
+        2024-06-30      Stanisław Horna         add privileges to sequences for tn_api_write.
 
 */
 
@@ -56,3 +58,10 @@ GRANT EXECUTE ON FUNCTION update_user_account_password(varchar, varchar, varchar
 GRANT EXECUTE ON FUNCTION check_room_availability(int, timestamp, timestamp) to "tn_api_write";
 GRANT EXECUTE ON FUNCTION check_room_guest_number(int, int) to "tn_api_write";
 GRANT EXECUTE ON FUNCTION get_available_services() to "tn_api_write";
+
+-- Grant privileges for WRITE user to utility functions
+GRANT SELECT, UPDATE ON SEQUENCE invoice_id_seq TO "tn_api_write";
+GRANT SELECT, UPDATE ON SEQUENCE reservation_id_seq TO "tn_api_write";
+GRANT SELECT, UPDATE ON SEQUENCE room_type_id_seq TO "tn_api_write";
+GRANT SELECT, UPDATE ON SEQUENCE service_id_seq TO "tn_api_write";
+GRANT SELECT, UPDATE ON SEQUENCE user_account_id_seq TO "tn_api_write";
