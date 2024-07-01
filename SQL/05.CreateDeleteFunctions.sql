@@ -30,7 +30,7 @@
 
     .NOTES
 
-        Version:            1.5
+        Version:            1.6
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -46,6 +46,9 @@
 
         2024-06-30      Stanisław Horna         add delete_service_view(), remove reservation entry if no room is assigned
 
+        2024-07-01      Stanisław Horna         add SECURITY DEFINER <- to invoke functions with owner's permissions, 
+                                                    instead of caller ones.
+
 */
 
 CREATE OR REPLACE FUNCTION delete_operation_not_permitted()
@@ -58,7 +61,7 @@ BEGIN
 	RETURN NULL;
 
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
 CREATE OR REPLACE FUNCTION delete_reservation_view()
 RETURNS TRIGGER AS $$
@@ -86,7 +89,7 @@ BEGIN
 	RETURN NULL;
 
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
 CREATE OR REPLACE FUNCTION delete_service_view()
 RETURNS TRIGGER AS $$
@@ -100,4 +103,4 @@ BEGIN
 	RETURN NULL;
 
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
