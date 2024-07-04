@@ -31,7 +31,7 @@
     .NOTES
 
 
-        Version:            1.10
+        Version:            1.11
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -68,6 +68,8 @@
         2024-05-28      Stanisław Horna         add custom SQLSTATE to exceptions.
 
         2024-06-26      Stanisław Horna         reflect new column (service_price) in reservation_service.
+
+        2024-07-04		Stanisław Horna			add invoice_payment_id handling in update_invoice_view()
 
 */
 
@@ -164,11 +166,13 @@ BEGIN
         -- all conditions will be check by defined CONSTRAINTS
         INSERT INTO invoice (
             reservation_id, 
-            last_modified_by
+            last_modified_by,
+            Payment_id
             )
         VALUES (
             Res_ID, 
-            NEW.invoice_last_modified_by
+            NEW.invoice_last_modified_by,
+            NEW.invoice_payment_id
             );
 
     END IF;

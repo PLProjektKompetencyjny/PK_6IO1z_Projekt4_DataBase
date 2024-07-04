@@ -46,7 +46,7 @@
 
     .NOTES
 
-        Version:            1.8
+        Version:            1.9
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -81,6 +81,9 @@
 
 		2024-06-26		Stanisław Horna			add column to reservation_service to prevent modification of historical 
 												invoices, when service price is changed.
+
+		2024-07-04		Stanisław Horna			add payment_id to table invoice
+		
 */
 
 -- Drop existing tables
@@ -185,6 +188,7 @@ CREATE TABLE Invoice (
 	Price_gross float NULL,
 	Is_paid bool DEFAULT FALSE,
 	Status_ID int DEFAULT 1,
+	Payment_id varchar NULL,
 	Last_modified_at timestamp DEFAULT now(),
 	Last_modified_by int NULL,
 	
