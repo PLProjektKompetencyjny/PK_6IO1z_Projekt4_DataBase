@@ -65,5 +65,6 @@ GRANT EXECUTE ON FUNCTION get_available_services() to "tn_api_write";
 GRANT SELECT, UPDATE ON SEQUENCE invoice_id_seq TO "tn_api_write";
 GRANT SELECT, UPDATE ON SEQUENCE reservation_id_seq TO "tn_api_write";
 GRANT SELECT, UPDATE ON SEQUENCE room_type_id_seq TO "tn_api_write";
+GRANT SELECT, UPDATE ON SEQUENCE room_id_seq TO "tn_api_write";
 GRANT SELECT, UPDATE ON SEQUENCE service_id_seq TO "tn_api_write";
 GRANT SELECT, UPDATE ON SEQUENCE user_account_id_seq TO "tn_api_write";
