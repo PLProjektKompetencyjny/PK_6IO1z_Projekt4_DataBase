@@ -30,7 +30,7 @@
 
     .NOTES
 
-        Version:            1.9
+        Version:            1.10
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -67,6 +67,8 @@
 		2024-05-28      Stanisław Horna         add custom SQLSTATE to exceptions.
 
 		2024-06-26		Stanisław Horna			remove support for price and name in update_service_view.
+
+		2024-07-04		Stanisław Horna			add invoice_payment_id handling in update_invoice_view()
 */
 
 CREATE OR REPLACE FUNCTION update_reservation_view()
@@ -233,6 +235,15 @@ BEGIN
 
 		UPDATE invoice
 		SET is_paid = NEW.invoice_is_paid
+		WHERE id = Inv_ID;
+
+	END IF;
+
+	-- Check if invoice_payment_id is changed
+	IF (NEW.invoice_payment_id IS DISTINCT FROM OLD.invoice_payment_id) THEN
+
+		UPDATE invoice
+		SET Payment_id = NEW.invoice_payment_id
 		WHERE id = Inv_ID;
 
 	END IF;
