@@ -19,7 +19,7 @@
 
     .NOTES
 
-        Version:            1.7
+        Version:            1.8
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -43,6 +43,8 @@
 
 		2024-06-26		Stanisław Horna			replace service unit_price from services to reservation_service table.
 												add service total calculation on the fly.
+
+		2024-07-04		Stanisław Horna			add invoice_payment_id to view invoice_view.
 
 */
 
@@ -114,6 +116,7 @@ SELECT
     i.Invoice_Date AS "invoice_date",
 	i.Price_Gross AS "invoice_price_gross",
 	i.Is_Paid AS "invoice_is_paid",
+	i.Payment_id AS "invoice_payment_id",
 	i.Status_ID AS "invoice_status_id",
 	i.Last_Modified_by AS "invoice_last_modified_by",
 	i.Last_Modified_at AS "invoice_last_modified_at"
