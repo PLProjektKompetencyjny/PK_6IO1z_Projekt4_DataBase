@@ -74,6 +74,13 @@ BEGIN
         ROOM_ID = OLD.RESERVATION_ROOM_ID
         AND RESERVATION_ID = OLD.RESERVATION_ID;
 
+    DELETE FROM INVOICE_VIEW
+    WHERE
+        invoice_reservation_id = OLD.RESERVATION_ID
+        AND invoice_room_id = OLD.RESERVATION_ROOM_ID;
+
+    PERFORM calculate_invoice_price(OLD.RESERVATION_ID);
+
     IF NOT EXISTS (
         SELECT
             ROOM_ID
