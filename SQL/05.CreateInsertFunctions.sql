@@ -31,7 +31,7 @@
     .NOTES
 
 
-        Version:            1.11
+        Version:            1.12
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -70,6 +70,8 @@
         2024-06-26      Stanisław Horna         reflect new column (service_price) in reservation_service.
 
         2024-07-04		Stanisław Horna			add invoice_payment_id handling in update_invoice_view()
+
+        2024-07-06      Stanisław Horna         add invoice creation on reservation insert.
 
 */
 
@@ -133,8 +135,9 @@ BEGIN
     PERFORM check_room_guest_number(NEW.reservation_room_id, R_ID);
 
     PERFORM calculate_reservation_room_price(NEW.reservation_room_id, R_ID);
-
-    PERFORM calculate_invoice_price(R_ID);
+    
+    INSERT INTO INVOICE_VIEW (INVOICE_RESERVATION_ID)
+    VALUES (R_ID);
 
 	RETURN NEW;
 
