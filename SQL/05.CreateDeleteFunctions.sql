@@ -30,7 +30,7 @@
 
     .NOTES
 
-        Version:            1.6
+        Version:            1.7
         Author:             Stanisław Horna
         Mail:               stanislawhorna@outlook.com
         GitHub Repository:  https://github.com/PLProjektKompetencyjny/PK_6IO1z_Projekt4_DataBase
@@ -49,6 +49,8 @@
         2024-07-01      Stanisław Horna         add SECURITY DEFINER <- to invoke functions with owner's permissions, 
                                                     instead of caller ones.
 
+        2024-07-06     Stanisław Horna          add invoice removal before removing reservation entry.
+        
 */
 
 CREATE OR REPLACE FUNCTION delete_operation_not_permitted()
@@ -80,6 +82,9 @@ BEGIN
     ) THEN
         DELETE FROM RESERVATION_SERVICE
         WHERE RESERVATION_ID = OLD.RESERVATION_ID;
+
+        DELETE FROM INVOICE
+        WHERE reservation_id = OLD.RESERVATION_ID;
 
         DELETE FROM RESERVATION
         WHERE ID = OLD.RESERVATION_ID;
