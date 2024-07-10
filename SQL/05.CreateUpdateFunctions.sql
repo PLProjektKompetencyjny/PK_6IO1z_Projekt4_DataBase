@@ -437,6 +437,28 @@ BEGIN
 	END IF;
 
 
+	-- check if user activation code is changed 
+	IF (NEW.user_activation_code IS DISTINCT FROM OLD.user_activation_code) THEN
+
+		UPDATE user_account
+		SET Activation_code = NEW.user_activation_code
+		WHERE id = Usr_ID;
+
+		Any_ops_performed = TRUE;
+	END IF;
+
+
+	-- check if user reset password code is changed 
+	IF (NEW.user_reset_password_code IS DISTINCT FROM OLD.user_reset_password_code) THEN
+
+		UPDATE user_account
+		SET Reset_password_code = NEW.user_reset_password_code
+		WHERE id = Usr_ID;
+
+		Any_ops_performed = TRUE;
+	END IF;
+
+
 	-- check if any operation was performed,
 	-- if not raise an exception to notify that wanted operation was not performed
 	IF Any_ops_performed = FALSE THEN

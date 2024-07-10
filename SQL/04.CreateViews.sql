@@ -131,6 +131,8 @@ SELECT
     u.User_Name AS "user_name",
     u.Is_Active AS "user_is_active",
     u.Is_Admin AS "user_is_admin",
+    u.Activation_code AS "user_activation_code",
+    u.Reset_password_code AS "user_reset_password_code",
 	u.Last_Modified_by AS "user_last_modified_by",
 	u.Last_Modified_at AS "user_last_modified_at"
 FROM user_account u;

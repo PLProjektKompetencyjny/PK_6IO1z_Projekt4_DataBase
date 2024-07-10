@@ -71,6 +71,9 @@ BEGIN
 	
 END $$;
 
+UPDATE user_view
+SET user_activation_code = NULL;
+
 INSERT INTO
 	ROOM_TYPE (
 		NUM_OF_SINGLE_BEDS,

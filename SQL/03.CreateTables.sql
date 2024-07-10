@@ -108,6 +108,8 @@ CREATE TABLE User_Account (
 	Is_active bool DEFAULT TRUE,
 	Is_admin bool DEFAULT FALSE,
 	Creation_date timestamp DEFAULT now(),
+  Activation_code UUID DEFAULT gen_random_uuid(), -- on insert/creating new user this should be randomly generated
+  Reset_password_code UUID DEFAULT NULL,
 	Last_modified_at timestamp DEFAULT now(),
 	Last_modified_by int NULL,
 
