@@ -172,6 +172,44 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
+CREATE OR REPLACE FUNCTION update_user_account_password_by_user_reset_password_code(user_reset_password_code uuid, new_user_password varchar, last_modified_by_id int)
+RETURNS int AS $$
+DECLARE
+	User_ID_To_Return int;
+    Is_Admin boolean;
+BEGIN
+
+      SELECT
+          ID
+      INTO User_ID_To_Return
+      FROM user_account
+      WHERE Reset_password_code = user_reset_password_code;
+
+    -- if provided username does not exist in DB raise exception
+    IF User_ID_To_Return IS NULL THEN
+        RAISE EXCEPTION 'Cannot change user password'
+                USING ERRCODE = '23520',
+                TABLE = 'user';
+        RETURN NULL;
+    END IF;
+
+    -- get is_admin flag for last_modified_by_id user
+    SELECT
+        acc_tab.is_admin
+    INTO Is_Admin
+    FROM user_account acc_tab
+    WHERE id = last_modified_by_id;
+
+    -- change password
+    UPDATE user_account
+    SET password = get_hash(new_user_password),
+        last_modified_by = last_modified_by_id
+    WHERE id = User_ID_To_Return;
+
+    RETURN User_ID_To_Return;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
 
 
 CREATE OR REPLACE FUNCTION authenticate_user_account(login varchar, user_password varchar)
