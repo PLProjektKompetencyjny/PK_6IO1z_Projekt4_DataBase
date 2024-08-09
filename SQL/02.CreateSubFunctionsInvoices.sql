@@ -47,10 +47,12 @@ BEGIN
 
     -- count number of days stayed at hotel
     SELECT 
-        EXTRACT(
+        EXTRACT (
             DAY
-            FROM
-                (END_DATE - START_DATE)
+            FROM (
+              DATE_TRUNC('day', END_DATE)
+              - DATE_TRUNC('day', START_DATE)
+            )
         ) 
     INTO Days_of_stay
     FROM
