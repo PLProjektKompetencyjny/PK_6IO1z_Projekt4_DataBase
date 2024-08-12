@@ -216,7 +216,7 @@ CREATE OR REPLACE FUNCTION authenticate_user_account(login varchar, user_passwor
 RETURNS int AS $$
 DECLARE
 	User_ID_To_Return int;
-    User_Is_Active boolean;
+    User_Is_Active uuid;
 BEGIN
     -- check if login is an e-mail address
     -- based on it decide if authentication will be performed via e-mail or username
@@ -249,14 +249,14 @@ BEGIN
 
     -- get user is active status
     SELECT 
-        is_active
+        Activation_code
     INTO User_Is_Active
     FROM User_account 
     WHERE ID = User_ID_To_Return;
 
 
     -- if user account is not active it can not be authenticated successfully 
-    IF User_Is_Active <> TRUE THEN
+    IF User_Is_Active IS NOT NULL THEN
         RAISE EXCEPTION 'User is inactive'
                 USING ERRCODE = '23519',
                 TABLE = 'user';
