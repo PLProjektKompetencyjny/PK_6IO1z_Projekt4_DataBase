@@ -10,9 +10,6 @@ SELECT
 SELECT
 	INSERT_USER_ACCOUNT ('jack.connor@wp.pl', 'myjack', NULL);
 
-SELECT
-	INSERT_USER_ACCOUNT ('testdopraktyk@wp.pl', 'test', NULL);
-
 INSERT INTO
 	USER_DETAILS (
 		USER_ID,
@@ -53,17 +50,6 @@ VALUES
 		NULL,
 		'Jack',
 		'Connor',
-		'+44123456789',
-		'Dudley',
-		'10-881',
-		'Brooke',
-		'33'
-	),
-	(
-		4,
-		NULL,
-		'Test',
-		'Test',
 		'+44123456789',
 		'Dudley',
 		'10-881',

@@ -114,7 +114,6 @@ CREATE TABLE User_Account (
 	Last_modified_by int NULL,
 
 	CONSTRAINT E_mail_chk CHECK (check_validate_e_mail(E_mail)), -- check if email is matching regex pattern
-	CONSTRAINT User_name_chk CHECK (User_name ~ '^[a-zA-Z]+$'), -- username contains letters only
 	-- check if user or email is present
 	CONSTRAINT E_mail_OR_User_name_chk CHECK (user_name IS NOT NULL OR E_mail IS NOT NULL) 
 );
@@ -131,16 +130,7 @@ CREATE TABLE User_Details (
 	Building_num varchar NOT NULL,
 	Creation_date timestamp DEFAULT now(),
 	Last_modified_at timestamp DEFAULT now(),
-	Last_modified_by int NULL,
-
-	CONSTRAINT Nip_Num_chk CHECK (NIP_num ~ '^\d{10}$'), -- check if contains 10 digits only
-	CONSTRAINT Name_chk CHECK (Name ~ '^[a-zA-Z]+$'), -- check if contains only letters
-	CONSTRAINT Surname_chk CHECK (Surname ~ '^[a-zA-Z]+$'), -- check if contains only letters
-	CONSTRAINT Phone_num_chk CHECK (Phone_num ~ '^\+\d{11}$'), -- check if starts with '+', has 2 code digits, 9 number 
-	CONSTRAINT City_chk CHECK (City ~ '^[a-zA-Z]+$'), -- check if contains only letters
-	CONSTRAINT Postal_code_chk CHECK (Postal_Code ~ '^\d{2}-\d{3}$'), -- check if contains 2 digits, '-' and 3 digits
-	CONSTRAINT Street_chk CHECK (Street ~ '^[a-zA-Z]+$'), -- check if contains only letters
-	CONSTRAINT Building_num_chk CHECK (Building_num ~ '^\d+(\s[A-Za-z])?$') -- check if contains digits or/and letters
+	Last_modified_by int NULL
 );
 
 
